@@ -9,6 +9,7 @@ import ir.sharif.math.ap2023.project.model.enemy.EnemyType;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.player.Player;
+import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import javax.swing.*;
@@ -42,7 +43,9 @@ public final class GameEngine implements Runnable {
         UIManager uiManager = UIManager.getInstance();
         KeyboardHandler keyboardHandler = KeyboardHandler.getInstance();
         collisionChecker = CollisionChecker.getInstance();
+        ImageLoader imageLoader = ImageLoader.getInstance();
         SoundManager soundManager = SoundManager.getInstance();
+
         soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
 
         gameState = GameState.LOGIN_MENU;
