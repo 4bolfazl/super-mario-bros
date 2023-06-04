@@ -82,7 +82,7 @@ public class Player {
         setTime(game.getLevels().get(level - 1).getSections().get(section - 1).getTime());
     }
 
-    public void decreaseTime(){
+    public void decreaseTime() {
         time--;
     }
 
@@ -96,6 +96,10 @@ public class Player {
 
     public void addPoints(int points) {
         this.score += points;
+    }
+
+    public void addCoins(int coin) {
+        coins += coin;
     }
 
     public void updateLocation() {

@@ -33,5 +33,6 @@ public class Coin extends Item {
     @Override
     public void acquired(Player player) {
         player.addPoints(10);
+        player.addCoins(1);
     }
 }
