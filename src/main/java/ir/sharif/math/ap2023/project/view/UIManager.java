@@ -42,6 +42,7 @@ public final class UIManager extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton signInButton, signUpButton;
+    private int timer = 0;
 
     private UIManager() {
         imageLoader = ImageLoader.getInstance();
@@ -163,6 +164,12 @@ public final class UIManager extends JPanel {
         g2D.setColor(Color.BLACK);
 
         Player player = GameEngine.getInstance().getPlayer();
+
+        timer++;
+        if (timer >= 60) {
+            player.decreaseTime();
+            timer = 0;
+        }
 
         int x = tileSize / 2;
         int y = tileSize;

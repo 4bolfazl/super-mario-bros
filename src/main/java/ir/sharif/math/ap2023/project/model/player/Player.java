@@ -1,9 +1,10 @@
 package ir.sharif.math.ap2023.project.model.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import ir.sharif.math.ap2023.project.controller.Camera;
+import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
+import ir.sharif.math.ap2023.project.model.game.Game;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -15,14 +16,13 @@ public class Player {
     private String password;
     private double x = 2 * UIManager.getInstance().getTileSize();
     private double y = UIManager.getInstance().getScreenHeight() - UIManager.getInstance().getTileSize() * 7;
-    private Camera camera;
     private int time;
     private int level = 1, section = 1;
     private int coins = 0;
     private int hearts = 3;
     private Character character = Character.MARIO;
     private int characterState = 0;
-    private int score;
+    private int score = 0;
     private PlayerDirection direction = PlayerDirection.IDLE_RIGHT;
     private double speedX, speedY;
     private double gravity = 0.38;
@@ -35,20 +35,20 @@ public class Player {
     private boolean isCrouching = false;
     private boolean invincible = false;
     private int invincibleTime = 0;
-
+    @JsonIgnore
     private Rectangle solidArea = new Rectangle((int) x, (int) y, UIManager.getInstance().getTileSize(), UIManager.getInstance().getTileSize());
 
     public Player(String username, String password) {
         this.username = username;
         this.password = password;
+        init();
     }
 
-    public Player(String username, String password, double x, double y, Camera camera, int time, int level, int section, int coins, int hearts, Character character, int characterState, int score, PlayerDirection direction, double speedX, double speedY, double gravity, boolean jumping, boolean falling, Difficulty difficulty, Player[] savedGames, int saveSlot, int sprites, Rectangle solidArea) {
+    public Player(String username, String password, double x, double y, int time, int level, int section, int coins, int hearts, Character character, int characterState, int score, PlayerDirection direction, double speedX, double speedY, double gravity, boolean jumping, boolean falling, Difficulty difficulty, Player[] savedGames, int saveSlot, int sprites, Rectangle solidArea) {
         this.username = username;
         this.password = password;
         this.x = x;
         this.y = y;
-        this.camera = camera;
         this.time = time;
         this.level = level;
         this.section = section;
@@ -71,6 +71,19 @@ public class Player {
     }
 
     public Player() {
+        init();
+    }
+
+    private void init() {
+        Game game = GameLoader.getInstance("config.json").getGame();
+
+        setHearts(game.getHearts());
+        setCharacterState(game.getMarioState());
+        setTime(game.getLevels().get(level - 1).getSections().get(section - 1).getTime());
+    }
+
+    public void decreaseTime(){
+        time--;
     }
 
     public boolean isCrouching() {
@@ -303,10 +316,12 @@ public class Player {
         this.frame = frame;
     }
 
+    @JsonIgnore
     public Rectangle getSolidArea() {
         return solidArea;
     }
 
+    @JsonIgnore
     public void setSolidArea(Rectangle solidArea) {
         this.solidArea = solidArea;
     }
@@ -325,14 +340,6 @@ public class Player {
 
     public void setY(double y) {
         this.y = y;
-    }
-
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public void setCamera(Camera camera) {
-        this.camera = camera;
     }
 
     public int getTime() {

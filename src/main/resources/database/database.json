@@ -3,9 +3,8 @@
     "username" : "1",
     "password" : "1",
     "x" : 96.0,
-    "y" : 432.0,
-    "camera" : null,
-    "time" : 0,
+    "y" : 336.0,
+    "time" : 100,
     "level" : 1,
     "section" : 1,
     "coins" : 0,
@@ -22,6 +21,9 @@
     "difficulty" : null,
     "saveSlot" : 0,
     "savedGames" : [ null, null, null ],
-    "frame" : 0
+    "frame" : 0,
+    "invincible" : false,
+    "invincibleTime" : 0,
+    "crouching" : false
   } ]
 }
