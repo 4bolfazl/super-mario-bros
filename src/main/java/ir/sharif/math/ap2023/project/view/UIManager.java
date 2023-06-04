@@ -151,10 +151,37 @@ public final class UIManager extends JPanel {
                 drawPipes(g2D);
                 drawMap(g2D);
                 drawPlayer(g2D);
+                drawInfo(g2D);
             }
         }
 
         g2D.dispose();
+    }
+
+    private void drawInfo(Graphics2D g2D) {
+        g2D.setFont(font.deriveFont(Font.PLAIN, 26F));
+        g2D.setColor(Color.BLACK);
+
+        Player player = GameEngine.getInstance().getPlayer();
+
+        int x = tileSize / 2;
+        int y = tileSize;
+        int y2 = tileSize * 7 / 4;
+
+        g2D.drawString("SCORE", x, y);
+        g2D.drawString(String.valueOf(player.getScore()), x, y2);
+        x += 5.5 * tileSize;
+        g2D.drawString("COINS", x, y);
+        g2D.drawString(String.valueOf(player.getCoins()), x, y2);
+        x += 5.5 * tileSize;
+        g2D.drawString("WORLD", x, y);
+        g2D.drawString(player.getLevel() + " - " + player.getSection(), x, y2);
+        x += 5.5 * tileSize;
+        g2D.drawString("TIME", x, y);
+        g2D.drawString(String.valueOf(player.getTime()), x, y2);
+        x += 5.5 * tileSize;
+        g2D.drawString("LIVES", x, y);
+        g2D.drawString(String.valueOf(player.getHearts()), x, y2);
     }
 
     private void drawPipes(Graphics2D g2D) {
