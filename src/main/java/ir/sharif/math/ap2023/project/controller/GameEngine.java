@@ -26,7 +26,6 @@ public final class GameEngine implements Runnable {
     private Player player;
     private CollisionChecker collisionChecker;
     private List<Item> items = new ArrayList<>();
-    private List<EnemyObject> enemies = new ArrayList<>();
 
     private GameEngine() {
         init();
@@ -133,13 +132,5 @@ public final class GameEngine implements Runnable {
 
     public void addItem(Item item) {
         this.items.add(item);
-    }
-
-    public List<EnemyObject> getEnemies() {
-        return enemies;
-    }
-
-    public void addEnemy(EnemyObject enemy) {
-        this.enemies.add(enemy);
     }
 }

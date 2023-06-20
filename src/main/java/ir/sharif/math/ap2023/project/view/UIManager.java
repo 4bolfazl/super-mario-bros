@@ -9,6 +9,7 @@ import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
+import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Coin;
@@ -151,12 +152,30 @@ public final class UIManager extends JPanel {
                 drawItems(g2D);
                 drawPipes(g2D);
                 drawMap(g2D);
+                drawEnemies(g2D);
                 drawPlayer(g2D);
                 drawInfo(g2D);
             }
         }
 
         g2D.dispose();
+    }
+
+    private void drawEnemies(Graphics2D g2D) {
+        GameLoader gameLoader = GameLoader.getInstance("config.json");
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = gameLoader.getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            g2D.drawImage(
+                    enemy.getImage(),
+                    (int) enemy.getSolidArea().getX(),
+                    (int) enemy.getSolidArea().getY(),
+                    (int) enemy.getSolidArea().getWidth(),
+                    (int) enemy.getSolidArea().getHeight(),
+                    null
+            );
+        }
     }
 
     private void drawInfo(Graphics2D g2D) {

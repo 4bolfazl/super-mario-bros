@@ -1,6 +1,7 @@
 package ir.sharif.math.ap2023.project.view;
 
 import ir.sharif.math.ap2023.project.model.block.BlockType;
+import ir.sharif.math.ap2023.project.model.enemy.EnemyType;
 import ir.sharif.math.ap2023.project.model.item.ItemType;
 import ir.sharif.math.ap2023.project.model.player.Character;
 
@@ -14,11 +15,12 @@ public final class ImageLoader {
     private static ImageLoader instance;
     public final BufferedImage menuScreen;
     public BufferedImage gameBackground;
+    public BufferedImage[] piranhaImages = new BufferedImage[2];
+    public HashMap<EnemyType, BufferedImage[]> enemies = new HashMap<>();
     private HashMap<Character, BufferedImage[][]> sprites = new HashMap<>();
     private HashMap<BlockType, BufferedImage> blocks = new HashMap<>();
     private BufferedImage[] pipes = new BufferedImage[3];
     private HashMap<ItemType, BufferedImage> items = new HashMap<>();
-    public BufferedImage[] piranhaImages = new BufferedImage[2];
 
     private ImageLoader() {
         menuScreen = loadImage("/screens/menu.png");
@@ -33,16 +35,40 @@ public final class ImageLoader {
         loadEnemies();
     }
 
-    private void loadEnemies() {
-        piranhaImages[0] = loadImage("/enemies/piranha/piranha0.png");
-        piranhaImages[1] = loadImage("/enemies/piranha/piranha1.png");
-    }
-
     public static ImageLoader getInstance() {
         if (instance == null) {
             instance = new ImageLoader();
         }
         return instance;
+    }
+
+    private void loadEnemies() {
+        piranhaImages[0] = loadImage("/enemies/piranha/piranha0.png");
+        piranhaImages[1] = loadImage("/enemies/piranha/piranha1.png");
+
+        BufferedImage[] goompa = new BufferedImage[3];
+        for (int i = 0; i < 3; i++) {
+            goompa[i] = loadImage("/enemies/goompa/goompa" + i + ".png");
+        }
+        enemies.put(EnemyType.GOOMPA, goompa);
+
+        BufferedImage[] koopa = new BufferedImage[5];
+        for (int i = 0; i < 5; i++) {
+            koopa[i] = loadImage("/enemies/koopa/koopa" + i + ".png");
+        }
+        enemies.put(EnemyType.KOOPA, koopa);
+
+        BufferedImage[] spiny = new BufferedImage[4];
+        for (int i = 0; i < 4; i++) {
+            spiny[i] = loadImage("/enemies/spiny/spiny" + i + ".png");
+        }
+        enemies.put(EnemyType.SPINY, spiny);
+
+        BufferedImage[] bowser = new BufferedImage[18];
+        for (int i = 0; i < 18; i++) {
+            bowser[i] = loadImage("/enemies/bowser/bowser" + i + ".png");
+        }
+        enemies.put(EnemyType.BOWSER, bowser);
     }
 
     private void loadItems() {
@@ -112,5 +138,9 @@ public final class ImageLoader {
 
     public BufferedImage getItemImage(ItemType itemType) {
         return items.get(itemType);
+    }
+
+    public BufferedImage[] getEnemyImages(EnemyType enemyType) {
+        return enemies.get(enemyType);
     }
 }
