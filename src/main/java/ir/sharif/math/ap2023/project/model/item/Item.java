@@ -28,11 +28,11 @@ public abstract class Item {
     @JsonIgnore
     boolean jumping = true;
     @JsonIgnore
+    boolean toRight = true;
+    @JsonIgnore
     boolean shouldBeCollisionChecked = false;
     @JsonIgnore
     int waitTime = 0;
-    @JsonIgnore
-    boolean toRight = true;
 
     public Item() {
     }

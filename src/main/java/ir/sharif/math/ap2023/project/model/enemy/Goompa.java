@@ -32,6 +32,10 @@ public class Goompa extends EnemyObject {
 
     @Override
     public BufferedImage getImage() {
-        return images[0]; // TODO: TO BE MODIFIED
+        addFrame();
+        if (frame >= 30) {
+            frame = 0;
+        }
+        return images[frame / 15];
     }
 }

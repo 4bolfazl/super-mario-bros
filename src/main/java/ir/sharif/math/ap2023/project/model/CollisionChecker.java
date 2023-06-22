@@ -5,6 +5,8 @@ import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
+import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
+import ir.sharif.math.ap2023.project.model.enemy.Koopa;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.item.Star;
@@ -40,6 +42,8 @@ public final class CollisionChecker {
         }
         checkItemsBottomCollisions();
         checkItemsHorizontalCollision();
+        checkEnemiesBottomCollisions();
+        checkEnemiesHorizontalCollisions();
     }
 
     private void checkPlayerItemsCollision() {
@@ -107,6 +111,48 @@ public final class CollisionChecker {
         }
     }
 
+    private void checkEnemiesHorizontalCollisions() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (enemy.getSpeedX() != 0) {
+                if (enemy.getSpeedX() > 0) {
+                    Rectangle bounds = enemy.getRightBounds();
+                    for (BlockObject blockObject : sectionObject.getBlocks()) {
+                        if (bounds.intersects(blockObject.getLeftBounds())) {
+                            enemy.setToRight(false);
+                            enemy.setSpeedX(-2);
+                            enemy.getSolidArea().x = ((blockObject.getX() - 1) * UIManager.getInstance().getTileSize());
+                        }
+                    }
+                    for (PipeObject pipe : sectionObject.getPipes()) {
+                        if (bounds.intersects(pipe.getLeftBounds())) {
+                            enemy.setToRight(false);
+                            enemy.setSpeedX(-2);
+                            enemy.getSolidArea().x = ((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5);
+                        }
+                    }
+                } else {
+                    Rectangle bounds = enemy.getLeftBounds();
+                    for (BlockObject blockObject : sectionObject.getBlocks()) {
+                        if (bounds.intersects(blockObject.getRightBounds())) {
+                            enemy.setToRight(true);
+                            enemy.setSpeedX(2);
+                            enemy.getSolidArea().x = ((blockObject.getX() + 1) * UIManager.getInstance().getTileSize());
+                        }
+                    }
+                    for (PipeObject pipe : sectionObject.getPipes()) {
+                        if (bounds.intersects(pipe.getRightBounds())) {
+                            enemy.setToRight(true);
+                            enemy.setSpeedX(2);
+                            enemy.getSolidArea().x = ((pipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void checkItemsHorizontalCollision() {
         Player player = GameEngine.getInstance().getPlayer();
         List<Item> items = GameEngine.getInstance().getItems();
@@ -121,12 +167,14 @@ public final class CollisionChecker {
                     for (BlockObject blockObject : sectionObject.getBlocks()) {
                         if (bounds.intersects(blockObject.getLeftBounds())) {
                             item.setToRight(false);
+                            item.setSpeedX(-2);
                             item.setX((blockObject.getX() - 1) * UIManager.getInstance().getTileSize());
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
                         if (bounds.intersects(pipe.getLeftBounds())) {
                             item.setToRight(false);
+                            item.setSpeedX(-2);
                             item.setX((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5);
                         }
                     }
@@ -135,12 +183,14 @@ public final class CollisionChecker {
                     for (BlockObject blockObject : sectionObject.getBlocks()) {
                         if (bounds.intersects(blockObject.getRightBounds())) {
                             item.setToRight(true);
+                            item.setSpeedX(2);
                             item.setX((blockObject.getX() + 1) * UIManager.getInstance().getTileSize());
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
                         if (bounds.intersects(pipe.getRightBounds())) {
                             item.setToRight(true);
+                            item.setSpeedX(2);
                             item.setX((pipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
                         }
                     }
@@ -163,6 +213,33 @@ public final class CollisionChecker {
                 if (blockObject instanceof QuestionBlockObject && blockObject.getType() == BlockType.QUESTION) {
                     sectionObject.getBlocks().get(i).setType(BlockType.EMPTY);
                     ((QuestionBlockObject) blockObject).revealItem();
+                }
+            }
+        }
+    }
+
+    private void checkEnemiesBottomCollisions() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (!enemy.isJumping())
+                enemy.setFalling(true);
+            for (BlockObject blockObject : sectionObject.getBlocks()) {
+                if (enemy.getBottomBounds().intersects(blockObject.getTopBounds())) {
+//                    enemy.setY((blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1);
+                    enemy.getSolidArea().y = (blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1 + ((enemy instanceof Koopa) ? -24 : 0);
+                    enemy.setFalling(false);
+                    enemy.setSpeedY(0);
+                }
+            }
+
+            for (PipeObject pipe : sectionObject.getPipes()) {
+                if (enemy.getBottomBounds().intersects(pipe.getTopBounds())) {
+//                    enemy.setY(pipe.getY() * UIManager.getInstance().getTileSize() - player.getSolidArea().height + 1);
+                    enemy.getSolidArea().y = ((pipe.getY() - 1) * UIManager.getInstance().getTileSize() + 1);
+                    enemy.setFalling(false);
+                    enemy.setSpeedY(0);
                 }
             }
         }

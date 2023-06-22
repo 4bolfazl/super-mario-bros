@@ -7,6 +7,7 @@ import ir.sharif.math.ap2023.project.model.CollisionChecker;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyType;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
+import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
@@ -97,6 +98,15 @@ public final class GameEngine implements Runnable {
         player.updateLocation();
         collisionChecker.checkCollisions();
         updateItems();
+        updateEnemies();
+    }
+
+    private void updateEnemies() {
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (gameState == GameState.PLAYING)
+                enemy.updateLocation();
+        }
     }
 
     private void updateItems() {
