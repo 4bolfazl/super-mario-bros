@@ -45,7 +45,7 @@ public abstract class EnemyObject {
     }
 
     public void setY(int y) {
-        this.y = 10 - y;
+        this.y = 9 - y;
     }
 
     public EnemyType getType() {

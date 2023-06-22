@@ -27,7 +27,7 @@ public class Koopa extends EnemyObject {
     @Override
     public void setY(int y) {
         super.setY(y);
-        solidArea.y = this.y * UIManager.getInstance().getTileSize();
+        solidArea.y = this.y * UIManager.getInstance().getTileSize() - 24;
     }
 
     @Override
