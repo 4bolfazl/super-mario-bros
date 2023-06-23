@@ -2,9 +2,6 @@ package ir.sharif.math.ap2023.project.model.enemy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
-import ir.sharif.math.ap2023.project.controller.GameLoader;
-import ir.sharif.math.ap2023.project.model.game.SectionObject;
-import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 

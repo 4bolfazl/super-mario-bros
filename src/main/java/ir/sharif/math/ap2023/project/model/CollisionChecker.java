@@ -27,7 +27,6 @@ public final class CollisionChecker {
     private static CollisionChecker instance;
 
     private CollisionChecker() {
-
     }
 
     public static CollisionChecker getInstance() {
@@ -252,13 +251,13 @@ public final class CollisionChecker {
 
         Rectangle topBounds = player.getTopBounds();
 
-        for (int i = 0; i < sectionObject.getBlocks().size(); i++) {
-            BlockObject blockObject = sectionObject.getBlocks().get(i);
+        for (BlockObject blockObject : sectionObject.getBlocks()) {
             if (topBounds.intersects(blockObject.getBottomBounds())) {
+                blockObject.gotHit();
                 player.setSpeedY(0);
                 player.setY((blockObject.getY() + 1) * UIManager.getInstance().getTileSize());
                 if (blockObject instanceof QuestionBlockObject && blockObject.getType() == BlockType.QUESTION) {
-                    sectionObject.getBlocks().get(i).setType(BlockType.EMPTY);
+                    blockObject.setType(BlockType.EMPTY);
                     ((QuestionBlockObject) blockObject).revealItem();
                 }
             }
@@ -274,9 +273,13 @@ public final class CollisionChecker {
                 enemy.setFalling(true);
             for (BlockObject blockObject : sectionObject.getBlocks()) {
                 if (enemy.getBottomBounds().intersects(blockObject.getTopBounds())) {
+                    blockObject.setEnemyOnIt(enemy);
                     enemy.getSolidArea().y = (blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1 + ((enemy instanceof Koopa) ? -24 : 0);
                     enemy.setFalling(false);
                     enemy.setSpeedY(0);
+                } else {
+                    if (blockObject.getEnemyOnIt() == null || blockObject.getEnemyOnIt() == enemy)
+                        blockObject.setEnemyOnIt(null);
                 }
             }
 

@@ -3,6 +3,8 @@ package ir.sharif.math.ap2023.project.model.block;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
+import ir.sharif.math.ap2023.project.model.enemy.Koopa;
 import ir.sharif.math.ap2023.project.model.item.ItemType;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -23,6 +25,8 @@ public abstract class BlockObject {
     int x, y;
     BlockType type;
     ItemType item;
+    @JsonIgnore
+    EnemyObject enemyOnIt = null;
 
     public BlockObject(int x, int y, BlockType type, ItemType item) {
         this.x = x;
@@ -113,5 +117,22 @@ public abstract class BlockObject {
         this.item = item;
     }
 
+    public EnemyObject getEnemyOnIt() {
+        return enemyOnIt;
+    }
+
+    public void setEnemyOnIt(EnemyObject enemyOnIt) {
+        this.enemyOnIt = enemyOnIt;
+    }
+
     public abstract BufferedImage getImage();
+
+    public void gotHit() {
+        if (enemyOnIt != null) {
+            if (enemyOnIt instanceof Koopa)
+                ((Koopa) enemyOnIt).setFreeze(true);
+            enemyOnIt.kill();
+            enemyOnIt = null;
+        }
+    }
 }

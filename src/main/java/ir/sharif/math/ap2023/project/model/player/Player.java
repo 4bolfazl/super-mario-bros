@@ -1,6 +1,7 @@
 package ir.sharif.math.ap2023.project.model.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
@@ -317,6 +318,7 @@ public class Player {
     }
 
     public void nextSection() {
+        GameEngine.getInstance().getItems().clear();
         section++;
     }
 
