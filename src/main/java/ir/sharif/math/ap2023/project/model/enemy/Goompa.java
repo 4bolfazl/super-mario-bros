@@ -1,6 +1,10 @@
 package ir.sharif.math.ap2023.project.model.enemy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ir.sharif.math.ap2023.project.controller.GameEngine;
+import ir.sharif.math.ap2023.project.controller.GameLoader;
+import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -32,10 +36,23 @@ public class Goompa extends EnemyObject {
 
     @Override
     public BufferedImage getImage() {
+        if (isDead()) {
+            return images[2];
+        }
         addFrame();
         if (frame >= 30) {
             frame = 0;
         }
         return images[frame / 15];
     }
+
+    @Override
+    public void kill() {
+        GameEngine.getInstance().getPlayer().addPoints(1);
+        setSpeedX(0);
+        setSpeedY(0);
+        setDead(true);
+    }
+
+
 }

@@ -52,8 +52,8 @@ public final class ImageLoader {
         }
         enemies.put(EnemyType.GOOMPA, goompa);
 
-        BufferedImage[] koopa = new BufferedImage[5];
-        for (int i = 0; i < 5; i++) {
+        BufferedImage[] koopa = new BufferedImage[6];
+        for (int i = 0; i < 6; i++) {
             koopa[i] = loadImage("/enemies/koopa/koopa" + i + ".png");
         }
         enemies.put(EnemyType.KOOPA, koopa);

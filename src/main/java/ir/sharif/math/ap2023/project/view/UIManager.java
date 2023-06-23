@@ -175,6 +175,12 @@ public final class UIManager extends JPanel {
                     (int) enemy.getSolidArea().getHeight(),
                     null
             );
+            if (enemy.isDead()) {
+                enemy.addFrame();
+                if (enemy.getFrame() >= 75) {
+                    sectionObject.getEnemies().remove(enemy);
+                }
+            }
         }
     }
 

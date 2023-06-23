@@ -16,6 +16,7 @@ import ir.sharif.math.ap2023.project.view.UIManager;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public final class GameEngine implements Runnable {
     private static GameEngine instance;
@@ -27,6 +28,7 @@ public final class GameEngine implements Runnable {
     private Player player;
     private CollisionChecker collisionChecker;
     private List<Item> items = new ArrayList<>();
+    public Random randomGenerator = new Random();
 
     private GameEngine() {
         init();

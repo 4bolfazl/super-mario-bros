@@ -34,4 +34,9 @@ public class NukeBird extends EnemyObject {
     public BufferedImage getImage() {
         return images[0]; // TODO: TO BE MODIFIED
     }
+
+    @Override
+    public void kill() {
+
+    }
 }

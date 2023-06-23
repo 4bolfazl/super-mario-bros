@@ -22,6 +22,8 @@ public abstract class EnemyObject {
     @JsonIgnore
     int frame = 0;
     @JsonIgnore
+    boolean dead = false;
+    @JsonIgnore
     Rectangle solidArea = new Rectangle();
     @JsonIgnore
     double gravity = 0.9;
@@ -155,6 +157,16 @@ public abstract class EnemyObject {
         }
 
 //        x += speedX;
+        if (this instanceof Koopa && ((Koopa) this).isFreeze()) {
+            if (Math.abs(speedX) < gravity)
+                speedX = 0;
+            else {
+                if (speedX > 0)
+                    speedX -= gravity / 5;
+                else
+                    speedX += gravity / 5;
+            }
+        }
         getSolidArea().x += speedX;
 
     }
@@ -165,6 +177,16 @@ public abstract class EnemyObject {
                 (int) (getSolidArea().x + UIManager.getInstance().getTileSize() / 4),
                 (int) (getSolidArea().y + UIManager.getInstance().getTileSize() / 2),
                 UIManager.getInstance().getTileSize() / 2,
+                UIManager.getInstance().getTileSize() / 2
+        );
+    }
+
+    @JsonIgnore
+    public Rectangle getTopBounds() {
+        return new Rectangle(
+                (int) getSolidArea().x + UIManager.getInstance().getTileSize() / 6,
+                (int) getSolidArea().y,
+                2 * UIManager.getInstance().getTileSize() / 3,
                 UIManager.getInstance().getTileSize() / 2
         );
     }
@@ -189,5 +211,17 @@ public abstract class EnemyObject {
         );
     }
 
+    @JsonIgnore
+    public boolean isDead() {
+        return dead;
+    }
+
+    @JsonIgnore
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
     public abstract BufferedImage getImage();
+
+    public abstract void kill();
 }

@@ -70,6 +70,14 @@ public final class CollisionChecker {
         Player player = GameEngine.getInstance().getPlayer();
         SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
 
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (enemy.isDead())
+                continue;
+            if (enemy.getRightBounds().intersects(player.getLeftBounds()) || enemy.getLeftBounds().intersects(player.getRightBounds())) {
+                System.out.println("Game Oveeeeeeer!"); // TODO
+            }
+        }
+
         if (player.getSpeedX() != 0) {
             if (player.getSpeedX() >= 0) {
                 if (player.getX() + player.getSpeedX() + UIManager.getInstance().getTileSize() >= UIManager.getInstance().getScreenWidth()) {
@@ -292,6 +300,18 @@ public final class CollisionChecker {
                             player.setDirection(PlayerDirection.LEFT);
                     }
                 }
+            }
+        }
+
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (bottomBounds.intersects(enemy.getTopBounds())) {
+                if (enemy.isDead())
+                    continue;
+                player.setJumping(true);
+                player.setFalling(false);
+                player.setSpeedX(0);
+                player.setSpeedY(7);
+                enemy.kill();
             }
         }
     }
