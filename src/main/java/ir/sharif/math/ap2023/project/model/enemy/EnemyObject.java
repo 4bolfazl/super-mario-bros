@@ -141,6 +141,8 @@ public abstract class EnemyObject {
     }
 
     public void updateLocation() {
+        if (getSolidArea().y > 672)
+            kill();
         if (jumping && speedY <= 0) {
             jumping = false;
             falling = true;
