@@ -2,6 +2,9 @@ package ir.sharif.math.ap2023.project.model;
 
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
+import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
@@ -74,7 +77,28 @@ public final class CollisionChecker {
             if (enemy.isDead())
                 continue;
             if (enemy.getRightBounds().intersects(player.getLeftBounds()) || enemy.getLeftBounds().intersects(player.getRightBounds())) {
-                System.out.println("Game Oveeeeeeer!"); // TODO
+                if (player.isInvincible()) {
+                    if (enemy instanceof Koopa)
+                        ((Koopa) enemy).setFreeze(true);
+                    enemy.kill();
+                } else if (!player.isEnemyInvincible()) {
+                    if (player.getCharacterState() > 0) {
+                        player.setCharacterState(0);
+                        player.setEnemyInvincible(true);
+                    } else {
+                        player.decreaseHearts();
+                        GameEngine.getInstance().setGameState(GameState.SCENE);
+                        player.setDirection(PlayerDirection.DEAD);
+                        player.setCharacterState(0);
+                        SoundManager soundManager = SoundManager.getInstance();
+                        soundManager.pauseMusic();
+                        soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
+                        player.setSpeedX(0);
+                        player.setSpeedY(5);
+                        player.setFalling(false);
+                        player.setJumping(true);
+                    }
+                }
             }
         }
 
@@ -303,15 +327,21 @@ public final class CollisionChecker {
             }
         }
 
-        for (EnemyObject enemy : sectionObject.getEnemies()) {
-            if (bottomBounds.intersects(enemy.getTopBounds())) {
-                if (enemy.isDead())
-                    continue;
-                player.setJumping(true);
-                player.setFalling(false);
-                player.setSpeedX(0);
-                player.setSpeedY(7);
-                enemy.kill();
+        if (!player.isEnemyInvincible()) {
+            for (EnemyObject enemy : sectionObject.getEnemies()) {
+                if (bottomBounds.intersects(enemy.getTopBounds())) {
+                    if (enemy.isDead())
+                        continue;
+                    if (!player.isInvincible()) {
+                        player.setJumping(true);
+                        player.setFalling(false);
+                        player.setSpeedX(0);
+                        player.setSpeedY(7);
+                    }
+                    if (enemy instanceof Koopa)
+                        ((Koopa) enemy).setFreeze(true);
+                    enemy.kill();
+                }
             }
         }
     }

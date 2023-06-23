@@ -10,6 +10,7 @@ import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
+import ir.sharif.math.ap2023.project.model.enemy.Koopa;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Coin;
@@ -222,20 +223,41 @@ public final class UIManager extends JPanel {
         SectionObject sectionObject = gameLoader.getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
 
         for (PipeObject pipe : sectionObject.getPipes()) {
-            if (pipe instanceof PiranhaTrapPipe) {
+            if (pipe instanceof PiranhaTrapPipe && ((PiranhaTrapPipe) pipe).getPiranha() != null) {
                 Piranha piranha = ((PiranhaTrapPipe) pipe).getPiranha();
                 if (piranha.isAlive()) {
                     if (piranha.getSolidArea().intersects(player.getSolidArea()) && player.getDirection() != PlayerDirection.DEAD) {
-                        GameEngine.getInstance().setGameState(GameState.SCENE);
-                        player.setDirection(PlayerDirection.DEAD);
-                        player.setCharacterState(0);
-                        SoundManager soundManager = SoundManager.getInstance();
-                        soundManager.pauseMusic();
-                        soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
-                        player.setSpeedX(0);
-                        player.setSpeedY(5);
-                        player.setFalling(false);
-                        player.setJumping(true);
+//                        GameEngine.getInstance().setGameState(GameState.SCENE);
+//                        player.setDirection(PlayerDirection.DEAD);
+//                        player.setCharacterState(0);
+//                        player.decreaseHearts();
+//                        SoundManager soundManager = SoundManager.getInstance();
+//                        soundManager.pauseMusic();
+//                        soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
+//                        player.setSpeedX(0);
+//                        player.setSpeedY(5);
+//                        player.setFalling(false);
+//                        player.setJumping(true);
+                        if (player.isInvincible()) {
+                            ((PiranhaTrapPipe) pipe).killPiranha();
+                        } else if (!player.isEnemyInvincible()) {
+                            if (player.getCharacterState() > 0) {
+                                player.setCharacterState(0);
+                                player.setEnemyInvincible(true);
+                            } else {
+                                player.decreaseHearts();
+                                GameEngine.getInstance().setGameState(GameState.SCENE);
+                                player.setDirection(PlayerDirection.DEAD);
+                                player.setCharacterState(0);
+                                SoundManager soundManager = SoundManager.getInstance();
+                                soundManager.pauseMusic();
+                                soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
+                                player.setSpeedX(0);
+                                player.setSpeedY(5);
+                                player.setFalling(false);
+                                player.setJumping(true);
+                            }
+                        }
                     }
                     piranha.updateLocation();
                     piranha.addFrame();

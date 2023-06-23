@@ -34,7 +34,10 @@ public class Player {
     private int frame = 0;
     private boolean isCrouching = false;
     private boolean invincible = false;
+    private boolean enemyInvincible = false;
     private int invincibleTime = 0;
+    private int enemyInvincibleTime = 0;
+    private int enemyInvincibleFrame = 0;
     @JsonIgnore
     private Rectangle solidArea = new Rectangle((int) x, (int) y, UIManager.getInstance().getTileSize(), UIManager.getInstance().getTileSize());
 
@@ -72,6 +75,16 @@ public class Player {
 
     public Player() {
         init();
+    }
+
+    @JsonIgnore
+    public boolean isEnemyInvincible() {
+        return enemyInvincible;
+    }
+
+    @JsonIgnore
+    public void setEnemyInvincible(boolean enemyInvincible) {
+        this.enemyInvincible = enemyInvincible;
     }
 
     private void init() {
@@ -121,6 +134,13 @@ public class Player {
 
     @JsonIgnore
     public BufferedImage getImage() {
+        if (enemyInvincible){
+            enemyInvincibleFrame++;
+            if (enemyInvincibleFrame >= 5){
+                enemyInvincibleFrame = 0;
+                return null;
+            }
+        }
         BufferedImage[] images = ImageLoader.getInstance().getCharacterSprites(character)[characterState];
         if (characterState == 0) {
             if (isFalling()) {
@@ -507,6 +527,10 @@ public class Player {
         invincibleTime++;
     }
 
+    public void decreaseHearts() {
+        hearts--;
+    }
+
     public void checkInvincibility() {
         if (invincible) {
             invincibleTime++;
@@ -518,5 +542,38 @@ public class Player {
                 soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
             }
         }
+        if (enemyInvincible) {
+            enemyInvincibleTime++;
+            if (enemyInvincibleTime >= 120) {
+                enemyInvincibleTime = 0;
+                enemyInvincible = false;
+            }
+        }
+    }
+
+    @JsonIgnore
+    public int getEnemyInvincibleTime() {
+        return enemyInvincibleTime;
+    }
+
+    @JsonIgnore
+    public void setEnemyInvincibleTime(int enemyInvincibleTime) {
+        this.enemyInvincibleTime = enemyInvincibleTime;
+    }
+
+    public void addEnemyInvincibleTime() {
+        enemyInvincibleTime++;
+    }
+
+    public int getEnemyInvincibleFrame() {
+        return enemyInvincibleFrame;
+    }
+
+    public void setEnemyInvincibleFrame(int enemyInvincibleFrame) {
+        this.enemyInvincibleFrame = enemyInvincibleFrame;
+    }
+
+    public void addEnemyInvincibleFrame() {
+        enemyInvincibleFrame++;
     }
 }

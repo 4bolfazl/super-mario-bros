@@ -43,4 +43,8 @@ public class PiranhaTrapPipe extends PipeObject {
     public Piranha getPiranha() {
         return piranha;
     }
+
+    public void killPiranha(){
+        piranha = null;
+    }
 }
