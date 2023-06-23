@@ -316,6 +316,10 @@ public class Player {
         }
     }
 
+    public void nextSection() {
+        section++;
+    }
+
     public String getUsername() {
         return username;
     }

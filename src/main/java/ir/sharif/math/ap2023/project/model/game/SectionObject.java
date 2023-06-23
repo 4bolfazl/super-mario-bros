@@ -2,14 +2,16 @@ package ir.sharif.math.ap2023.project.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
+import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
-import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SectionObject {
+    @JsonIgnore
+    public List<NothingBlockObject> nothingBlockObjects = new ArrayList<>();
     int length;
     int time;
     List<BlockObject> blocks = new ArrayList<>();
@@ -59,6 +61,30 @@ public class SectionObject {
 
     public void setBlocks(List<BlockObject> blocks) {
         this.blocks = blocks;
+        for (BlockObject block : blocks) {
+            boolean leftest = true;
+            boolean rightest = true;
+            for (BlockObject blockObject : blocks) {
+                if (blockObject.getY() == block.getY() && blockObject.getX() + 1 == block.getX()) {
+                    leftest = false;
+                    break;
+                }
+            }
+            for (BlockObject blockObject : blocks) {
+                if (blockObject.getY() == block.getY() && blockObject.getX() - 1 == block.getX()) {
+                    rightest = false;
+                    break;
+                }
+            }
+            if (leftest) {
+                NothingBlockObject nothing = new NothingBlockObject(block.getX() - 1, block.getY() - 1);
+                nothingBlockObjects.add(nothing);
+            }
+            if (rightest) {
+                NothingBlockObject nothing = new NothingBlockObject(block.getX() + 1, block.getY() - 1);
+                nothingBlockObjects.add(nothing);
+            }
+        }
     }
 
     public List<EnemyObject> getEnemies() {

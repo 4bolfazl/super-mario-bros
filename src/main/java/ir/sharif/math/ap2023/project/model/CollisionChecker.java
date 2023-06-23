@@ -7,6 +7,7 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
+import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Koopa;
@@ -104,9 +105,9 @@ public final class CollisionChecker {
 
         if (player.getSpeedX() != 0) {
             if (player.getSpeedX() >= 0) {
-                if (player.getX() + player.getSpeedX() + UIManager.getInstance().getTileSize() >= UIManager.getInstance().getScreenWidth()) {
-                    player.setSpeedX(0);
-                    player.setX(UIManager.getInstance().getScreenWidth() - UIManager.getInstance().getTileSize());
+                if (player.getX() + player.getSpeedX() + UIManager.getInstance().getTileSize() / 2d >= UIManager.getInstance().getScreenWidth()) {
+                    player.nextSection();
+                    player.setX(UIManager.getInstance().getTileSize() / 2d + 2);
                 }
                 Rectangle bounds = player.getRightBounds();
                 for (BlockObject blockObject : sectionObject.getBlocks()) {
@@ -157,6 +158,13 @@ public final class CollisionChecker {
                             enemy.getSolidArea().x = ((blockObject.getX() - 1) * UIManager.getInstance().getTileSize());
                         }
                     }
+                    for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
+                        if (bounds.intersects(nothingBlockObject.getLeftBounds())) {
+                            enemy.setToRight(false);
+                            enemy.setSpeedX(-2);
+                            enemy.getSolidArea().x = ((nothingBlockObject.getX() - 1) * UIManager.getInstance().getTileSize());
+                        }
+                    }
                     for (PipeObject pipe : sectionObject.getPipes()) {
                         if (bounds.intersects(pipe.getLeftBounds())) {
                             enemy.setToRight(false);
@@ -171,6 +179,13 @@ public final class CollisionChecker {
                             enemy.setToRight(true);
                             enemy.setSpeedX(2);
                             enemy.getSolidArea().x = ((blockObject.getX() + 1) * UIManager.getInstance().getTileSize());
+                        }
+                    }
+                    for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
+                        if (bounds.intersects(nothingBlockObject.getRightBounds())) {
+                            enemy.setToRight(true);
+                            enemy.setSpeedX(2);
+                            enemy.getSolidArea().x = ((nothingBlockObject.getX() + 1) * UIManager.getInstance().getTileSize());
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
@@ -259,7 +274,6 @@ public final class CollisionChecker {
                 enemy.setFalling(true);
             for (BlockObject blockObject : sectionObject.getBlocks()) {
                 if (enemy.getBottomBounds().intersects(blockObject.getTopBounds())) {
-//                    enemy.setY((blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1);
                     enemy.getSolidArea().y = (blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1 + ((enemy instanceof Koopa) ? -24 : 0);
                     enemy.setFalling(false);
                     enemy.setSpeedY(0);
@@ -268,7 +282,6 @@ public final class CollisionChecker {
 
             for (PipeObject pipe : sectionObject.getPipes()) {
                 if (enemy.getBottomBounds().intersects(pipe.getTopBounds())) {
-//                    enemy.setY(pipe.getY() * UIManager.getInstance().getTileSize() - player.getSolidArea().height + 1);
                     enemy.getSolidArea().y = ((pipe.getY() - 1) * UIManager.getInstance().getTileSize() + 1);
                     enemy.setFalling(false);
                     enemy.setSpeedY(0);
@@ -337,9 +350,10 @@ public final class CollisionChecker {
                         player.setFalling(false);
                         player.setSpeedX(0);
                         player.setSpeedY(7);
+                    } else {
+                        if (enemy instanceof Koopa)
+                            ((Koopa) enemy).setFreeze(true);
                     }
-                    if (enemy instanceof Koopa)
-                        ((Koopa) enemy).setFreeze(true);
                     enemy.kill();
                 }
             }

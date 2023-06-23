@@ -8,6 +8,7 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
+import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Koopa;
