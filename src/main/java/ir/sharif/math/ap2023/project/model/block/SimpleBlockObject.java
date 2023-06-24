@@ -33,10 +33,6 @@ public class SimpleBlockObject extends BlockObject {
     @Override
     public void gotHit() {
         super.gotHit();
-        Player player = GameEngine.getInstance().getPlayer();
-        if (player.getCharacterState() > 0) {
-            SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
-            sectionObject.getBlocks().remove(this);
-        }
+//        Player player = GameEngine.getInstance().getPlayer();
     }
 }

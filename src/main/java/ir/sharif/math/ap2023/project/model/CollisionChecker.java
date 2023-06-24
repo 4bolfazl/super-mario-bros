@@ -5,10 +5,7 @@ import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
-import ir.sharif.math.ap2023.project.model.block.BlockObject;
-import ir.sharif.math.ap2023.project.model.block.BlockType;
-import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
-import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
+import ir.sharif.math.ap2023.project.model.block.*;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Koopa;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
@@ -245,15 +242,20 @@ public final class CollisionChecker {
         }
     }
 
-    private void checkTopCollisions() {
+    private synchronized void checkTopCollisions() {
         Player player = GameEngine.getInstance().getPlayer();
         SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
 
         Rectangle topBounds = player.getTopBounds();
 
+        List<BlockObject> toBeRemoved = new ArrayList<>();
+
         for (BlockObject blockObject : sectionObject.getBlocks()) {
             if (topBounds.intersects(blockObject.getBottomBounds())) {
                 blockObject.gotHit();
+                if (player.getCharacterState() > 0 && blockObject instanceof SimpleBlockObject) {
+                    toBeRemoved.add(blockObject);
+                }
                 player.setSpeedY(0);
                 player.setY((blockObject.getY() + 1) * UIManager.getInstance().getTileSize());
                 if (blockObject instanceof QuestionBlockObject && blockObject.getType() == BlockType.QUESTION) {
@@ -261,6 +263,11 @@ public final class CollisionChecker {
                     ((QuestionBlockObject) blockObject).revealItem();
                 }
             }
+        }
+
+        for (BlockObject blockObject : toBeRemoved) {
+            sectionObject.getBlocks().remove(blockObject);
+            sectionObject.nothingBlockObjects.add(new NothingBlockObject(blockObject.getX(), blockObject.getY() - 1));
         }
     }
 
