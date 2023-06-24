@@ -5,6 +5,7 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
+import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
 import ir.sharif.math.ap2023.project.view.MainMenuItem;
@@ -136,6 +137,15 @@ public final class KeyboardHandler implements KeyListener {
                             player.setSpeedX(-4);
                             player.setJumping(true);
                         }
+                    }
+                }
+            }
+            case KeyEvent.VK_CONTROL -> {
+                if (player.getCharacterState() == 2) {
+                    if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT) {
+                        player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
+                    } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT) {
+                        player.getFireballs().add(new Fireball((int) player.getX() - UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
                     }
                 }
             }

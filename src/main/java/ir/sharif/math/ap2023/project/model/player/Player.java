@@ -13,6 +13,8 @@ import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
     private String username;
@@ -41,6 +43,7 @@ public class Player {
     private int invincibleTime = 0;
     private int enemyInvincibleTime = 0;
     private int enemyInvincibleFrame = 0;
+    private List<Fireball> fireballs = new ArrayList<>();
     @JsonIgnore
     private Rectangle solidArea = new Rectangle((int) x, (int) y, UIManager.getInstance().getTileSize(), UIManager.getInstance().getTileSize());
 
@@ -602,5 +605,17 @@ public class Player {
 
     public void addEnemyInvincibleFrame() {
         enemyInvincibleFrame++;
+    }
+
+    public List<Fireball> getFireballs() {
+        return fireballs;
+    }
+
+    public void setFireballs(List<Fireball> fireballs) {
+        this.fireballs = fireballs;
+    }
+
+    public void addFireBall(Fireball fireball) {
+        this.fireballs.add(fireball);
     }
 }

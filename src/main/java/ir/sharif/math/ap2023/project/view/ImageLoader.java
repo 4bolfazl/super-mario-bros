@@ -21,6 +21,7 @@ public final class ImageLoader {
     private HashMap<BlockType, BufferedImage> blocks = new HashMap<>();
     private BufferedImage[] pipes = new BufferedImage[3];
     private HashMap<ItemType, BufferedImage> items = new HashMap<>();
+    public BufferedImage[] fireballImages = new BufferedImage[2];
 
     private ImageLoader() {
         menuScreen = loadImage("/screens/menu.png");
@@ -28,6 +29,9 @@ public final class ImageLoader {
 
         Thread loadSpritesThread = new Thread(this::loadSprites);
         loadSpritesThread.start();
+
+        fireballImages[0] = loadImage("/fireball/0.png");
+        fireballImages[1] = loadImage("/fireball/1.png");
 
         loadBlocks();
         loadPipes();

@@ -17,6 +17,7 @@ import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
 import ir.sharif.math.ap2023.project.model.pipe.PiranhaTrapPipe;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
+import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
 
@@ -315,6 +316,17 @@ public final class UIManager extends JPanel {
                 player.getSolidArea().height,
                 null
         );
+
+        for (Fireball fireball : player.getFireballs()) {
+            g2D.drawImage(
+                    fireball.getImage(),
+                    fireball.getX(),
+                    fireball.getY(),
+                    tileSize,
+                    tileSize,
+                    null
+            );
+        }
     }
 
     private void drawMap(Graphics2D g2D) {

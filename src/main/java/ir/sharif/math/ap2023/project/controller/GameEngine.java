@@ -9,6 +9,7 @@ import ir.sharif.math.ap2023.project.model.enemy.EnemyType;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
+import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
@@ -101,6 +102,19 @@ public final class GameEngine implements Runnable {
         collisionChecker.checkCollisions();
         updateItems();
         updateEnemies();
+        updateFireballs();
+    }
+
+    private void updateFireballs() {
+        List<Fireball> toBeRemoved = new ArrayList<>();
+        for (Fireball fireball : player.getFireballs()) {
+            fireball.updateLocation();
+            if (fireball.isDestroyed())
+                toBeRemoved.add(fireball);
+        }
+        for (Fireball fireball : toBeRemoved) {
+            player.getFireballs().remove(fireball);
+        }
     }
 
     private void updateEnemies() {
