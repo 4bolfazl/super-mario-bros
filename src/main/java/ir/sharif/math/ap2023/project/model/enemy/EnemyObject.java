@@ -148,17 +148,14 @@ public abstract class EnemyObject {
             falling = true;
         } else if (jumping) {
             speedY -= gravity;
-//            y -= speedY;
             getSolidArea().y -= speedY;
         }
 
         if (falling) {
-//            y += speedY;
             getSolidArea().y += speedY;
             speedY += gravity;
         }
 
-//        x += speedX;
         if (this instanceof Koopa && ((Koopa) this).isFreeze()) {
             if (Math.abs(speedX) < gravity)
                 speedX = 0;

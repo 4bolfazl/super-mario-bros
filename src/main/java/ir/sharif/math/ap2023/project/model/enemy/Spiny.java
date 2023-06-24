@@ -1,12 +1,16 @@
 package ir.sharif.math.ap2023.project.model.enemy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ir.sharif.math.ap2023.project.controller.GameEngine;
+import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.image.BufferedImage;
 
 public class Spiny extends EnemyObject {
+    @JsonIgnore
+    float acceleration = 0.2f;
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.SPINY);
 
@@ -32,7 +36,52 @@ public class Spiny extends EnemyObject {
 
     @Override
     public BufferedImage getImage() {
-        return images[0]; // TODO: TO BE MODIFIED
+        addFrame();
+        if (frame >= 30) {
+            frame = 0;
+        }
+        return images[((isToRight()) ? 2 : 0) + frame / 15];
+    }
+
+    @Override
+    public void updateLocation() {
+        Player player = GameEngine.getInstance().getPlayer();
+        double distance = Math.sqrt(Math.pow(player.getX() - solidArea.x, 2) + Math.pow(player.getY() - solidArea.y, 2));
+        if (distance > 5 * UIManager.getInstance().getTileSize()) {
+            speedX = isToRight() ? 2 : -2;
+        } else if (Math.abs(solidArea.y - (player.getY() + (player.getCharacterState() > 0 ? UIManager.getInstance().getTileSize() : 0))) <= 5) {
+            if (player.getX() > getSolidArea().x) {
+                setToRight(true);
+                if (speedX > 0) {
+                    speedX += acceleration;
+                } else {
+                    speedX = 2;
+                    speedX += acceleration;
+                }
+            } else {
+                setToRight(false);
+                if (speedX < 0) {
+                    speedX -= acceleration;
+                } else {
+                    speedX = -2;
+                    speedX -= acceleration;
+                }
+            }
+        }
+        if (jumping && speedY <= 0) {
+            jumping = false;
+            falling = true;
+        } else if (jumping) {
+            speedY -= gravity;
+            getSolidArea().y -= speedY;
+        }
+
+        if (falling) {
+            getSolidArea().y += speedY;
+            speedY += gravity;
+        }
+
+        getSolidArea().x += speedX;
     }
 
     @Override

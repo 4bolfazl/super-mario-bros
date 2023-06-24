@@ -8,6 +8,7 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Koopa;
+import ir.sharif.math.ap2023.project.model.enemy.Spiny;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.item.Star;
@@ -356,10 +357,14 @@ public final class CollisionChecker {
                     if (enemy.isDead())
                         continue;
                     if (!player.isInvincible()) {
-                        player.setJumping(true);
-                        player.setFalling(false);
-                        player.setSpeedX(0);
-                        player.setSpeedY(7);
+                        if (enemy instanceof Spiny) {
+                            player.decreaseHeartHit();
+                        } else {
+                            player.setJumping(true);
+                            player.setFalling(false);
+                            player.setSpeedX(0);
+                            player.setSpeedY(7);
+                        }
                     } else {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);

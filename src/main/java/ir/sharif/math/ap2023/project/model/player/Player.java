@@ -3,7 +3,9 @@ package ir.sharif.math.ap2023.project.model.player;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
+import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.game.Game;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
@@ -314,6 +316,25 @@ public class Player {
                     UIManager.getInstance().getTileSize(),
                     UIManager.getInstance().getTileSize() * (isCrouching ? 1 : 2)
             );
+        }
+    }
+
+    public void decreaseHeartHit() {
+        if (getCharacterState() > 0) {
+            setCharacterState(0);
+            setEnemyInvincible(true);
+        } else {
+            decreaseHearts();
+            GameEngine.getInstance().setGameState(GameState.SCENE);
+            setDirection(PlayerDirection.DEAD);
+            setCharacterState(0);
+            SoundManager soundManager = SoundManager.getInstance();
+            soundManager.pauseMusic();
+            soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
+            setSpeedX(0);
+            setSpeedY(5);
+            setFalling(false);
+            setJumping(true);
         }
     }
 
