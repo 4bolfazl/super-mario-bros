@@ -62,8 +62,8 @@ public final class ImageLoader {
         }
         enemies.put(EnemyType.KOOPA, koopa);
 
-        BufferedImage[] spiny = new BufferedImage[4];
-        for (int i = 0; i < 4; i++) {
+        BufferedImage[] spiny = new BufferedImage[5];
+        for (int i = 0; i < 5; i++) {
             spiny[i] = loadImage("/enemies/spiny/spiny" + i + ".png");
         }
         enemies.put(EnemyType.SPINY, spiny);

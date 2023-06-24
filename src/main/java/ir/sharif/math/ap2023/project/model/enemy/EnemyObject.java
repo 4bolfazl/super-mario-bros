@@ -141,33 +141,32 @@ public abstract class EnemyObject {
     }
 
     public void updateLocation() {
-        if (getSolidArea().y > 672)
-            kill();
-        if (jumping && speedY <= 0) {
-            jumping = false;
-            falling = true;
-        } else if (jumping) {
-            speedY -= gravity;
-            getSolidArea().y -= speedY;
-        }
-
-        if (falling) {
-            getSolidArea().y += speedY;
-            speedY += gravity;
-        }
-
-        if (this instanceof Koopa && ((Koopa) this).isFreeze()) {
-            if (Math.abs(speedX) < gravity)
-                speedX = 0;
-            else {
-                if (speedX > 0)
-                    speedX -= gravity / 5;
-                else
-                    speedX += gravity / 5;
+        if (!isDead()) {
+            if (jumping && speedY <= 0) {
+                jumping = false;
+                falling = true;
+            } else if (jumping) {
+                speedY -= gravity;
+                getSolidArea().y -= speedY;
             }
-        }
-        getSolidArea().x += speedX;
 
+            if (falling) {
+                getSolidArea().y += speedY;
+                speedY += gravity;
+            }
+
+            if (this instanceof Koopa && ((Koopa) this).isFreeze()) {
+                if (Math.abs(speedX) < gravity)
+                    speedX = 0;
+                else {
+                    if (speedX > 0)
+                        speedX -= gravity / 5;
+                    else
+                        speedX += gravity / 5;
+                }
+            }
+            getSolidArea().x += speedX;
+        }
     }
 
     @JsonIgnore

@@ -13,6 +13,7 @@ import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.item.Star;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
+import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
 import ir.sharif.math.ap2023.project.view.UIManager;
@@ -45,6 +46,7 @@ public final class CollisionChecker {
         checkItemsHorizontalCollision();
         checkEnemiesBottomCollisions();
         checkEnemiesHorizontalCollisions();
+        checkFireballCollisions();
     }
 
     private void checkPlayerItemsCollision() {
@@ -135,6 +137,49 @@ public final class CollisionChecker {
                     if (bounds.intersects(pipe.getRightBounds())) {
                         player.setSpeedX(0);
                         player.setX((pipe.getX() + 2) * UIManager.getInstance().getTileSize());
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkFireballCollisions() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        OuterLoop:
+        for (Fireball fireball : player.getFireballs()) {
+            if (fireball.isToRight()) {
+                Rectangle bounds = fireball.getRightBounds();
+                for (EnemyObject enemy : sectionObject.getEnemies()) {
+                    if (enemy.getLeftBounds().intersects(bounds)) {
+                        if (enemy instanceof Koopa)
+                            ((Koopa) enemy).setFreeze(true);
+                        enemy.kill();
+                        fireball.setDestroyed(true);
+                        continue OuterLoop;
+                    }
+                }
+                for (BlockObject block : sectionObject.getBlocks()) {
+                    if (block.getLeftBounds().intersects(bounds)){
+                        fireball.setDestroyed(true);
+                        continue OuterLoop;
+                    }
+                }
+            } else {
+                Rectangle bounds = fireball.getLeftBounds();
+                for (EnemyObject enemy : sectionObject.getEnemies()) {
+                    if (enemy.getRightBounds().intersects(bounds)) {
+                        if (enemy instanceof Koopa)
+                            ((Koopa) enemy).setFreeze(true);
+                        enemy.kill();
+                        fireball.setDestroyed(true);
+                        continue OuterLoop;
+                    }
+                }
+                for (BlockObject block : sectionObject.getBlocks()) {
+                    if (block.getRightBounds().intersects(bounds)){
+                        fireball.setDestroyed(true);
+                        continue OuterLoop;
                     }
                 }
             }

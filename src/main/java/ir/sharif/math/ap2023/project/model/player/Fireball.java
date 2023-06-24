@@ -1,8 +1,10 @@
 package ir.sharif.math.ap2023.project.model.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Fireball {
@@ -33,6 +35,24 @@ public class Fireball {
         return ImageLoader.getInstance().fireballImages[0];
     }
 
+    public Rectangle getRightBounds() {
+        return new Rectangle(
+                x + 3 * UIManager.getInstance().getTileSize() / 4,
+                y + UIManager.getInstance().getTileSize() / 10,
+                UIManager.getInstance().getTileSize() / 4,
+                4 * UIManager.getInstance().getTileSize() / 5
+        );
+    }
+
+    public Rectangle getLeftBounds() {
+        return new Rectangle(
+                x,
+                y + UIManager.getInstance().getTileSize() / 10,
+                UIManager.getInstance().getTileSize() / 4,
+                4 * UIManager.getInstance().getTileSize() / 5
+        );
+    }
+
     public int getX() {
         return x;
     }
@@ -43,5 +63,13 @@ public class Fireball {
 
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public boolean isToRight() {
+        return toRight;
+    }
+
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed = destroyed;
     }
 }

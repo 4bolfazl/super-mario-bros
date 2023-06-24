@@ -36,6 +36,9 @@ public class Spiny extends EnemyObject {
 
     @Override
     public BufferedImage getImage() {
+        if (isDead()) {
+            return images[4];
+        }
         addFrame();
         if (frame >= 30) {
             frame = 0;
@@ -68,24 +71,28 @@ public class Spiny extends EnemyObject {
                 }
             }
         }
-        if (jumping && speedY <= 0) {
-            jumping = false;
-            falling = true;
-        } else if (jumping) {
-            speedY -= gravity;
-            getSolidArea().y -= speedY;
-        }
-
-        if (falling) {
-            getSolidArea().y += speedY;
-            speedY += gravity;
-        }
-
-        getSolidArea().x += speedX;
+        super.updateLocation();
+//        if (jumping && speedY <= 0) {
+//            jumping = false;
+//            falling = true;
+//        } else if (jumping) {
+//            speedY -= gravity;
+//            getSolidArea().y -= speedY;
+//        }
+//
+//        if (falling) {
+//            getSolidArea().y += speedY;
+//            speedY += gravity;
+//        }
+//
+//        getSolidArea().x += speedX;
     }
 
     @Override
     public void kill() {
-
+        GameEngine.getInstance().getPlayer().addPoints(1);
+        setSpeedX(0);
+        setSpeedY(0);
+        setDead(true);
     }
 }
