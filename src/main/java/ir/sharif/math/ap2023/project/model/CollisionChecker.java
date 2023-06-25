@@ -6,11 +6,14 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
-import ir.sharif.math.ap2023.project.model.enemy.*;
+import ir.sharif.math.ap2023.project.model.enemy.Bowser;
+import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
+import ir.sharif.math.ap2023.project.model.enemy.Koopa;
+import ir.sharif.math.ap2023.project.model.enemy.Spiny;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.item.Star;
-import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
+import ir.sharif.math.ap2023.project.model.pipe.*;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
@@ -115,8 +118,18 @@ public final class CollisionChecker {
                 }
                 for (PipeObject pipe : sectionObject.getPipes()) {
                     if (bounds.intersects(pipe.getLeftBounds())) {
+                        if (pipe instanceof ExitPipe) {
+                            player.exitSecretPipe();
+                        } else {
+                            player.setSpeedX(0);
+                            player.setX((pipe.getX() - 1) * UIManager.getInstance().getTileSize());
+                        }
+                    }
+                }
+                for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
+                    if (bounds.intersects(trunkPipe.getLeftBounds())) {
                         player.setSpeedX(0);
-                        player.setX((pipe.getX() - 1) * UIManager.getInstance().getTileSize());
+                        player.setX((trunkPipe.getX() - 1) * UIManager.getInstance().getTileSize());
                     }
                 }
             } else {
@@ -135,6 +148,12 @@ public final class CollisionChecker {
                     if (bounds.intersects(pipe.getRightBounds())) {
                         player.setSpeedX(0);
                         player.setX((pipe.getX() + 2) * UIManager.getInstance().getTileSize());
+                    }
+                }
+                for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
+                    if (bounds.intersects(trunkPipe.getRightBounds())) {
+                        player.setSpeedX(0);
+                        player.setX((trunkPipe.getX() + 2) * UIManager.getInstance().getTileSize());
                     }
                 }
             }
@@ -216,7 +235,7 @@ public final class CollisionChecker {
                     for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
                         if (bounds.intersects(nothingBlockObject.getLeftBounds())) {
                             for (NothingBlockObject blockObject : sectionObject.nothingBlockObjects) {
-                                if (blockObject.getY() == nothingBlockObject.getY() && blockObject.getX()+2==nothingBlockObject.getX()) {
+                                if (blockObject.getY() == nothingBlockObject.getY() && blockObject.getX() + 2 == nothingBlockObject.getX()) {
                                     enemy.setSpeedX(0);
                                     break OuterLoop;
                                 }
@@ -233,11 +252,18 @@ public final class CollisionChecker {
                             enemy.getSolidArea().x = ((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5) + ((enemy instanceof Bowser) ? -144 : 0);
                         }
                     }
+                    for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
+                        if (bounds.intersects(trunkPipe.getLeftBounds())) {
+                            enemy.setToRight(false);
+                            enemy.setSpeedX(-2);
+                            enemy.getSolidArea().x = ((trunkPipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5) + ((enemy instanceof Bowser) ? -144 : 0);
+                        }
+                    }
                 } else {
                     Rectangle bounds = enemy.getLeftBounds();
                     List<BlockObject> toBeRemoved = new ArrayList<>();
                     if (enemy instanceof Bowser) {
-                        if (enemy.getSolidArea().x - 2 <= 3*UIManager.getInstance().getTileSize()) {
+                        if (enemy.getSolidArea().x - 2 <= 3 * UIManager.getInstance().getTileSize()) {
                             enemy.setToRight(true);
                             enemy.setSpeedX(2);
                         }
@@ -268,6 +294,13 @@ public final class CollisionChecker {
                             enemy.setToRight(true);
                             enemy.setSpeedX(2);
                             enemy.getSolidArea().x = ((pipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
+                        }
+                    }
+                    for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
+                        if (bounds.intersects(trunkPipe.getRightBounds())) {
+                            enemy.setToRight(true);
+                            enemy.setSpeedX(2);
+                            enemy.getSolidArea().x = ((trunkPipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
                         }
                     }
                 }
@@ -428,6 +461,8 @@ public final class CollisionChecker {
 
         for (PipeObject pipe : sectionObject.getPipes()) {
             if (bottomBounds.intersects(pipe.getTopBounds())) {
+                if (pipe instanceof TeleSimplePipe || pipe instanceof TelePiranhaPipe)
+                    player.setPipeUnder(pipe);
                 player.setY(pipe.getY() * UIManager.getInstance().getTileSize() - player.getSolidArea().height + 1);
                 player.setFalling(false);
                 player.setSpeedY(0);
@@ -443,6 +478,8 @@ public final class CollisionChecker {
                             player.setDirection(PlayerDirection.LEFT);
                     }
                 }
+            } else {
+                player.setPipeUnder(null);
             }
         }
 
@@ -464,7 +501,8 @@ public final class CollisionChecker {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
                     }
-                    enemy.kill();
+                    if (!(enemy instanceof Spiny))
+                        enemy.kill();
                 }
             }
         }

@@ -7,7 +7,12 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
+import ir.sharif.math.ap2023.project.model.block.BlockType;
+import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
 import ir.sharif.math.ap2023.project.model.game.Game;
+import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.model.pipe.ExitPipe;
+import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -46,6 +51,9 @@ public class Player {
     private List<Fireball> fireballs = new ArrayList<>();
     @JsonIgnore
     private Rectangle solidArea = new Rectangle((int) x, (int) y, UIManager.getInstance().getTileSize(), UIManager.getInstance().getTileSize());
+    private PipeObject pipeUnder;
+    private SectionObject tempSection;
+    private PipeObject tempPipe;
 
     public Player(String username, String password) {
         this.username = username;
@@ -526,6 +534,14 @@ public class Player {
         this.difficulty = difficulty;
     }
 
+    public PipeObject getPipeUnder() {
+        return pipeUnder;
+    }
+
+    public void setPipeUnder(PipeObject pipeUnder) {
+        this.pipeUnder = pipeUnder;
+    }
+
     public Player[] getSavedGames() {
         return savedGames;
     }
@@ -625,5 +641,33 @@ public class Player {
 
     public void addFireBall(Fireball fireball) {
         this.fireballs.add(fireball);
+    }
+
+    public void enterSecretPipe() {
+        tempPipe = pipeUnder;
+        tempSection = GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1);
+        GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().set(section - 1, pipeUnder.getSection());
+        pipeUnder.getSection().getPipes().add(pipeUnder.getSection().getSpawnPipe());
+        pipeUnder.getSection().getPipes().add(new ExitPipe());
+        for (int i = 0; i < 10; i++) {
+            pipeUnder.getSection().getBlocks().add(new EmptyBlockObject(26, i, BlockType.EMPTY));
+        }
+        setX(pipeUnder.getSection().getSpawnPipe().getX() * UIManager.getInstance().getTileSize());
+        setY((pipeUnder.getSection().getSpawnPipe().getY() - 2) * UIManager.getInstance().getTileSize());
+        setSpeedX(0);
+        setSpeedY(12.5);
+        setFalling(false);
+        setJumping(true);
+    }
+
+    public void exitSecretPipe() {
+        GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().set(section - 1, tempSection);
+        tempSection = null;
+        setX(tempPipe.getX() * UIManager.getInstance().getTileSize());
+        setY((tempPipe.getY() - 2) * UIManager.getInstance().getTileSize());
+        setSpeedX(0);
+        setSpeedY(12.5);
+        setFalling(false);
+        setJumping(true);
     }
 }

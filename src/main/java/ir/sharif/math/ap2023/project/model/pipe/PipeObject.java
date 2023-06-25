@@ -14,7 +14,7 @@ import java.awt.*;
         @JsonSubTypes.Type(value = PiranhaTrapPipe.class, name = "piranhaTrapPipe"),
         @JsonSubTypes.Type(value = SimplePipe.class, name = "simplePipe"),
         @JsonSubTypes.Type(value = TelePiranhaPipe.class, name = "telePiranhaPipe"),
-        @JsonSubTypes.Type(value = TeleSimplePipe.class, name = "teleSimplePipe"),
+        @JsonSubTypes.Type(value = TeleSimplePipe.class, name = "teleSimplePipe")
 })
 public abstract class PipeObject {
     int x, y;
@@ -64,22 +64,12 @@ public abstract class PipeObject {
     }
 
     @JsonIgnore
-    public Rectangle getBottomBounds() {
-        return new Rectangle(
-                x * UIManager.getInstance().getTileSize(),
-                y * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize() / 2,
-                UIManager.getInstance().getTileSize() * 2,
-                UIManager.getInstance().getTileSize() / 2
-        );
-    }
-
-    @JsonIgnore
     public Rectangle getRightBounds() {
         return new Rectangle(
                 x * UIManager.getInstance().getTileSize() + 7 * UIManager.getInstance().getTileSize() / 4,
                 y * UIManager.getInstance().getTileSize(),
                 UIManager.getInstance().getTileSize() / 4,
-                UIManager.getInstance().getTileSize()
+                UIManager.getInstance().getTileSize() * 2
 
         );
     }
@@ -90,7 +80,7 @@ public abstract class PipeObject {
                 x * UIManager.getInstance().getTileSize(),
                 y * UIManager.getInstance().getTileSize(),
                 UIManager.getInstance().getTileSize() / 4,
-                UIManager.getInstance().getTileSize()
+                UIManager.getInstance().getTileSize() * 2
         );
     }
 
@@ -107,7 +97,7 @@ public abstract class PipeObject {
     }
 
     public void setY(int y) {
-        this.y = 9 - y;
+        this.y = 8 - y;
     }
 
     public PipeType getType() {

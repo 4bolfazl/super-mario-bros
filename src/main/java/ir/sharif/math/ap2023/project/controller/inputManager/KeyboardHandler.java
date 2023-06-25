@@ -100,6 +100,8 @@ public final class KeyboardHandler implements KeyListener {
                 player.setSpeedX(-4);
             }
             case KeyEvent.VK_DOWN -> {
+                if (player.getPipeUnder() != null)
+                    player.enterSecretPipe();
                 if (player.getCharacterState() > 0) {
                     player.setCrouching(true);
                     switch (player.getDirection()) {
@@ -142,10 +144,10 @@ public final class KeyboardHandler implements KeyListener {
             }
             case KeyEvent.VK_CONTROL -> {
                 if (player.getCharacterState() == 2) {
-                    if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT) {
+                    if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
                         if (player.getSpeedY() == 0)
                             player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
-                    } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT) {
+                    } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
                         if (player.getSpeedY() == 0)
                             player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
                     }

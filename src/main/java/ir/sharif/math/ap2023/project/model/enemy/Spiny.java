@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 public class Spiny extends EnemyObject {
     @JsonIgnore
-    float acceleration = 0.2f;
+    float acceleration = 0.05f;
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.SPINY);
 

@@ -89,7 +89,7 @@ public final class ImageLoader {
 
     private void loadPipes() {
         for (int i = 0; i < 3; i++) {
-            pipes[i] = loadImage("/pipes/" + (i + 1) + ".png");
+            pipes[i] = loadImage("/pipes/" + i + ".png");
         }
     }
 
@@ -138,8 +138,8 @@ public final class ImageLoader {
         return blocks.get(blockType);
     }
 
-    public BufferedImage getPipeImage(int height) {
-        return pipes[height - 1];
+    public BufferedImage getPipeImage(int n) {
+        return pipes[n];
     }
 
     public BufferedImage getItemImage(ItemType itemType) {

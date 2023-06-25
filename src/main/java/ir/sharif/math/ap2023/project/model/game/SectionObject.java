@@ -6,6 +6,8 @@ import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
+import ir.sharif.math.ap2023.project.model.pipe.PipeType;
+import ir.sharif.math.ap2023.project.model.pipe.TrunkPipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
 public class SectionObject {
     @JsonIgnore
     public List<NothingBlockObject> nothingBlockObjects = new ArrayList<>();
+    @JsonIgnore
+    public List<TrunkPipe> trunkPipes = new ArrayList<>();
     int length;
     int time;
     List<BlockObject> blocks = new ArrayList<>();
@@ -107,7 +111,7 @@ public class SectionObject {
     public void setEnemies(List<EnemyObject> enemies) {
         this.enemies = enemies;
         for (EnemyObject enemy : enemies) {
-            if (enemy instanceof Bowser){
+            if (enemy instanceof Bowser) {
                 setBossSection(true);
                 nothingBlockObjects.clear();
             }
@@ -120,6 +124,13 @@ public class SectionObject {
 
     public void setPipes(List<PipeObject> pipes) {
         this.pipes = pipes;
+        for (PipeObject pipe : pipes) {
+            if (pipe.getY() < 8) {
+                for (int i = pipe.getY() + 2; i < 10; i += 2) {
+                    trunkPipes.add(new TrunkPipe(pipe.getX(), i, PipeType.TRUNK));
+                }
+            }
+        }
     }
 
     public PipeObject getSpawnPipe() {

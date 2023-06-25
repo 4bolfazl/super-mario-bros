@@ -37,7 +37,7 @@ public class PiranhaTrapPipe extends PipeObject {
     @Override
     public void setY(int y) {
         super.setY(y);
-        piranha.setY((9 - y) * UIManager.getInstance().getTileSize());
+        piranha.setY((8 - y) * UIManager.getInstance().getTileSize());
     }
 
     public Piranha getPiranha() {

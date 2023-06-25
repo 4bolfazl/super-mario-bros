@@ -8,7 +8,6 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
-import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
@@ -16,8 +15,10 @@ import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Coin;
 import ir.sharif.math.ap2023.project.model.item.Item;
+import ir.sharif.math.ap2023.project.model.pipe.ExitPipe;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
 import ir.sharif.math.ap2023.project.model.pipe.PiranhaTrapPipe;
+import ir.sharif.math.ap2023.project.model.pipe.TrunkPipe;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
@@ -300,11 +301,22 @@ public final class UIManager extends JPanel {
                 }
             }
             g2D.drawImage(
-                    imageLoader.getPipeImage(1),
+                    pipe instanceof ExitPipe ? imageLoader.getPipeImage(2) : imageLoader.getPipeImage(1),
                     pipe.getX() * tileSize,
                     pipe.getY() * tileSize,
                     2 * tileSize,
-                    tileSize,
+                    2 * tileSize,
+                    null
+            );
+        }
+
+        for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
+            g2D.drawImage(
+                    imageLoader.getPipeImage(0),
+                    trunkPipe.getX() * tileSize,
+                    trunkPipe.getY() * tileSize,
+                    2 * tileSize,
+                    2 * tileSize,
                     null
             );
         }

@@ -5,5 +5,6 @@ public enum PipeType {
     TELE_PIRANHA,
     TELE_SIMPLE,
     PIRANHA_TRAP,
-    SIMPLE
+    SIMPLE,
+    TRUNK
 }
