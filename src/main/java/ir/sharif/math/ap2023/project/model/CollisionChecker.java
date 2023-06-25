@@ -6,6 +6,7 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
+import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Koopa;
 import ir.sharif.math.ap2023.project.model.enemy.Spiny;
@@ -160,7 +161,7 @@ public final class CollisionChecker {
                     }
                 }
                 for (BlockObject block : sectionObject.getBlocks()) {
-                    if (block.getLeftBounds().intersects(bounds)){
+                    if (block.getLeftBounds().intersects(bounds)) {
                         fireball.setDestroyed(true);
                         continue OuterLoop;
                     }
@@ -177,7 +178,7 @@ public final class CollisionChecker {
                     }
                 }
                 for (BlockObject block : sectionObject.getBlocks()) {
-                    if (block.getRightBounds().intersects(bounds)){
+                    if (block.getRightBounds().intersects(bounds)) {
                         fireball.setDestroyed(true);
                         continue OuterLoop;
                     }
@@ -193,35 +194,63 @@ public final class CollisionChecker {
             if (enemy.getSpeedX() != 0) {
                 if (enemy.getSpeedX() > 0) {
                     Rectangle bounds = enemy.getRightBounds();
-                    for (BlockObject blockObject : sectionObject.getBlocks()) {
-                        if (bounds.intersects(blockObject.getLeftBounds())) {
+                    List<BlockObject> toBeRemoved = new ArrayList<>();
+                    if (enemy instanceof Bowser) {
+                        if (enemy.getSolidArea().x + 2 >= 18 * UIManager.getInstance().getTileSize()) {
                             enemy.setToRight(false);
                             enemy.setSpeedX(-2);
-                            enemy.getSolidArea().x = ((blockObject.getX() - 1) * UIManager.getInstance().getTileSize());
                         }
+                    }
+                    for (BlockObject blockObject : sectionObject.getBlocks()) {
+                        if (bounds.intersects(blockObject.getLeftBounds())) {
+                            if (enemy instanceof Bowser && blockObject.getX() != 0 && blockObject.getX() != 25) {
+                                toBeRemoved.add(blockObject);
+                            } else {
+                                enemy.setToRight(false);
+                                enemy.setSpeedX(-2);
+                                enemy.getSolidArea().x = ((blockObject.getX() - 1) * UIManager.getInstance().getTileSize()) + ((enemy instanceof Bowser) ? -144 : 0);
+                            }
+                        }
+                    }
+                    for (BlockObject blockObject : toBeRemoved) {
+                        sectionObject.getBlocks().remove(blockObject);
                     }
                     for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
                         if (bounds.intersects(nothingBlockObject.getLeftBounds())) {
                             enemy.setToRight(false);
                             enemy.setSpeedX(-2);
-                            enemy.getSolidArea().x = ((nothingBlockObject.getX() - 1) * UIManager.getInstance().getTileSize());
+                            enemy.getSolidArea().x = ((nothingBlockObject.getX() - 1) * UIManager.getInstance().getTileSize()) + ((enemy instanceof Bowser) ? -144 : 0);
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
                         if (bounds.intersects(pipe.getLeftBounds())) {
                             enemy.setToRight(false);
                             enemy.setSpeedX(-2);
-                            enemy.getSolidArea().x = ((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5);
+                            enemy.getSolidArea().x = ((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5) + ((enemy instanceof Bowser) ? -144 : 0);
                         }
                     }
                 } else {
                     Rectangle bounds = enemy.getLeftBounds();
-                    for (BlockObject blockObject : sectionObject.getBlocks()) {
-                        if (bounds.intersects(blockObject.getRightBounds())) {
+                    List<BlockObject> toBeRemoved = new ArrayList<>();
+                    if (enemy instanceof Bowser) {
+                        if (enemy.getSolidArea().x - 2 <= 3*UIManager.getInstance().getTileSize()) {
                             enemy.setToRight(true);
                             enemy.setSpeedX(2);
-                            enemy.getSolidArea().x = ((blockObject.getX() + 1) * UIManager.getInstance().getTileSize());
                         }
+                    }
+                    for (BlockObject blockObject : sectionObject.getBlocks()) {
+                        if (bounds.intersects(blockObject.getRightBounds())) {
+                            if (enemy instanceof Bowser && blockObject.getX() != 0 && blockObject.getX() != 25) {
+                                toBeRemoved.add(blockObject);
+                            } else {
+                                enemy.setToRight(true);
+                                enemy.setSpeedX(2);
+                                enemy.getSolidArea().x = ((blockObject.getX() + 1) * UIManager.getInstance().getTileSize());
+                            }
+                        }
+                    }
+                    for (BlockObject blockObject : toBeRemoved) {
+                        sectionObject.getBlocks().remove(blockObject);
                     }
                     for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
                         if (bounds.intersects(nothingBlockObject.getRightBounds())) {
@@ -313,7 +342,8 @@ public final class CollisionChecker {
 
         for (BlockObject blockObject : toBeRemoved) {
             sectionObject.getBlocks().remove(blockObject);
-            sectionObject.nothingBlockObjects.add(new NothingBlockObject(blockObject.getX(), blockObject.getY() - 1));
+            if (!sectionObject.isBossSection())
+                sectionObject.nothingBlockObjects.add(new NothingBlockObject(blockObject.getX(), blockObject.getY() - 1));
         }
     }
 
@@ -327,7 +357,7 @@ public final class CollisionChecker {
             for (BlockObject blockObject : sectionObject.getBlocks()) {
                 if (enemy.getBottomBounds().intersects(blockObject.getTopBounds())) {
                     blockObject.setEnemyOnIt(enemy);
-                    enemy.getSolidArea().y = (blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1 + ((enemy instanceof Koopa) ? -24 : 0);
+                    enemy.getSolidArea().y = (blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1 + ((enemy instanceof Bowser) ? -192 : 0) + ((enemy instanceof Koopa) ? -24 : 0);
                     enemy.setFalling(false);
                     enemy.setSpeedY(0);
                 } else {
@@ -355,6 +385,7 @@ public final class CollisionChecker {
         }
 
         Rectangle bottomBounds = player.getBottomBounds();
+        List<BlockObject> toBeRemoved = new ArrayList<>();
 
         for (BlockObject blockObject : sectionObject.getBlocks()) {
             if (bottomBounds.intersects(blockObject.getTopBounds())) {
@@ -373,7 +404,22 @@ public final class CollisionChecker {
                             player.setDirection(PlayerDirection.LEFT);
                     }
                 }
+
+                if (sectionObject.isBossSection() && !(blockObject instanceof GroundBlockObject)) {
+                    blockObject.addToDestroyTime();
+                    if (blockObject.getToDestroyTimer() >= 60) {
+                        toBeRemoved.add(blockObject);
+                    }
+                }
+            } else {
+                if (sectionObject.isBossSection()) {
+                    blockObject.setToDestroyTimer(0);
+                }
             }
+        }
+
+        for (BlockObject blockObject : toBeRemoved) {
+            sectionObject.getBlocks().remove(blockObject);
         }
 
         for (PipeObject pipe : sectionObject.getPipes()) {

@@ -140,9 +140,9 @@ public class Player {
 
     @JsonIgnore
     public BufferedImage getImage() {
-        if (enemyInvincible){
+        if (enemyInvincible) {
             enemyInvincibleFrame++;
-            if (enemyInvincibleFrame >= 5){
+            if (enemyInvincibleFrame >= 5) {
                 enemyInvincibleFrame = 0;
                 return null;
             }
@@ -344,6 +344,11 @@ public class Player {
     public void nextSection() {
         GameEngine.getInstance().getItems().clear();
         section++;
+        if (GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).isBossSection()) {
+            SoundManager soundManager = SoundManager.getInstance();
+            soundManager.pauseMusic();
+            soundManager.playBackgroundMusic(BackgroundMusicType.CASTLE);
+        }
     }
 
     public String getUsername() {
@@ -569,7 +574,10 @@ public class Player {
                 invincible = false;
                 SoundManager soundManager = SoundManager.getInstance();
                 soundManager.pauseMusic();
-                soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
+                if (GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).isBossSection())
+                    soundManager.playBackgroundMusic(BackgroundMusicType.CASTLE);
+                else
+                    soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
             }
         }
         if (enemyInvincible) {

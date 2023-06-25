@@ -117,23 +117,23 @@ public final class KeyboardHandler implements KeyListener {
                     switch (player.getDirection()) {
                         case IDLE_RIGHT -> {
                             player.setDirection(PlayerDirection.JUMP_IDLE_RIGHT);
-                            player.setSpeedY(13);
+                            player.setSpeedY(12.5);
                             player.setJumping(true);
                         }
                         case IDLE_LEFT -> {
                             player.setDirection(PlayerDirection.JUMP_IDLE_LEFT);
-                            player.setSpeedY(13);
+                            player.setSpeedY(12.5);
                             player.setJumping(true);
                         }
                         case RIGHT -> {
                             player.setDirection(PlayerDirection.JUMP_RIGHT);
-                            player.setSpeedY(13);
+                            player.setSpeedY(12.5);
                             player.setSpeedX(4);
                             player.setJumping(true);
                         }
                         case LEFT -> {
                             player.setDirection(PlayerDirection.JUMP_LEFT);
-                            player.setSpeedY(13);
+                            player.setSpeedY(12.5);
                             player.setSpeedX(-4);
                             player.setJumping(true);
                         }
@@ -145,7 +145,7 @@ public final class KeyboardHandler implements KeyListener {
                     if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT) {
                         player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
                     } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT) {
-                        player.getFireballs().add(new Fireball((int) player.getX() - UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
+                        player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
                     }
                 }
             }

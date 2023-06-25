@@ -8,7 +8,9 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
+import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
+import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
@@ -26,6 +28,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -167,6 +170,8 @@ public final class UIManager extends JPanel {
         Player player = GameEngine.getInstance().getPlayer();
         SectionObject sectionObject = gameLoader.getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
 
+        List<EnemyObject> toBeRemoved = new ArrayList<>();
+
         for (EnemyObject enemy : sectionObject.getEnemies()) {
             g2D.drawImage(
                     enemy.getImage(),
@@ -176,13 +181,34 @@ public final class UIManager extends JPanel {
                     (int) enemy.getSolidArea().getHeight(),
                     null
             );
+            if (enemy instanceof Bowser) {
+                g2D.fillRect(
+                        516,
+                        567,
+                        281 * ((Bowser) enemy).getHP() / 20,
+                        66
+                );
+                g2D.drawImage(
+                        ImageLoader.getInstance().healthBar,
+                        444,
+                        552,
+                        360,
+                        96,
+                        null
+                );
+            }
             if (enemy.isDead()) {
                 enemy.addFrame();
                 if (enemy.getFrame() >= 75) {
-                    sectionObject.getEnemies().remove(enemy);
+                    toBeRemoved.add(enemy);
                 }
             }
         }
+
+        for (EnemyObject enemyObject : toBeRemoved) {
+            sectionObject.getEnemies().remove(enemyObject);
+        }
+        toBeRemoved.clear();
     }
 
     private void drawInfo(Graphics2D g2D) {

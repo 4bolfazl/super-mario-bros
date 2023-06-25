@@ -27,6 +27,8 @@ public abstract class BlockObject {
     ItemType item;
     @JsonIgnore
     EnemyObject enemyOnIt = null;
+    @JsonIgnore
+    int toDestroyTimer = 0;
 
     public BlockObject(int x, int y, BlockType type, ItemType item) {
         this.x = x;
@@ -123,6 +125,18 @@ public abstract class BlockObject {
 
     public void setEnemyOnIt(EnemyObject enemyOnIt) {
         this.enemyOnIt = enemyOnIt;
+    }
+
+    public int getToDestroyTimer() {
+        return toDestroyTimer;
+    }
+
+    public void setToDestroyTimer(int toDestroyTimer) {
+        this.toDestroyTimer = toDestroyTimer;
+    }
+
+    public void addToDestroyTime() {
+        toDestroyTimer++;
     }
 
     public abstract BufferedImage getImage();

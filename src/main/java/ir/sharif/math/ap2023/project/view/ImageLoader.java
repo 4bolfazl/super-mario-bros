@@ -22,10 +22,12 @@ public final class ImageLoader {
     private BufferedImage[] pipes = new BufferedImage[3];
     private HashMap<ItemType, BufferedImage> items = new HashMap<>();
     public BufferedImage[] fireballImages = new BufferedImage[2];
+    public BufferedImage healthBar;
 
     private ImageLoader() {
         menuScreen = loadImage("/screens/menu.png");
         gameBackground = loadImage("/backgrounds/0.png");
+        healthBar = loadImage("/enemies/bowser/bar.png");
 
         Thread loadSpritesThread = new Thread(this::loadSprites);
         loadSpritesThread.start();

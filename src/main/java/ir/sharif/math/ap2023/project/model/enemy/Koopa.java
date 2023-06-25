@@ -55,7 +55,7 @@ public class Koopa extends EnemyObject {
                     setFreeze(false);
                     freezeFrame = 0;
                     setSpeedX(2);
-                    setToRight(toRight);
+                    setToRight(true);
                     frame = 0;
                     return images[2];
                 }

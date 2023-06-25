@@ -3,6 +3,7 @@ package ir.sharif.math.ap2023.project.model.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
+import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
 
@@ -18,6 +19,8 @@ public class SectionObject {
     List<EnemyObject> enemies = new ArrayList<>();
     List<PipeObject> pipes = new ArrayList<>();
     PipeObject spawnPipe;
+    @JsonIgnore
+    boolean bossSection = false;
 
     public SectionObject(int length, int time, List<BlockObject> blocks, List<EnemyObject> enemies, List<PipeObject> pipes, PipeObject spawnPipe) {
         this.length = length;
@@ -37,6 +40,16 @@ public class SectionObject {
     }
 
     public SectionObject() {
+    }
+
+    @JsonIgnore
+    public boolean isBossSection() {
+        return bossSection;
+    }
+
+    @JsonIgnore
+    public void setBossSection(boolean bossSection) {
+        this.bossSection = bossSection;
     }
 
     public int getLength() {
@@ -93,6 +106,12 @@ public class SectionObject {
 
     public void setEnemies(List<EnemyObject> enemies) {
         this.enemies = enemies;
+        for (EnemyObject enemy : enemies) {
+            if (enemy instanceof Bowser){
+                setBossSection(true);
+                nothingBlockObjects.clear();
+            }
+        }
     }
 
     public List<PipeObject> getPipes() {
