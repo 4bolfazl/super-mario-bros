@@ -59,6 +59,7 @@ public class Bowser extends EnemyObject {
         } else {
             if (!isDead()) {
                 Player player = GameEngine.getInstance().getPlayer();
+                toRight = player.getX() > solidArea.x;
                 for (Fireball fireball : player.getFireballs()) {
                     if (waitOnAir == 0 && solidArea.y >= 240) {
                         if (fireball.isToRight()) {
