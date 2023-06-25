@@ -32,7 +32,7 @@ public class Bowser extends EnemyObject {
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.BOWSER);
     @JsonIgnore
-    double gravity = 1.1;
+    double gravity = 3;
 
     public Bowser(int x, int y, EnemyType type) {
         super(x, y, type);
@@ -62,17 +62,30 @@ public class Bowser extends EnemyObject {
                 for (Fireball fireball : player.getFireballs()) {
                     if (waitOnAir == 0 && solidArea.y >= 240) {
                         if (fireball.isToRight()) {
-                            if (solidArea.x - fireball.getX() <= 96) {
-                                if (getSpeedY() == 0) {
-                                    setSpeedY(16);
-                                    setJumping(true);
+                            if (solidArea.x - fireball.getX() <= 112) {
+                                if (!fireball.isDetermined()) {
+                                    fireball.setDetermined(true);
+                                    int distance = (solidArea.x - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
+                                    System.out.println(distance);
+                                    if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
+                                        if (getSpeedY() == 0) {
+                                            setSpeedY(25);
+                                            setJumping(true);
+                                        }
+                                    }
                                 }
                             }
                         } else {
-                            if (fireball.getX() - (solidArea.x + 5 * UIManager.getInstance().getTileSize()) <= 96) {
-                                if (getSpeedY() == 0) {
-                                    setSpeedY(16);
-                                    setJumping(true);
+                            if (fireball.getX() - (solidArea.x + 5 * UIManager.getInstance().getTileSize()) <= 112) {
+                                if (!fireball.isDetermined()) {
+                                    fireball.setDetermined(true);
+                                    int distance = (solidArea.x + 5 * UIManager.getInstance().getTileSize() - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
+                                    if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
+                                        if (getSpeedY() == 0) {
+                                            setSpeedY(25);
+                                            setJumping(true);
+                                        }
+                                    }
                                 }
                             }
                         }

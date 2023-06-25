@@ -1,6 +1,5 @@
 package ir.sharif.math.ap2023.project.model.player;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -13,6 +12,7 @@ public class Fireball {
     int speedX;
     int distanceTraveled = 0;
     boolean toRight;
+    boolean determined = false;
     boolean destroyed = false;
 
     public Fireball(int x, int y, boolean toRight) {
@@ -39,19 +39,19 @@ public class Fireball {
 
     public Rectangle getRightBounds() {
         return new Rectangle(
-                x + 3 * UIManager.getInstance().getTileSize() / 4,
-                y + UIManager.getInstance().getTileSize() / 10,
-                UIManager.getInstance().getTileSize() / 4,
-                4 * UIManager.getInstance().getTileSize() / 5
+                x,
+                y + UIManager.getInstance().getTileSize() / 4,
+                UIManager.getInstance().getTileSize(),
+                UIManager.getInstance().getTileSize() / 4
         );
     }
 
     public Rectangle getLeftBounds() {
         return new Rectangle(
                 x,
-                y + UIManager.getInstance().getTileSize() / 10,
-                UIManager.getInstance().getTileSize() / 4,
-                4 * UIManager.getInstance().getTileSize() / 5
+                y + UIManager.getInstance().getTileSize() / 4,
+                UIManager.getInstance().getTileSize(),
+                UIManager.getInstance().getTileSize() / 4
         );
     }
 
@@ -67,15 +67,23 @@ public class Fireball {
         return destroyed;
     }
 
-    public boolean isToRight() {
-        return toRight;
-    }
-
     public void setDestroyed(boolean destroyed) {
         this.destroyed = destroyed;
     }
 
+    public boolean isToRight() {
+        return toRight;
+    }
+
     public int getStartPosition() {
         return startPosition;
+    }
+
+    public boolean isDetermined() {
+        return determined;
+    }
+
+    public void setDetermined(boolean determined) {
+        this.determined = determined;
     }
 }
