@@ -6,10 +6,7 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
-import ir.sharif.math.ap2023.project.model.enemy.Bowser;
-import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
-import ir.sharif.math.ap2023.project.model.enemy.Koopa;
-import ir.sharif.math.ap2023.project.model.enemy.Spiny;
+import ir.sharif.math.ap2023.project.model.enemy.*;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.item.Star;
@@ -215,8 +212,15 @@ public final class CollisionChecker {
                     for (BlockObject blockObject : toBeRemoved) {
                         sectionObject.getBlocks().remove(blockObject);
                     }
+                    OuterLoop:
                     for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
                         if (bounds.intersects(nothingBlockObject.getLeftBounds())) {
+                            for (NothingBlockObject blockObject : sectionObject.nothingBlockObjects) {
+                                if (blockObject.getY() == nothingBlockObject.getY() && blockObject.getX()+2==nothingBlockObject.getX()) {
+                                    enemy.setSpeedX(0);
+                                    break OuterLoop;
+                                }
+                            }
                             enemy.setToRight(false);
                             enemy.setSpeedX(-2);
                             enemy.getSolidArea().x = ((nothingBlockObject.getX() - 1) * UIManager.getInstance().getTileSize()) + ((enemy instanceof Bowser) ? -144 : 0);
