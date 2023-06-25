@@ -184,12 +184,12 @@ public final class UIManager extends JPanel {
                     null
             );
             if (enemy instanceof Bowser) {
-//                g2D.setFont(g2D.getFont().deriveFont(42f));
-//                g2D.drawString(
-//                        String.valueOf(((Bowser) enemy).fireballCoolDown),
-//                        48,
-//                        192
-//                );
+                g2D.setFont(g2D.getFont().deriveFont(42f));
+                g2D.drawString(
+                        String.valueOf(((Bowser) enemy).grabCoolDown),
+                        48,
+                        192
+                );
                 for (BowserFireball fireball : ((Bowser) enemy).getFireballs()) {
                     g2D.drawImage(
                             imageLoader.fireballImages[2],

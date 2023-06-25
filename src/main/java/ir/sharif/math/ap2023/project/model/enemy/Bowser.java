@@ -12,6 +12,7 @@ import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,21 +20,25 @@ import java.util.List;
 
 public class Bowser extends EnemyObject {
     @JsonIgnore
-    public boolean grabAttacking, jumpAttacking, fireballAttacking, nukeAttacking;
+    public int lastKey = 0;
+    @JsonIgnore
+    public int pressedTimes = 0;
+    @JsonIgnore
+    public boolean grabAttacking, jumpAttacking, fireballAttacking, nukeAttacking, grabAttackingStarted;
     @JsonIgnore
     public boolean grabCoolDownStart, jumpCoolDownStart, fireballCoolDownStart, nukeCoolDownStart;
     @JsonIgnore
     public int fireballCoolDown = 0;
     @JsonIgnore
+    public int grabCoolDown = 0;
+    @JsonIgnore
+    public int jumpCoolDown = 0;
+    @JsonIgnore
+    public int nukeCoolDown = 0;
+    @JsonIgnore
     int fireDelay = 120;
     @JsonIgnore
     int fireballsShot = 0;
-    @JsonIgnore
-    int grabCoolDown = 0;
-    @JsonIgnore
-    int jumpCoolDown = 0;
-    @JsonIgnore
-    int nukeCoolDown = 0;
     @JsonIgnore
     int HP = 20;
     @JsonIgnore
@@ -50,6 +55,10 @@ public class Bowser extends EnemyObject {
     double gravity = 3;
     @JsonIgnore
     List<BowserFireball> fireballs = Collections.synchronizedList(new ArrayList<>());
+    @JsonIgnore
+    int grabDelay = 0;
+    @JsonIgnore
+    int grabTime = 0;
 
     public Bowser(int x, int y, EnemyType type) {
         super(x, y, type);
@@ -120,7 +129,14 @@ public class Bowser extends EnemyObject {
         if (frame >= 30) {
             frame = 0;
         }
-        return images[((isToRight()) ? 9 : 0) + frame / 15];
+        if (fireballAttacking) {
+            return images[(toRight ? 11 : 2) + frame / 15];
+        } else if (grabAttackingStarted) {
+            return images[toRight ? 15 : 6];
+        } else if (grabAttacking) {
+            return images[(toRight ? 13 : 4) + frame / 15];
+        }
+        return images[(toRight ? 9 : 0) + frame / 15];
     }
 
     public void decreaseHP(int damage) {
@@ -263,11 +279,12 @@ public class Bowser extends EnemyObject {
                 double distanceFromMario = distanceFromMario();
                 if (distanceFromMario >= 8 && speedX == 0) {
                     setSpeedX(toRight ? 3 : -3);
-                } else if (distanceFromMario >= 6 && distanceFromMario <= 10 && fireballCoolDown == 0) {
+                } else if ((distanceFromMario >= 6 && distanceFromMario <= 10 && fireballCoolDown == 0) || fireballAttacking) {
                     speedX = 0;
                     fireballAttack();
-                } else if (distanceFromMario <= 2 && grabCoolDown == 0) {
-                    grabAttacking = (true);
+                } else if ((distanceFromMario <= 2 && grabCoolDown == 0) || grabAttacking || grabAttackingStarted) {
+                    speedX = 0;
+                    grabAttack();
                 } else if (false && jumpCoolDown == 0) { // TODO: MARIO 4 SECONDS ON GROUND
                     jumpAttacking = (true);
                 }
@@ -329,18 +346,6 @@ public class Bowser extends EnemyObject {
         }
     }
 
-    public void grabAttack() {
-
-    }
-
-    public void jumpAttack() {
-
-    }
-
-    public void nukeAttack() {
-
-    }
-
     public void fireballAttack() {
         fireballAttacking = true;
 
@@ -369,6 +374,54 @@ public class Bowser extends EnemyObject {
             fireballsShot = 0;
             fireDelay = 120;
         }
+    }
+
+    public void grabAttack() {
+        if (!grabAttacking) {
+            grabAttackingStarted = true;
+            grabDelay++;
+            if (grabDelay >= 80) {
+                grabAttackingStarted = false;
+                grabDelay = 0;
+                if (distanceFromMario() <= 2) {
+                    grabAttacking = true;
+                }
+            }
+        } else {
+            grabTime++;
+            if (grabTime >= 250) {
+                throwPlayer();
+                System.out.println("damaged!"); // TODO
+            } else if (pressedTimes >= 10) {
+                throwPlayer();
+                System.out.println("not damaged!"); // TODO
+            }
+        }
+    }
+
+    private void throwPlayer() {
+        Player player = GameEngine.getInstance().getPlayer();
+        player.setEnemyInvincible(true);
+        if (player.getX() > solidArea.x) {
+            player.setSpeedX(-6);
+        } else {
+            player.setSpeedX(6);
+        }
+        player.setSpeedY(16);
+        player.setJumping(true);
+        player.setFalling(false);
+        grabAttacking = false;
+        grabCoolDownStart = true;
+        grabTime = 0;
+        pressedTimes = 0;
+    }
+
+    public void jumpAttack() {
+
+    }
+
+    public void nukeAttack() {
+
     }
 
     @Override
