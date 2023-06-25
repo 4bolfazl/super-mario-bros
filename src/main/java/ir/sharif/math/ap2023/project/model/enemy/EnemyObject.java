@@ -34,7 +34,9 @@ public abstract class EnemyObject {
     @JsonIgnore
     boolean toRight = true;
     @JsonIgnore
-    double speedX = 2, speedY = 10;
+    double speedX = 1, speedY = 10;
+    @JsonIgnore
+    public double defaultSpeed = 1;
 
     public EnemyObject(int x, int y, EnemyType type) {
         this.x = x;

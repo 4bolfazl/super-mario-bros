@@ -50,6 +50,4 @@ public class Goompa extends EnemyObject {
         setSpeedY(0);
         setDead(true);
     }
-
-
 }

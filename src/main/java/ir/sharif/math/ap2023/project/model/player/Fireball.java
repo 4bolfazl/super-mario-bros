@@ -7,15 +7,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Fireball {
-    int x, y;
-    int startPosition;
-    int speedX;
+    protected double x, y;
+    double startPosition;
+    protected int speedX;
     int distanceTraveled = 0;
-    boolean toRight;
+    protected boolean toRight;
     boolean determined = false;
-    boolean destroyed = false;
+    protected boolean destroyed = false;
 
-    public Fireball(int x, int y, boolean toRight) {
+    public Fireball(double x, double y, boolean toRight) {
         this.x = x;
         this.y = y;
         this.startPosition = x;
@@ -39,8 +39,8 @@ public class Fireball {
 
     public Rectangle getRightBounds() {
         return new Rectangle(
-                x,
-                y + UIManager.getInstance().getTileSize() / 4,
+                (int) x,
+                (int) y + UIManager.getInstance().getTileSize() / 4,
                 UIManager.getInstance().getTileSize(),
                 UIManager.getInstance().getTileSize() / 4
         );
@@ -48,18 +48,18 @@ public class Fireball {
 
     public Rectangle getLeftBounds() {
         return new Rectangle(
-                x,
-                y + UIManager.getInstance().getTileSize() / 4,
+                (int) x,
+                (int) y + UIManager.getInstance().getTileSize() / 4,
                 UIManager.getInstance().getTileSize(),
                 UIManager.getInstance().getTileSize() / 4
         );
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
@@ -75,7 +75,7 @@ public class Fireball {
         return toRight;
     }
 
-    public int getStartPosition() {
+    public double getStartPosition() {
         return startPosition;
     }
 

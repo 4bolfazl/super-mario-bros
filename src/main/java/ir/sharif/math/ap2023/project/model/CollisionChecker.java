@@ -214,7 +214,7 @@ public final class CollisionChecker {
                     if (enemy instanceof Bowser) {
                         if (enemy.getSolidArea().x + 2 >= 18 * UIManager.getInstance().getTileSize()) {
                             enemy.setToRight(false);
-                            enemy.setSpeedX(-2);
+                            enemy.setSpeedX(-enemy.defaultSpeed);
                         }
                     }
                     for (BlockObject blockObject : sectionObject.getBlocks()) {
@@ -223,7 +223,7 @@ public final class CollisionChecker {
                                 toBeRemoved.add(blockObject);
                             } else {
                                 enemy.setToRight(false);
-                                enemy.setSpeedX(-2);
+                                enemy.setSpeedX(-enemy.defaultSpeed);
                                 enemy.getSolidArea().x = ((blockObject.getX() - 1) * UIManager.getInstance().getTileSize()) + ((enemy instanceof Bowser) ? -144 : 0);
                             }
                         }
@@ -241,21 +241,21 @@ public final class CollisionChecker {
                                 }
                             }
                             enemy.setToRight(false);
-                            enemy.setSpeedX(-2);
+                            enemy.setSpeedX(-enemy.defaultSpeed);
                             enemy.getSolidArea().x = ((nothingBlockObject.getX() - 1) * UIManager.getInstance().getTileSize()) + ((enemy instanceof Bowser) ? -144 : 0);
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
                         if (bounds.intersects(pipe.getLeftBounds())) {
                             enemy.setToRight(false);
-                            enemy.setSpeedX(-2);
+                            enemy.setSpeedX(-enemy.defaultSpeed);
                             enemy.getSolidArea().x = ((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5) + ((enemy instanceof Bowser) ? -144 : 0);
                         }
                     }
                     for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
                         if (bounds.intersects(trunkPipe.getLeftBounds())) {
                             enemy.setToRight(false);
-                            enemy.setSpeedX(-2);
+                            enemy.setSpeedX(-enemy.defaultSpeed);
                             enemy.getSolidArea().x = ((trunkPipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5) + ((enemy instanceof Bowser) ? -144 : 0);
                         }
                     }
@@ -265,7 +265,7 @@ public final class CollisionChecker {
                     if (enemy instanceof Bowser) {
                         if (enemy.getSolidArea().x - 2 <= 3 * UIManager.getInstance().getTileSize()) {
                             enemy.setToRight(true);
-                            enemy.setSpeedX(2);
+                            enemy.setSpeedX(enemy.defaultSpeed);
                         }
                     }
                     for (BlockObject blockObject : sectionObject.getBlocks()) {
@@ -274,7 +274,7 @@ public final class CollisionChecker {
                                 toBeRemoved.add(blockObject);
                             } else {
                                 enemy.setToRight(true);
-                                enemy.setSpeedX(2);
+                                enemy.setSpeedX(enemy.defaultSpeed);
                                 enemy.getSolidArea().x = ((blockObject.getX() + 1) * UIManager.getInstance().getTileSize());
                             }
                         }
@@ -285,21 +285,21 @@ public final class CollisionChecker {
                     for (NothingBlockObject nothingBlockObject : sectionObject.nothingBlockObjects) {
                         if (bounds.intersects(nothingBlockObject.getRightBounds())) {
                             enemy.setToRight(true);
-                            enemy.setSpeedX(2);
+                            enemy.setSpeedX(enemy.defaultSpeed);
                             enemy.getSolidArea().x = ((nothingBlockObject.getX() + 1) * UIManager.getInstance().getTileSize());
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
                         if (bounds.intersects(pipe.getRightBounds())) {
                             enemy.setToRight(true);
-                            enemy.setSpeedX(2);
+                            enemy.setSpeedX(enemy.defaultSpeed);
                             enemy.getSolidArea().x = ((pipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
                         }
                     }
                     for (TrunkPipe trunkPipe : sectionObject.trunkPipes) {
                         if (bounds.intersects(trunkPipe.getRightBounds())) {
                             enemy.setToRight(true);
-                            enemy.setSpeedX(2);
+                            enemy.setSpeedX(enemy.defaultSpeed);
                             enemy.getSolidArea().x = ((trunkPipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
                         }
                     }

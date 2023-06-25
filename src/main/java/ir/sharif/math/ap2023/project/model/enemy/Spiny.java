@@ -51,14 +51,14 @@ public class Spiny extends EnemyObject {
         Player player = GameEngine.getInstance().getPlayer();
         double distance = Math.sqrt(Math.pow(player.getX() - solidArea.x, 2) + Math.pow(player.getY() - solidArea.y, 2));
         if (distance > 5 * UIManager.getInstance().getTileSize()) {
-            speedX = isToRight() ? 2 : -2;
+            speedX = isToRight() ? defaultSpeed : -defaultSpeed;
         } else if (Math.abs(solidArea.y - (player.getY() + (player.getCharacterState() > 0 ? UIManager.getInstance().getTileSize() : 0))) <= 5) {
             if (player.getX() > getSolidArea().x) {
                 setToRight(true);
                 if (speedX > 0) {
                     speedX += acceleration;
                 } else {
-                    speedX = 2;
+                    speedX = defaultSpeed;
                     speedX += acceleration;
                 }
             } else {
@@ -66,7 +66,7 @@ public class Spiny extends EnemyObject {
                 if (speedX < 0) {
                     speedX -= acceleration;
                 } else {
-                    speedX = -2;
+                    speedX = -defaultSpeed;
                     speedX -= acceleration;
                 }
             }

@@ -10,6 +10,7 @@ import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
+import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
@@ -183,6 +184,22 @@ public final class UIManager extends JPanel {
                     null
             );
             if (enemy instanceof Bowser) {
+//                g2D.setFont(g2D.getFont().deriveFont(42f));
+//                g2D.drawString(
+//                        String.valueOf(((Bowser) enemy).fireballCoolDown),
+//                        48,
+//                        192
+//                );
+                for (BowserFireball fireball : ((Bowser) enemy).getFireballs()) {
+                    g2D.drawImage(
+                            imageLoader.fireballImages[2],
+                            (int)fireball.getX(),
+                            (int)fireball.getY(),
+                            2 * tileSize,
+                            2 * tileSize,
+                            null
+                    );
+                }
                 g2D.fillRect(
                         516,
                         567,
@@ -358,8 +375,8 @@ public final class UIManager extends JPanel {
         for (Fireball fireball : player.getFireballs()) {
             g2D.drawImage(
                     fireball.getImage(),
-                    fireball.getX(),
-                    fireball.getY(),
+                    (int)fireball.getX(),
+                    (int)fireball.getY(),
                     tileSize,
                     tileSize,
                     null

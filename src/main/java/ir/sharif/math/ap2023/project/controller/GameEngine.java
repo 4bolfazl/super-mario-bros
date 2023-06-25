@@ -4,9 +4,9 @@ import ir.sharif.math.ap2023.project.controller.inputManager.KeyboardHandler;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.CollisionChecker;
+import ir.sharif.math.ap2023.project.model.enemy.Bowser;
+import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
-import ir.sharif.math.ap2023.project.model.enemy.EnemyType;
-import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
@@ -24,12 +24,13 @@ public final class GameEngine implements Runnable {
     private final double FPS = 60;
     private final double nextFrameInterval = 1000000000 / FPS;
     public JFrame window;
+    public Random randomGenerator = new Random();
+    public Bowser boss;
     private Thread gameThread;
     private GameState gameState = GameState.LOGIN_MENU;
     private Player player;
     private CollisionChecker collisionChecker;
     private List<Item> items = new ArrayList<>();
-    public Random randomGenerator = new Random();
 
     private GameEngine() {
         init();
@@ -114,6 +115,17 @@ public final class GameEngine implements Runnable {
         }
         for (Fireball fireball : toBeRemoved) {
             player.getFireballs().remove(fireball);
+        }
+        if (boss != null) {
+            for (BowserFireball fireball : boss.getFireballs()) {
+                fireball.updateLocation();
+                if (fireball.isDestroyed()) {
+                    toBeRemoved.add(fireball);
+                }
+            }
+            for (Fireball fireball : toBeRemoved) {
+                boss.getFireballs().remove(fireball);
+            }
         }
     }
 

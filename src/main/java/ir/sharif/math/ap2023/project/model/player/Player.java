@@ -9,6 +9,7 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
+import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.game.Game;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.pipe.ExitPipe;
@@ -356,6 +357,7 @@ public class Player {
             SoundManager soundManager = SoundManager.getInstance();
             soundManager.pauseMusic();
             soundManager.playBackgroundMusic(BackgroundMusicType.CASTLE);
+            GameEngine.getInstance().boss = (Bowser) GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).getEnemies().get(0);
         }
     }
 

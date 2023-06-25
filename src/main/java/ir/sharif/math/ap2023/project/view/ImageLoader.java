@@ -21,7 +21,7 @@ public final class ImageLoader {
     private HashMap<BlockType, BufferedImage> blocks = new HashMap<>();
     private BufferedImage[] pipes = new BufferedImage[3];
     private HashMap<ItemType, BufferedImage> items = new HashMap<>();
-    public BufferedImage[] fireballImages = new BufferedImage[2];
+    public BufferedImage[] fireballImages = new BufferedImage[3];
     public BufferedImage healthBar;
 
     private ImageLoader() {
@@ -34,6 +34,7 @@ public final class ImageLoader {
 
         fireballImages[0] = loadImage("/fireball/0.png");
         fireballImages[1] = loadImage("/fireball/1.png");
+        fireballImages[2] = loadImage("/fireball/2.png");
 
         loadBlocks();
         loadPipes();

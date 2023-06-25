@@ -13,16 +13,27 @@ import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Bowser extends EnemyObject {
     @JsonIgnore
-    int grabCoolDown = 4 * 60;
+    public boolean grabAttacking, jumpAttacking, fireballAttacking, nukeAttacking;
     @JsonIgnore
-    int jumpCoolDown = 3 * 60;
+    public boolean grabCoolDownStart, jumpCoolDownStart, fireballCoolDownStart, nukeCoolDownStart;
     @JsonIgnore
-    int fireballCoolDown = 2 * 60;
+    public int fireballCoolDown = 0;
     @JsonIgnore
-    int nukeCoolDown = 3 * 60;
+    int fireDelay = 120;
+    @JsonIgnore
+    int fireballsShot = 0;
+    @JsonIgnore
+    int grabCoolDown = 0;
+    @JsonIgnore
+    int jumpCoolDown = 0;
+    @JsonIgnore
+    int nukeCoolDown = 0;
     @JsonIgnore
     int HP = 20;
     @JsonIgnore
@@ -30,9 +41,15 @@ public class Bowser extends EnemyObject {
     @JsonIgnore
     boolean triggered = false;
     @JsonIgnore
+    boolean freeze = false;
+    @JsonIgnore
+    int freezeTimer = 0;
+    @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.BOWSER);
     @JsonIgnore
     double gravity = 3;
+    @JsonIgnore
+    List<BowserFireball> fireballs = Collections.synchronizedList(new ArrayList<>());
 
     public Bowser(int x, int y, EnemyType type) {
         super(x, y, type);
@@ -42,77 +59,6 @@ public class Bowser extends EnemyObject {
         solidArea.setSize(5 * UIManager.getInstance().getTileSize(), 5 * UIManager.getInstance().getTileSize());
         setToRight(false);
         speedX = 0;
-    }
-
-    @Override
-    public void updateLocation() {
-        if (!triggered) {
-            if (distanceFromMario() <= 7 * UIManager.getInstance().getTileSize()) {
-                Player player = GameEngine.getInstance().getPlayer();
-                SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
-                for (int i = 0; i < 10; i++) {
-                    sectionObject.getBlocks().add(new EmptyBlockObject(0, i, BlockType.EMPTY));
-                    sectionObject.getBlocks().add(new EmptyBlockObject(25, i, BlockType.EMPTY));
-                }
-                triggered = true;
-            }
-        } else {
-            if (!isDead()) {
-                Player player = GameEngine.getInstance().getPlayer();
-                toRight = player.getX() > solidArea.x;
-                for (Fireball fireball : player.getFireballs()) {
-                    if (waitOnAir == 0 && solidArea.y >= 240) {
-                        if (fireball.isToRight()) {
-                            if (solidArea.x - fireball.getX() <= 112) {
-                                if (!fireball.isDetermined()) {
-                                    fireball.setDetermined(true);
-                                    int distance = (solidArea.x - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
-                                    if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
-                                        if (getSpeedY() == 0) {
-                                            setSpeedY(25);
-                                            setJumping(true);
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (fireball.getX() - (solidArea.x + 5 * UIManager.getInstance().getTileSize()) <= 112) {
-                                if (!fireball.isDetermined()) {
-                                    fireball.setDetermined(true);
-                                    int distance = (solidArea.x + 5 * UIManager.getInstance().getTileSize() - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
-                                    if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
-                                        if (getSpeedY() == 0) {
-                                            setSpeedY(25);
-                                            setJumping(true);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (jumping && speedY <= 0) {
-                    if (waitOnAir == 0)
-                        speedY = 0;
-                    waitOnAir++;
-                    if (waitOnAir >= 60) {
-                        waitOnAir = 0;
-                        jumping = false;
-                        falling = true;
-                    }
-                } else if (jumping) {
-                    speedY -= gravity;
-                    getSolidArea().y -= speedY;
-                }
-
-                if (falling) {
-                    getSolidArea().y += speedY;
-                    speedY += gravity;
-                }
-
-                getSolidArea().x += speedX;
-            }
-        }
     }
 
     @Override
@@ -209,7 +155,9 @@ public class Bowser extends EnemyObject {
 
     public double distanceFromMario() {
         Player player = GameEngine.getInstance().getPlayer();
-        return Math.sqrt(Math.pow(player.getX() - solidArea.x, 2) + Math.pow(player.getY() - solidArea.y, 2));
+        if (player.getX() > solidArea.x)
+            return ((player.getX() - (solidArea.x + 5 * UIManager.getInstance().getTileSize()))) / UIManager.getInstance().getTileSize();
+        return (solidArea.x - (player.getX() + UIManager.getInstance().getTileSize())) / UIManager.getInstance().getTileSize();
     }
 
     public void resetGrabCoolDown() {
@@ -244,8 +192,214 @@ public class Bowser extends EnemyObject {
         nukeCoolDown--;
     }
 
+    public void jumpToAvoidFireballs() {
+        Player player = GameEngine.getInstance().getPlayer();
+        toRight = player.getX() > solidArea.x;
+        for (Fireball fireball : player.getFireballs()) {
+            if (waitOnAir == 0 && solidArea.y >= 240) {
+                if (fireball.isToRight()) {
+                    if (solidArea.x - fireball.getX() <= 112) {
+                        if (!fireball.isDetermined()) {
+                            fireball.setDetermined(true);
+                            double distance = (solidArea.x - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
+                            if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
+                                if (getSpeedY() == 0) {
+                                    setSpeedY(25);
+                                    setJumping(true);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (fireball.getX() - (solidArea.x + 5 * UIManager.getInstance().getTileSize()) <= 112) {
+                        if (!fireball.isDetermined()) {
+                            fireball.setDetermined(true);
+                            double distance = (solidArea.x + 5 * UIManager.getInstance().getTileSize() - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
+                            if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
+                                if (getSpeedY() == 0) {
+                                    setSpeedY(25);
+                                    setJumping(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean isFreeze() {
+        return freeze;
+    }
+
+    public void setFreeze(boolean freeze) {
+        this.freeze = freeze;
+    }
+
+    public List<BowserFireball> getFireballs() {
+        return fireballs;
+    }
+
+    public void setFireballs(List<BowserFireball> fireballs) {
+        this.fireballs = fireballs;
+    }
+
+    @Override
+    public void updateLocation() {
+        if (!triggered) {
+            if (distanceFromMario() <= 8) {
+                Player player = GameEngine.getInstance().getPlayer();
+                SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+                for (int i = 0; i < 10; i++) {
+                    sectionObject.getBlocks().add(new EmptyBlockObject(0, i, BlockType.EMPTY));
+                    sectionObject.getBlocks().add(new EmptyBlockObject(25, i, BlockType.EMPTY));
+                }
+                triggered = true;
+            }
+        } else {
+            if (!isDead() && !isFreeze()) {
+                updateTime();
+                jumpToAvoidFireballs();
+                double distanceFromMario = distanceFromMario();
+                if (distanceFromMario >= 8 && speedX == 0) {
+                    setSpeedX(toRight ? 3 : -3);
+                } else if (distanceFromMario >= 6 && distanceFromMario <= 10 && fireballCoolDown == 0) {
+                    speedX = 0;
+                    fireballAttack();
+                } else if (distanceFromMario <= 2 && grabCoolDown == 0) {
+                    grabAttacking = (true);
+                } else if (false && jumpCoolDown == 0) { // TODO: MARIO 4 SECONDS ON GROUND
+                    jumpAttacking = (true);
+                }
+                // TODO: NO MOVE RESULTS IN RANDOM MOVE 0.75 bps
+                if (jumping && speedY <= 0) {
+                    if (waitOnAir == 0)
+                        speedY = 0;
+                    waitOnAir++;
+                    if (waitOnAir >= 60) {
+                        waitOnAir = 0;
+                        jumping = false;
+                        falling = true;
+                    }
+                } else if (jumping) {
+                    speedY -= gravity;
+                    getSolidArea().y -= speedY;
+                }
+
+                if (falling) {
+                    getSolidArea().y += speedY;
+                    speedY += gravity;
+                }
+
+                if (distanceFromMario <= 3)
+                    speedX = 0;
+                getSolidArea().x += speedX;
+            }
+        }
+    }
+
+    public void updateTime() {
+        if (grabCoolDownStart) {
+            grabCoolDown++;
+            if (grabCoolDown >= 240) {
+                grabCoolDownStart = false;
+                grabCoolDown = 0;
+            }
+        }
+        if (jumpCoolDownStart) {
+            jumpCoolDown++;
+            if (jumpCoolDown >= 180) {
+                jumpCoolDownStart = false;
+                jumpCoolDown = 0;
+            }
+        }
+        if (fireballCoolDownStart) {
+            fireballCoolDown++;
+            if (fireballCoolDown >= 240) {
+                fireballCoolDownStart = false;
+                fireballCoolDown = 0;
+            }
+        }
+        if (nukeCoolDownStart) {
+            nukeCoolDown++;
+            if (nukeCoolDown >= 240) {
+                nukeCoolDownStart = false;
+                nukeCoolDown = 0;
+            }
+        }
+    }
+
+    public void grabAttack() {
+
+    }
+
+    public void jumpAttack() {
+
+    }
+
+    public void nukeAttack() {
+
+    }
+
+    public void fireballAttack() {
+        fireballAttacking = true;
+
+        fireDelay++;
+        if (fireDelay >= 120 && fireballsShot < 3) {
+            double x, y;
+            if (toRight) {
+                x = solidArea.x + 5 * UIManager.getInstance().getTileSize();
+            } else {
+                x = solidArea.x - UIManager.getInstance().getTileSize();
+            }
+            if (GameEngine.getInstance().randomGenerator.nextBoolean()) {
+                y = 8 * UIManager.getInstance().getTileSize();
+            } else {
+                y = 6.1 * UIManager.getInstance().getTileSize();
+            }
+
+            fireballs.add(new BowserFireball(x, y, toRight));
+            fireballsShot++;
+            fireDelay = 0;
+        }
+
+        if (fireballsShot == 3) {
+            fireballAttacking = false;
+            fireballCoolDownStart = true;
+            fireballsShot = 0;
+            fireDelay = 120;
+        }
+    }
+
     @Override
     public void kill() {
 
     }
 }
+
+//class attackThread extends Thread {
+//    Bowser boss;
+//
+//    public attackThread(Bowser boss) {
+//        super();
+//        this.boss = boss;
+//    }
+//
+//    @Override
+//    public void run() {
+//        while (!boss.isDead()) {
+//            System.out.println("checking "  + boss.fireballAttacking.get());
+//            if (boss.grabAttacking.get())
+//                grabAttacking();
+//            else if (boss.fireballAttacking.get()) {
+//                System.out.println("thread understands attack");
+//                fireballAttacking();
+//            } else if (boss.jumpAttacking.get())
+//                jumpAttacking();
+//            else if (boss.nukeAttacking.get())
+//                nukeAttacking();
+//        }
+//    }
+//
+//
+//}
