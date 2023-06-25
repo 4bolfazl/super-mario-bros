@@ -66,7 +66,6 @@ public class Bowser extends EnemyObject {
                                 if (!fireball.isDetermined()) {
                                     fireball.setDetermined(true);
                                     int distance = (solidArea.x - fireball.getStartPosition()) / UIManager.getInstance().getTileSize();
-                                    System.out.println(distance);
                                     if (GameEngine.getInstance().randomGenerator.nextInt(8) < distance) {
                                         if (getSpeedY() == 0) {
                                             setSpeedY(25);
