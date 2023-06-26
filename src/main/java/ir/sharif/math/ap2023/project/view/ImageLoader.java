@@ -71,8 +71,8 @@ public final class ImageLoader {
         }
         enemies.put(EnemyType.SPINY, spiny);
 
-        BufferedImage[] bowser = new BufferedImage[18];
-        for (int i = 0; i < 18; i++) {
+        BufferedImage[] bowser = new BufferedImage[20];
+        for (int i = 0; i < 20; i++) {
             bowser[i] = loadImage("/enemies/bowser/bowser" + i + ".png");
         }
         enemies.put(EnemyType.BOWSER, bowser);

@@ -12,7 +12,6 @@ import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +34,8 @@ public class Bowser extends EnemyObject {
     public int jumpCoolDown = 0;
     @JsonIgnore
     public int nukeCoolDown = 0;
+    public int jumpAttackTimer = 0;
+    public boolean jumpAttackStarted = false;
     @JsonIgnore
     int fireDelay = 120;
     @JsonIgnore
@@ -49,6 +50,8 @@ public class Bowser extends EnemyObject {
     boolean freeze = false;
     @JsonIgnore
     int freezeTimer = 0;
+    @JsonIgnore
+    int playerOnTheGroundTime = 0;
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.BOWSER);
     @JsonIgnore
@@ -128,6 +131,9 @@ public class Bowser extends EnemyObject {
             addFrame();
         if (frame >= 30) {
             frame = 0;
+        }
+        if (falling && jumpAttackStarted) {
+            return images[toRight ? 19 : 18];
         }
         if (fireballAttacking) {
             return images[(toRight ? 11 : 2) + frame / 15];
@@ -282,11 +288,13 @@ public class Bowser extends EnemyObject {
                 } else if ((distanceFromMario >= 6 && distanceFromMario <= 10 && fireballCoolDown == 0) || fireballAttacking) {
                     speedX = 0;
                     fireballAttack();
-                } else if ((distanceFromMario <= 2 && grabCoolDown == 0) || grabAttacking || grabAttackingStarted) {
+                } else if ((distanceFromMario <= 2 && distanceFromMario >= 0 && GameEngine.getInstance().getPlayer().getY() >= solidArea.y && grabCoolDown == 0) || grabAttacking || grabAttackingStarted) {
                     speedX = 0;
                     grabAttack();
-                } else if (false && jumpCoolDown == 0) { // TODO: MARIO 4 SECONDS ON GROUND
-                    jumpAttacking = (true);
+                } else if ((playerOnTheGroundTime >= 200 && jumpCoolDown == 0)) { // TODO: MARIO 4 SECONDS ON GROUND
+                    speedX = 0;
+                    playerOnTheGroundTime = 0;
+                    jumpAttack();
                 }
                 // TODO: NO MOVE RESULTS IN RANDOM MOVE 0.75 bps
                 if (jumping && speedY <= 0) {
@@ -316,6 +324,19 @@ public class Bowser extends EnemyObject {
     }
 
     public void updateTime() {
+        if (jumpAttacking) {
+            jumpAttackTimer++;
+            if (jumpAttackTimer >= 250) {
+                jumpAttacking = false;
+                jumpAttackTimer = 0;
+                jumpCoolDownStart = true;
+            }
+        }
+        if (GameEngine.getInstance().getPlayer().isOnTheGround()) {
+            playerOnTheGroundTime++;
+        } else {
+            playerOnTheGroundTime = 0;
+        }
         if (grabCoolDownStart) {
             grabCoolDown++;
             if (grabCoolDown >= 240) {
@@ -399,6 +420,17 @@ public class Bowser extends EnemyObject {
         }
     }
 
+    public void jumpAttack() {
+        jumpAttackStarted = true;
+        setFalling(false);
+        setJumping(true);
+        setSpeedY(25);
+    }
+
+    public void nukeAttack() {
+
+    }
+
     private void throwPlayer() {
         Player player = GameEngine.getInstance().getPlayer();
         player.setEnemyInvincible(true);
@@ -414,14 +446,6 @@ public class Bowser extends EnemyObject {
         grabCoolDownStart = true;
         grabTime = 0;
         pressedTimes = 0;
-    }
-
-    public void jumpAttack() {
-
-    }
-
-    public void nukeAttack() {
-
     }
 
     @Override

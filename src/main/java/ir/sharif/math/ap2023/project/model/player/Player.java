@@ -110,6 +110,11 @@ public class Player {
         setTime(game.getLevels().get(level - 1).getSections().get(section - 1).getTime());
     }
 
+    public boolean isOnTheGround() {
+        int height = (characterState > 0 && !isCrouching) ? 96 : 48;
+        return y + height >= 480;
+    }
+
     public void decreaseTime() {
         time--;
     }

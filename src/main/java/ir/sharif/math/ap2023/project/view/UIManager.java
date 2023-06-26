@@ -186,7 +186,7 @@ public final class UIManager extends JPanel {
             if (enemy instanceof Bowser) {
                 g2D.setFont(g2D.getFont().deriveFont(42f));
                 g2D.drawString(
-                        String.valueOf(((Bowser) enemy).grabCoolDown),
+                        String.valueOf(((Bowser) enemy).jumpCoolDown),
                         48,
                         192
                 );

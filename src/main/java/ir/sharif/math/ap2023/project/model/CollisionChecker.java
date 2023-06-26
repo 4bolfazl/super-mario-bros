@@ -397,6 +397,10 @@ public final class CollisionChecker {
                     enemy.getSolidArea().y = (blockObject.getY() - 1) * UIManager.getInstance().getTileSize() + 1 + ((enemy instanceof Bowser) ? -192 : 0) + ((enemy instanceof Koopa) ? -24 : 0);
                     enemy.setFalling(false);
                     enemy.setSpeedY(0);
+                    if (enemy instanceof Bowser && ((Bowser) enemy).jumpAttackStarted) {
+                        ((Bowser) enemy).jumpAttackStarted = false;
+                        ((Bowser) enemy).jumpAttacking = true;
+                    }
                 } else {
                     if (blockObject.getEnemyOnIt() == null || blockObject.getEnemyOnIt() == enemy)
                         blockObject.setEnemyOnIt(null);
