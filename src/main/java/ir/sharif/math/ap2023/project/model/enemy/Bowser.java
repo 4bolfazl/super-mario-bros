@@ -495,7 +495,6 @@ public class Bowser extends EnemyObject {
     public void kill(int damage) {
         decreaseHP(damage);
         if (getHP() <= 10 && !phase2) {
-            System.out.println("xxxxxxxxxx");
             GameEngine.getInstance().setGameState(GameState.SCENE);
             GameEngine.getInstance().scene = true;
             // TODO: CUTSCENE
@@ -503,6 +502,7 @@ public class Bowser extends EnemyObject {
         freeze = true;
         if (getHP() <= 0) {
             setDead(true);
+            GameEngine.getInstance().setGameState(GameState.BOSS_DEAD);
         }
     }
 }

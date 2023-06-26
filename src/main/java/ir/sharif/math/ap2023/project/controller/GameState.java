@@ -9,5 +9,6 @@ public enum GameState {
     RANKING,
     SHOP,
     PROFILE,
-    SCENE
+    SCENE,
+    BOSS_DEAD
 }

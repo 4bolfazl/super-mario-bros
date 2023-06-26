@@ -1,5 +1,6 @@
 package ir.sharif.math.ap2023.project.view;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
@@ -44,6 +45,8 @@ public final class UIManager extends JPanel {
     public MainMenuItem mainMenuItem = MainMenuItem.NEW_GAME;
     public Difficulty difficultyOption = Difficulty.EASY;
     public int saveOption = 1;
+    @JsonIgnore
+    public int congratsTimer = 0;
     private Font font;
     private ImageLoader imageLoader;
     private JTextField usernameField;
@@ -162,6 +165,7 @@ public final class UIManager extends JPanel {
                 drawPlayer(g2D);
                 drawInfo(g2D);
             }
+            case BOSS_DEAD -> drawCongrats(g2D);
         }
 
         g2D.dispose();
@@ -440,6 +444,27 @@ public final class UIManager extends JPanel {
                     (blockObject instanceof GroundBlockObject) ? 4 * tileSize : tileSize,
                     null
             );
+        }
+    }
+
+    private void drawCongrats(Graphics2D g2D) {
+        congratsTimer++;
+        if (congratsTimer >= 250) {
+            congratsTimer = 0;
+            GameEngine.getInstance().setGameState(GameState.MAIN_MENU);
+        } else {
+            g2D.drawImage(imageLoader.menuScreen, 0, 0, null);
+
+            g2D.setFont(font.deriveFont(Font.BOLD, 26F));
+
+            int x, y;
+            String text;
+
+            text = "CONGRATS!";
+            x = screenWidth / 5 + getXOfCenteredText(text, g2D);
+            y = 6 * tileSize;
+            g2D.setColor(Color.WHITE);
+            g2D.drawString(text, x, y);
         }
     }
 

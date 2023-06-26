@@ -51,7 +51,6 @@ public final class GameEngine implements Runnable {
         UIManager uiManager = UIManager.getInstance();
         KeyboardHandler keyboardHandler = KeyboardHandler.getInstance();
         collisionChecker = CollisionChecker.getInstance();
-        ImageLoader imageLoader = ImageLoader.getInstance();
         SoundManager soundManager = SoundManager.getInstance();
 
         soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
