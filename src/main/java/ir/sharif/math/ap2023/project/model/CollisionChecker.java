@@ -6,10 +6,7 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
-import ir.sharif.math.ap2023.project.model.enemy.Bowser;
-import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
-import ir.sharif.math.ap2023.project.model.enemy.Koopa;
-import ir.sharif.math.ap2023.project.model.enemy.Spiny;
+import ir.sharif.math.ap2023.project.model.enemy.*;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Bomb;
 import ir.sharif.math.ap2023.project.model.item.Item;
@@ -54,8 +51,39 @@ public final class CollisionChecker {
             checkSwordCollisions();
         }
         if (GameEngine.getInstance().boss != null) {
+            checkBossAttackCollisions();
             if (GameEngine.getInstance().boss.bomb != null) {
                 checkBombCollision();
+            }
+        }
+    }
+
+    private void checkBossAttackCollisions() {
+        Bowser boss = GameEngine.getInstance().boss;
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        for (BowserFireball fireball : boss.getFireballs()) {
+            Rectangle bounds = fireball.getLeftBounds();
+            if (fireball.speedX > 0) {
+                if (fireball.getBoundsForPlayer().intersects(player.getLeftBounds())) {
+                    player.decreaseHeartHit();
+                    fireball.setDestroyed(true);
+                }
+                for (BlockObject block : sectionObject.getBlocks()) {
+                    if (block.getLeftBounds().intersects(bounds)) {
+                        fireball.setDestroyed(true);
+                    }
+                }
+            } else {
+                if (fireball.getBoundsForPlayer().intersects(player.getRightBounds())) {
+                    player.decreaseHeartHit();
+                    fireball.setDestroyed(true);
+                }
+                for (BlockObject block : sectionObject.getBlocks()) {
+                    if (block.getLeftBounds().intersects(bounds)) {
+                        fireball.setDestroyed(true);
+                    }
+                }
             }
         }
     }
@@ -70,50 +98,44 @@ public final class CollisionChecker {
                 for (BlockObject block : sectionObject.getBlocks()) {
                     if (block.getLeftBounds().intersects(bounds)) {
                         sword.setDestroyed(true);
-//                        player.hasSword = false;
-//                        player.sword = new Sword(player);
                     }
                 }
                 for (PipeObject pipe : sectionObject.getPipes()) {
                     if (pipe.getLeftBounds().intersects(bounds)) {
                         sword.setDestroyed(true);
-//                        player.hasSword = false;
-//                        player.sword = new Sword(player);
                     }
                 }
                 for (EnemyObject enemy : sectionObject.getEnemies()) {
                     if (enemy.getLeftBounds().intersects(bounds)) {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
-                        enemy.kill();
+                        if (enemy instanceof Bowser)
+                            ((Bowser) enemy).kill(1);
+                        else
+                            enemy.kill();
                         player.sword.setDestroyed(true);
-//                        player.hasSword = false;
-//                        player.sword = new Sword(player);
                     }
                 }
             } else {
                 for (BlockObject block : sectionObject.getBlocks()) {
                     if (block.getRightBounds().intersects(bounds)) {
                         sword.setDestroyed(true);
-//                        player.hasSword = false;
-//                        player.sword = new Sword(player);
                     }
                 }
                 for (PipeObject pipe : sectionObject.getPipes()) {
                     if (pipe.getRightBounds().intersects(bounds)) {
                         sword.setDestroyed(true);
-//                        player.hasSword = false;
-//                        player.sword = new Sword(player);
                     }
                 }
                 for (EnemyObject enemy : sectionObject.getEnemies()) {
                     if (enemy.getRightBounds().intersects(bounds)) {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
-                        enemy.kill();
+                        if (enemy instanceof Bowser)
+                            ((Bowser) enemy).kill(1);
+                        else
+                            enemy.kill();
                         player.sword.setDestroyed(true);
-//                        player.hasSword = false;
-//                        player.sword = new Sword(player);
                     }
                 }
             }
@@ -255,7 +277,10 @@ public final class CollisionChecker {
                     if (enemy.getLeftBounds().intersects(bounds)) {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
-                        enemy.kill();
+                        if (enemy instanceof Bowser)
+                            ((Bowser) enemy).kill(1);
+                        else
+                            enemy.kill();
                         fireball.setDestroyed(true);
                         continue OuterLoop;
                     }
@@ -272,7 +297,10 @@ public final class CollisionChecker {
                     if (enemy.getRightBounds().intersects(bounds)) {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
-                        enemy.kill();
+                        if (enemy instanceof Bowser)
+                            ((Bowser) enemy).kill(1);
+                        else
+                            enemy.kill();
                         fireball.setDestroyed(true);
                         continue OuterLoop;
                     }
@@ -588,9 +616,15 @@ public final class CollisionChecker {
                     } else {
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
+                        if (enemy instanceof Spiny)
+                            enemy.kill();
                     }
-                    if (!(enemy instanceof Spiny))
-                        enemy.kill();
+                    if (!(enemy instanceof Spiny)) {
+                        if (enemy instanceof Bowser)
+                            ((Bowser) enemy).kill(3);
+                        else
+                            enemy.kill();
+                    }
                 }
             }
         }

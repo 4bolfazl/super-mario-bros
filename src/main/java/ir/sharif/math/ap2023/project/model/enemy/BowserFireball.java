@@ -40,4 +40,13 @@ public class BowserFireball extends Fireball {
                 2 * UIManager.getInstance().getTileSize()
         );
     }
+
+    public Rectangle getBoundsForPlayer() {
+        return new Rectangle(
+                (int) x,
+                (int) y,
+                2 * UIManager.getInstance().getTileSize(),
+                2 * UIManager.getInstance().getTileSize()+24
+        );
+    }
 }

@@ -47,7 +47,7 @@ public class Bowser extends EnemyObject {
     public int nukePressTimer = 0;
     public Bomb bomb;
     @JsonIgnore
-    public boolean phase2 = true;
+    public boolean phase2 = false;
     @JsonIgnore
     int fireDelay = 120;
     @JsonIgnore
@@ -296,22 +296,22 @@ public class Bowser extends EnemyObject {
                 SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.BOSS);
             }
         } else {
+            updateTime();
             if (!isDead() && !isFreeze()) {
-                updateTime();
                 jumpToAvoidFireballs();
                 double distanceFromMario = distanceFromMario();
                 if (distanceFromMario >= 8 && speedX == 0) {
                     setSpeedX(toRight ? 3 : -3);
                 } else if ((distanceFromMario >= 6 && distanceFromMario <= 10 && fireballCoolDown == 0) || fireballAttacking) {
                     speedX = 0;
-//                    fireballAttack();
+                    fireballAttack();
                 } else if ((distanceFromMario <= 2 && distanceFromMario >= 0 && GameEngine.getInstance().getPlayer().getY() >= solidArea.y && grabCoolDown == 0) || grabAttacking || grabAttackingStarted) {
                     speedX = 0;
-//                    grabAttack();
+                    grabAttack();
                 } else if ((playerOnTheGroundTime >= 200 && jumpCoolDown == 0)) {
                     speedX = 0;
                     playerOnTheGroundTime = 0;
-//                    jumpAttack();
+                    jumpAttack();
                 } else if (playersFireballs >= 5 && phase2) {
                     speedX = 0;
                     playersFireballs = 0;
@@ -346,6 +346,12 @@ public class Bowser extends EnemyObject {
     }
 
     public void updateTime() {
+        if (freeze) {
+            freezeTimer++;
+            if (freezeTimer >= 50) {
+                freeze = false;
+            }
+        }
         if (nukeAttackStarted) {
             nukePressTimer++;
             if (nukePressTimer >= 120) {
@@ -441,10 +447,9 @@ public class Bowser extends EnemyObject {
             grabTime++;
             if (grabTime >= 250) {
                 throwPlayer();
-                System.out.println("damaged!"); // TODO
+                GameEngine.getInstance().getPlayer().decreaseHeartHit();
             } else if (pressedTimes >= 10) {
                 throwPlayer();
-                System.out.println("not damaged!"); // TODO
             }
         }
     }
@@ -481,5 +486,17 @@ public class Bowser extends EnemyObject {
     @Override
     public void kill() {
 
+    }
+
+    public void kill(int damage) {
+        if (getHP() > 0) {
+            if (getHP() > 50) {
+                decreaseHP(damage);
+                freeze = true;
+            } else {
+                phase2 = true;
+                // TODO: CUTSCENE
+            }
+        }
     }
 }
