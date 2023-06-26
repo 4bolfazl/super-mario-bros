@@ -32,6 +32,7 @@ public final class SoundManager {
         soundEffects.put(SoundEffectType.POWERUP, getClass().getResource("/sound/sound-effect/Powerup.wav"));
         soundEffects.put(SoundEffectType.SQUISH, getClass().getResource("/sound/sound-effect/Squish.wav"));
 
+        backgroundMusics.put(BackgroundMusicType.BOSS, getClass().getResource("/sound/background/boss.wav"));
         backgroundMusics.put(BackgroundMusicType.CASTLE, getClass().getResource("/sound/background/castle.wav"));
         backgroundMusics.put(BackgroundMusicType.INVINCIBLE, getClass().getResource("/sound/background/invincible.wav"));
         backgroundMusics.put(BackgroundMusicType.OVERWORLD, getClass().getResource("/sound/background/overworld.wav"));

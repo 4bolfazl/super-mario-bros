@@ -2,8 +2,6 @@ package ir.sharif.math.ap2023.project.controller.inputManager;
 
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameState;
-import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
-import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
@@ -17,6 +15,8 @@ import java.awt.event.KeyListener;
 
 public final class KeyboardHandler implements KeyListener {
     private static KeyboardHandler instance;
+    public boolean downPressed = false, upPressed = false;
+    public int downDelay = 0, upDelay = 0;
 
     private KeyboardHandler() {
     }
@@ -53,30 +53,72 @@ public final class KeyboardHandler implements KeyListener {
         int code = e.getKeyCode();
 
         if (gameEngine.getGameState() == GameState.PLAYING) {
-            switch (code) {
-                case KeyEvent.VK_RIGHT -> {
-                    if (player.isCrouching())
-                        player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
-                    else
-                        player.setDirection(PlayerDirection.IDLE_RIGHT);
-                    player.setSpeedX(0);
-                }
-                case KeyEvent.VK_LEFT -> {
-                    if (player.isCrouching())
-                        player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
-                    else
-                        player.setDirection(PlayerDirection.IDLE_LEFT);
-                    player.setSpeedX(0);
-                }
-                case KeyEvent.VK_DOWN -> {
-                    if (player.getCharacterState() > 0) {
-                        player.setCrouching(false);
-                        switch (player.getDirection()) {
-                            case CROUCH_LEFT -> player.setDirection(PlayerDirection.LEFT);
-                            case CROUCH_LEFT_IDLE -> player.setDirection(PlayerDirection.IDLE_LEFT);
-                            case CROUCH_RIGHT -> player.setDirection(PlayerDirection.RIGHT);
-                            case CROUCH_RIGHT_IDLE -> player.setDirection(PlayerDirection.IDLE_RIGHT);
+            if (GameEngine.getInstance().boss != null && GameEngine.getInstance().boss.jumpAttacking) {
+                switch (code) {
+                    case KeyEvent.VK_DOWN -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
+                        else
+                            player.setDirection(PlayerDirection.IDLE_RIGHT);
+                        player.setSpeedX(0);
+                    }
+                    case KeyEvent.VK_UP -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
+                        else
+                            player.setDirection(PlayerDirection.IDLE_LEFT);
+                        player.setSpeedX(0);
+                    }
+                    case KeyEvent.VK_RIGHT -> {
+                        downPressed = false;
+                        downDelay = 0;
+                        if (player.getCharacterState() > 0) {
+                            player.setCrouching(false);
+                            switch (player.getDirection()) {
+                                case CROUCH_LEFT -> player.setDirection(PlayerDirection.LEFT);
+                                case CROUCH_LEFT_IDLE -> player.setDirection(PlayerDirection.IDLE_LEFT);
+                                case CROUCH_RIGHT -> player.setDirection(PlayerDirection.RIGHT);
+                                case CROUCH_RIGHT_IDLE -> player.setDirection(PlayerDirection.IDLE_RIGHT);
+                            }
                         }
+                    }
+                    case KeyEvent.VK_CONTROL -> {
+                        upPressed = false;
+                        upDelay = 0;
+                    }
+                }
+            } else if (GameEngine.getInstance().boss == null || (GameEngine.getInstance().boss != null && !GameEngine.getInstance().boss.jumpAttacking)) {
+                switch (code) {
+                    case KeyEvent.VK_RIGHT -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
+                        else
+                            player.setDirection(PlayerDirection.IDLE_RIGHT);
+                        player.setSpeedX(0);
+                    }
+                    case KeyEvent.VK_LEFT -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
+                        else
+                            player.setDirection(PlayerDirection.IDLE_LEFT);
+                        player.setSpeedX(0);
+                    }
+                    case KeyEvent.VK_DOWN -> {
+                        downPressed = false;
+                        downDelay = 0;
+                        if (player.getCharacterState() > 0) {
+                            player.setCrouching(false);
+                            switch (player.getDirection()) {
+                                case CROUCH_LEFT -> player.setDirection(PlayerDirection.LEFT);
+                                case CROUCH_LEFT_IDLE -> player.setDirection(PlayerDirection.IDLE_LEFT);
+                                case CROUCH_RIGHT -> player.setDirection(PlayerDirection.RIGHT);
+                                case CROUCH_RIGHT_IDLE -> player.setDirection(PlayerDirection.IDLE_RIGHT);
+                            }
+                        }
+                    }
+                    case KeyEvent.VK_UP -> {
+                        upPressed = false;
+                        upDelay = 0;
                     }
                 }
             }
@@ -102,57 +144,36 @@ public final class KeyboardHandler implements KeyListener {
                     player.setSpeedX(-4);
                 }
                 case KeyEvent.VK_DOWN -> {
-                    if (player.getPipeUnder() != null)
-                        player.enterSecretPipe();
-                    if (player.getCharacterState() > 0) {
-                        player.setCrouching(true);
-                        switch (player.getDirection()) {
-                            case IDLE_RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
-                            case RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT);
-                            case IDLE_LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
-                            case LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT);
-                        }
-                    }
+                    downPressed = true;
                 }
                 case KeyEvent.VK_UP -> {
-                    if (!player.isJumping() && !player.isFalling()) {
-                        SoundManager soundManager = SoundManager.getInstance();
-                        soundManager.playSoundEffect(SoundEffectType.JUMP);
-                        switch (player.getDirection()) {
-                            case IDLE_RIGHT -> {
-                                player.setDirection(PlayerDirection.JUMP_IDLE_RIGHT);
-                                player.setSpeedY(12.5);
-                                player.setJumping(true);
-                            }
-                            case IDLE_LEFT -> {
-                                player.setDirection(PlayerDirection.JUMP_IDLE_LEFT);
-                                player.setSpeedY(12.5);
-                                player.setJumping(true);
-                            }
-                            case RIGHT -> {
-                                player.setDirection(PlayerDirection.JUMP_RIGHT);
-                                player.setSpeedY(12.5);
-                                player.setSpeedX(4);
-                                player.setJumping(true);
-                            }
-                            case LEFT -> {
-                                player.setDirection(PlayerDirection.JUMP_LEFT);
-                                player.setSpeedY(12.5);
-                                player.setSpeedX(-4);
-                                player.setJumping(true);
-                            }
-                        }
-                    }
+                    upPressed = true;
                 }
                 case KeyEvent.VK_CONTROL -> {
                     if (player.getCharacterState() == 2) {
                         if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
-                            if (player.getSpeedY() == 0)
+                            if (player.getSpeedY() == 0) {
                                 player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
+                                if (GameEngine.getInstance().boss != null) {
+                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                        GameEngine.getInstance().boss.playersFireballs++;
+                                }
+                            }
                         } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
-                            if (player.getSpeedY() == 0)
+                            if (player.getSpeedY() == 0) {
                                 player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
+                                if (GameEngine.getInstance().boss != null) {
+                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                        GameEngine.getInstance().boss.playersFireballs++;
+                                }
+                            }
                         }
+                    }
+                }
+                case KeyEvent.VK_SPACE -> {
+                    if (player.hasSword) {
+                        if (!player.sword.released)
+                            player.shootSword();
                     }
                 }
             }
@@ -177,7 +198,6 @@ public final class KeyboardHandler implements KeyListener {
                 }
             }
         } else if (GameEngine.getInstance().boss != null && GameEngine.getInstance().boss.jumpAttacking) {
-
             switch (code) {
                 case KeyEvent.VK_DOWN -> {
                     if (player.isCrouching())
@@ -194,56 +214,68 @@ public final class KeyboardHandler implements KeyListener {
                     player.setSpeedX(-4);
                 }
                 case KeyEvent.VK_RIGHT -> {
-                    if (player.getPipeUnder() != null)
-                        player.enterSecretPipe();
-                    if (player.getCharacterState() > 0) {
-                        player.setCrouching(true);
-                        switch (player.getDirection()) {
-                            case IDLE_RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
-                            case RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT);
-                            case IDLE_LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
-                            case LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT);
-                        }
-                    }
+                    downPressed = true;
+//                    if (player.getPipeUnder() != null)
+//                        player.enterSecretPipe();
+//                    if (player.getCharacterState() > 0) {
+//                        player.setCrouching(true);
+//                        switch (player.getDirection()) {
+//                            case IDLE_RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
+//                            case RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT);
+//                            case IDLE_LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
+//                            case LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT);
+//                        }
+//                    }
                 }
                 case KeyEvent.VK_CONTROL -> {
-                    if (!player.isJumping() && !player.isFalling()) {
-                        SoundManager soundManager = SoundManager.getInstance();
-                        soundManager.playSoundEffect(SoundEffectType.JUMP);
-                        switch (player.getDirection()) {
-                            case IDLE_RIGHT -> {
-                                player.setDirection(PlayerDirection.JUMP_IDLE_RIGHT);
-                                player.setSpeedY(12.5);
-                                player.setJumping(true);
-                            }
-                            case IDLE_LEFT -> {
-                                player.setDirection(PlayerDirection.JUMP_IDLE_LEFT);
-                                player.setSpeedY(12.5);
-                                player.setJumping(true);
-                            }
-                            case RIGHT -> {
-                                player.setDirection(PlayerDirection.JUMP_RIGHT);
-                                player.setSpeedY(12.5);
-                                player.setSpeedX(4);
-                                player.setJumping(true);
-                            }
-                            case LEFT -> {
-                                player.setDirection(PlayerDirection.JUMP_LEFT);
-                                player.setSpeedY(12.5);
-                                player.setSpeedX(-4);
-                                player.setJumping(true);
-                            }
-                        }
-                    }
+                    upPressed = true;
+//                    if (!player.isJumping() && !player.isFalling()) {
+//                        SoundManager soundManager = SoundManager.getInstance();
+//                        soundManager.playSoundEffect(SoundEffectType.JUMP);
+//                        switch (player.getDirection()) {
+//                            case IDLE_RIGHT -> {
+//                                player.setDirection(PlayerDirection.JUMP_IDLE_RIGHT);
+//                                player.setSpeedY(12.5);
+//                                player.setJumping(true);
+//                            }
+//                            case IDLE_LEFT -> {
+//                                player.setDirection(PlayerDirection.JUMP_IDLE_LEFT);
+//                                player.setSpeedY(12.5);
+//                                player.setJumping(true);
+//                            }
+//                            case RIGHT -> {
+//                                player.setDirection(PlayerDirection.JUMP_RIGHT);
+//                                player.setSpeedY(12.5);
+//                                player.setSpeedX(4);
+//                                player.setJumping(true);
+//                            }
+//                            case LEFT -> {
+//                                player.setDirection(PlayerDirection.JUMP_LEFT);
+//                                player.setSpeedY(12.5);
+//                                player.setSpeedX(-4);
+//                                player.setJumping(true);
+//                            }
+//                        }
+//                    }
                 }
                 case KeyEvent.VK_LEFT -> {
                     if (player.getCharacterState() == 2) {
                         if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
-                            if (player.getSpeedY() == 0)
+                            if (player.getSpeedY() == 0) {
                                 player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
+                                if (GameEngine.getInstance().boss != null) {
+                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                        GameEngine.getInstance().boss.playersFireballs++;
+                                }
+                            }
                         } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
-                            if (player.getSpeedY() == 0)
+                            if (player.getSpeedY() == 0) {
                                 player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
+                                if (GameEngine.getInstance().boss != null) {
+                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                        GameEngine.getInstance().boss.playersFireballs++;
+                                }
+                            }
                         }
                     }
                 }

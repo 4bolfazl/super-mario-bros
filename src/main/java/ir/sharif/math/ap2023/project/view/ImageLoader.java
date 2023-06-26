@@ -23,6 +23,8 @@ public final class ImageLoader {
     private HashMap<ItemType, BufferedImage> items = new HashMap<>();
     public BufferedImage[] fireballImages = new BufferedImage[3];
     public BufferedImage healthBar;
+    public BufferedImage bomb;
+    public BufferedImage[] sword = new BufferedImage[2];
 
     private ImageLoader() {
         menuScreen = loadImage("/screens/menu.png");
@@ -35,6 +37,11 @@ public final class ImageLoader {
         fireballImages[0] = loadImage("/fireball/0.png");
         fireballImages[1] = loadImage("/fireball/1.png");
         fireballImages[2] = loadImage("/fireball/2.png");
+
+        sword[0] = loadImage("/sword/0.png");
+        sword[1] = loadImage("/sword/1.png");
+
+        bomb = loadImage("/enemies/nukebird/bomb0.png");
 
         loadBlocks();
         loadPipes();

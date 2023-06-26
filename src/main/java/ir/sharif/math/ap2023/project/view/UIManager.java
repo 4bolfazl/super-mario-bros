@@ -193,8 +193,8 @@ public final class UIManager extends JPanel {
                 for (BowserFireball fireball : ((Bowser) enemy).getFireballs()) {
                     g2D.drawImage(
                             imageLoader.fireballImages[2],
-                            (int)fireball.getX(),
-                            (int)fireball.getY(),
+                            (int) fireball.getX(),
+                            (int) fireball.getY(),
                             2 * tileSize,
                             2 * tileSize,
                             null
@@ -214,6 +214,16 @@ public final class UIManager extends JPanel {
                         96,
                         null
                 );
+                if (((Bowser) enemy).bomb != null) {
+                    g2D.drawImage(
+                            imageLoader.bomb,
+                            (int) ((Bowser) enemy).bomb.getX(),
+                            (int) ((Bowser) enemy).bomb.getY(),
+                            tileSize,
+                            tileSize,
+                            null
+                    );
+                }
             }
             if (enemy.isDead()) {
                 enemy.addFrame();
@@ -372,11 +382,34 @@ public final class UIManager extends JPanel {
                 null
         );
 
+        if (player.hasSword) {
+            boolean isToRight = player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.JUMP_IDLE_RIGHT || player.getDirection() == PlayerDirection.JUMP_RIGHT;
+            if (!player.sword.released) {
+                g2D.drawImage(
+                        (isToRight) ? imageLoader.sword[1] : imageLoader.sword[0],
+                        (int) ((isToRight) ? player.getX() + tileSize : player.getX() - 2 * tileSize),
+                        (int) player.getY(),
+                        2 * tileSize,
+                        tileSize,
+                        null
+                );
+            } else {
+                g2D.drawImage(
+                        (player.sword.speedX > 0) ? imageLoader.sword[1] : imageLoader.sword[0],
+                        (int) player.sword.getX(),
+                        (int) player.getY(),
+                        2 * tileSize,
+                        tileSize,
+                        null
+                );
+            }
+        }
+
         for (Fireball fireball : player.getFireballs()) {
             g2D.drawImage(
                     fireball.getImage(),
-                    (int)fireball.getX(),
-                    (int)fireball.getY(),
+                    (int) fireball.getX(),
+                    (int) fireball.getY(),
                     tileSize,
                     tileSize,
                     null

@@ -11,12 +11,14 @@ import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.enemy.Koopa;
 import ir.sharif.math.ap2023.project.model.enemy.Spiny;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.model.item.Bomb;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.item.Star;
 import ir.sharif.math.ap2023.project.model.pipe.*;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
+import ir.sharif.math.ap2023.project.model.player.Sword;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
@@ -48,6 +50,88 @@ public final class CollisionChecker {
         checkEnemiesBottomCollisions();
         checkEnemiesHorizontalCollisions();
         checkFireballCollisions();
+        if (GameEngine.getInstance().getPlayer().hasSword) {
+            checkSwordCollisions();
+        }
+        if (GameEngine.getInstance().boss != null) {
+            if (GameEngine.getInstance().boss.bomb != null) {
+                checkBombCollision();
+            }
+        }
+    }
+
+    private void checkSwordCollisions() {
+        Sword sword = GameEngine.getInstance().getPlayer().sword;
+        if (sword.released) {
+            Player player = GameEngine.getInstance().getPlayer();
+            SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+            Rectangle bounds = sword.getBounds(player);
+            if (sword.speedX > 0) {
+                for (BlockObject block : sectionObject.getBlocks()) {
+                    if (block.getLeftBounds().intersects(bounds)) {
+                        sword.setDestroyed(true);
+//                        player.hasSword = false;
+//                        player.sword = new Sword(player);
+                    }
+                }
+                for (PipeObject pipe : sectionObject.getPipes()) {
+                    if (pipe.getLeftBounds().intersects(bounds)) {
+                        sword.setDestroyed(true);
+//                        player.hasSword = false;
+//                        player.sword = new Sword(player);
+                    }
+                }
+                for (EnemyObject enemy : sectionObject.getEnemies()) {
+                    if (enemy.getLeftBounds().intersects(bounds)) {
+                        if (enemy instanceof Koopa)
+                            ((Koopa) enemy).setFreeze(true);
+                        enemy.kill();
+                        player.sword.setDestroyed(true);
+//                        player.hasSword = false;
+//                        player.sword = new Sword(player);
+                    }
+                }
+            } else {
+                for (BlockObject block : sectionObject.getBlocks()) {
+                    if (block.getRightBounds().intersects(bounds)) {
+                        sword.setDestroyed(true);
+//                        player.hasSword = false;
+//                        player.sword = new Sword(player);
+                    }
+                }
+                for (PipeObject pipe : sectionObject.getPipes()) {
+                    if (pipe.getRightBounds().intersects(bounds)) {
+                        sword.setDestroyed(true);
+//                        player.hasSword = false;
+//                        player.sword = new Sword(player);
+                    }
+                }
+                for (EnemyObject enemy : sectionObject.getEnemies()) {
+                    if (enemy.getRightBounds().intersects(bounds)) {
+                        if (enemy instanceof Koopa)
+                            ((Koopa) enemy).setFreeze(true);
+                        enemy.kill();
+                        player.sword.setDestroyed(true);
+//                        player.hasSword = false;
+//                        player.sword = new Sword(player);
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkBombCollision() {
+        Player player = GameEngine.getInstance().getPlayer();
+        Bomb bomb = GameEngine.getInstance().boss.bomb;
+        double distance = Math.abs(bomb.getX() - player.getX()) / UIManager.getInstance().getTileSize();
+        if (bomb.getY() >= 9 * UIManager.getInstance().getTileSize()) {
+            if (distance <= 2) {
+                System.out.println("Mario damage");
+            }
+            GameEngine.getInstance().boss.bomb = null;
+            GameEngine.getInstance().boss.nukeAttacking = false;
+            GameEngine.getInstance().boss.nukeCoolDownStart = true;
+        }
     }
 
     private void checkPlayerItemsCollision() {

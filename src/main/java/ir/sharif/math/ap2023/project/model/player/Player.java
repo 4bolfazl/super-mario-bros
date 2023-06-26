@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
+    @JsonIgnore
+    public boolean hasSword = false;
+    public Sword sword = new Sword(this);
     private String username;
     private String password;
     private double x = 2 * UIManager.getInstance().getTileSize();
@@ -597,9 +600,12 @@ public class Player {
                 invincible = false;
                 SoundManager soundManager = SoundManager.getInstance();
                 soundManager.pauseMusic();
-                if (GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).isBossSection())
-                    soundManager.playBackgroundMusic(BackgroundMusicType.CASTLE);
-                else
+                if (GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).isBossSection()) {
+                    if (GameEngine.getInstance().boss.isTriggered())
+                        soundManager.playBackgroundMusic(BackgroundMusicType.BOSS);
+                    else
+                        soundManager.playBackgroundMusic(BackgroundMusicType.CASTLE);
+                } else
                     soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
             }
         }
@@ -676,5 +682,25 @@ public class Player {
         setSpeedY(12.5);
         setFalling(false);
         setJumping(true);
+    }
+
+    public int swordCoolDownTimer = 0;
+    public boolean swordCoolDownStart = false;
+
+    public void shootSword() {
+        boolean isToRight = getDirection() == PlayerDirection.CROUCH_RIGHT || getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE || getDirection() == PlayerDirection.RIGHT || getDirection() == PlayerDirection.IDLE_RIGHT || getDirection() == PlayerDirection.JUMP_IDLE_RIGHT || getDirection() == PlayerDirection.JUMP_RIGHT;
+        sword.startPosition = (int) ((isToRight) ? getX() + 48 : getX() - 96);
+        sword.x = sword.startPosition;
+        sword.speedX = isToRight ? 4:-4;
+        sword.released = true;
+    }
+
+    public void activateSword() {
+        if (!hasSword && swordCoolDownTimer == 0) {
+            if (coins >= 0) {
+                coins -= 0;
+                hasSword = true;
+            }
+        }
     }
 }

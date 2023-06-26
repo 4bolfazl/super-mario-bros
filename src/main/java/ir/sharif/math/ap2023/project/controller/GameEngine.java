@@ -2,6 +2,7 @@ package ir.sharif.math.ap2023.project.controller;
 
 import ir.sharif.math.ap2023.project.controller.inputManager.KeyboardHandler;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.CollisionChecker;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
@@ -11,6 +12,8 @@ import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
+import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
+import ir.sharif.math.ap2023.project.model.player.Sword;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -26,6 +29,7 @@ public final class GameEngine implements Runnable {
     public JFrame window;
     public Random randomGenerator = new Random();
     public Bowser boss;
+    public int swordPressTimer = 0;
     private Thread gameThread;
     private GameState gameState = GameState.LOGIN_MENU;
     private Player player;
@@ -104,6 +108,93 @@ public final class GameEngine implements Runnable {
         updateItems();
         updateEnemies();
         updateFireballs();
+        updateKeyDelay();
+        updateSword();
+    }
+
+    private void updateSword() {
+        player.sword.updateLocation();
+        if (player.swordCoolDownStart) {
+            player.swordCoolDownTimer++;
+            if (player.swordCoolDownTimer >= 270) {
+                player.swordCoolDownTimer = 0;
+            }
+        }
+        if (player.sword.isDestroyed()) {
+            player.hasSword = false;
+            player.sword = new Sword(player);
+            player.swordCoolDownStart = true;
+        }
+    }
+
+    private void updateKeyDelay() {
+        KeyboardHandler keyboardHandler = KeyboardHandler.getInstance();
+        if (!keyboardHandler.upPressed && !keyboardHandler.downPressed)
+            swordPressTimer = 0;
+        if (keyboardHandler.upPressed && keyboardHandler.upDelay >= 2) {
+            keyboardHandler.upDelay = 0;
+            if (!keyboardHandler.downPressed) {
+                swordPressTimer = 0;
+                if (!player.isJumping() && !player.isFalling()) {
+                    SoundManager soundManager = SoundManager.getInstance();
+                    soundManager.playSoundEffect(SoundEffectType.JUMP);
+                    switch (player.getDirection()) {
+                        case IDLE_RIGHT -> {
+                            player.setDirection(PlayerDirection.JUMP_IDLE_RIGHT);
+                            player.setSpeedY(12.5);
+                            player.setJumping(true);
+                        }
+                        case IDLE_LEFT -> {
+                            player.setDirection(PlayerDirection.JUMP_IDLE_LEFT);
+                            player.setSpeedY(12.5);
+                            player.setJumping(true);
+                        }
+                        case RIGHT -> {
+                            player.setDirection(PlayerDirection.JUMP_RIGHT);
+                            player.setSpeedY(12.5);
+                            player.setSpeedX(4);
+                            player.setJumping(true);
+                        }
+                        case LEFT -> {
+                            player.setDirection(PlayerDirection.JUMP_LEFT);
+                            player.setSpeedY(12.5);
+                            player.setSpeedX(-4);
+                            player.setJumping(true);
+                        }
+                    }
+                }
+            } else {
+                swordPressTimer++;
+                if (swordPressTimer >= 40) {
+                    player.activateSword();
+                }
+            }
+        } else if (KeyboardHandler.getInstance().upPressed) {
+            keyboardHandler.upDelay++;
+        }
+        if (keyboardHandler.downPressed && keyboardHandler.downDelay >= 2) {
+            keyboardHandler.downDelay = 0;
+            if (!keyboardHandler.upPressed) {
+                swordPressTimer = 0;
+                if (player.getPipeUnder() != null)
+                    player.enterSecretPipe();
+                if (player.getCharacterState() > 0) {
+                    player.setCrouching(true);
+                    switch (player.getDirection()) {
+                        case IDLE_RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
+                        case RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT);
+                        case IDLE_LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
+                        case LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT);
+                    }
+                }
+            } else {
+                swordPressTimer++;
+                if (swordPressTimer >= 40)
+                    player.activateSword();
+            }
+        } else if (keyboardHandler.downPressed) {
+            keyboardHandler.downDelay++;
+        }
     }
 
     private void updateFireballs() {
@@ -125,6 +216,9 @@ public final class GameEngine implements Runnable {
             }
             for (Fireball fireball : toBeRemoved) {
                 boss.getFireballs().remove(fireball);
+            }
+            if (boss.bomb != null) {
+                boss.bomb.updateLocation();
             }
         }
     }

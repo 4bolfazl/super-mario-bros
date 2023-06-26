@@ -3,9 +3,12 @@ package ir.sharif.math.ap2023.project.model.enemy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
+import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.model.item.Bomb;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
@@ -36,6 +39,15 @@ public class Bowser extends EnemyObject {
     public int nukeCoolDown = 0;
     public int jumpAttackTimer = 0;
     public boolean jumpAttackStarted = false;
+    @JsonIgnore
+    public int playersFireballs = 0;
+    @JsonIgnore
+    public boolean nukeAttackStarted = false;
+    @JsonIgnore
+    public int nukePressTimer = 0;
+    public Bomb bomb;
+    @JsonIgnore
+    public boolean phase2 = true;
     @JsonIgnore
     int fireDelay = 120;
     @JsonIgnore
@@ -134,6 +146,9 @@ public class Bowser extends EnemyObject {
         }
         if (falling && jumpAttackStarted) {
             return images[toRight ? 19 : 18];
+        }
+        if (nukeAttackStarted) {
+            return images[(toRight ? 16 : 7) + frame / 15];
         }
         if (fireballAttacking) {
             return images[(toRight ? 11 : 2) + frame / 15];
@@ -277,6 +292,8 @@ public class Bowser extends EnemyObject {
                     sectionObject.getBlocks().add(new EmptyBlockObject(25, i, BlockType.EMPTY));
                 }
                 triggered = true;
+                SoundManager.getInstance().pauseMusic();
+                SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.BOSS);
             }
         } else {
             if (!isDead() && !isFreeze()) {
@@ -287,16 +304,21 @@ public class Bowser extends EnemyObject {
                     setSpeedX(toRight ? 3 : -3);
                 } else if ((distanceFromMario >= 6 && distanceFromMario <= 10 && fireballCoolDown == 0) || fireballAttacking) {
                     speedX = 0;
-                    fireballAttack();
+//                    fireballAttack();
                 } else if ((distanceFromMario <= 2 && distanceFromMario >= 0 && GameEngine.getInstance().getPlayer().getY() >= solidArea.y && grabCoolDown == 0) || grabAttacking || grabAttackingStarted) {
                     speedX = 0;
-                    grabAttack();
-                } else if ((playerOnTheGroundTime >= 200 && jumpCoolDown == 0)) { // TODO: MARIO 4 SECONDS ON GROUND
+//                    grabAttack();
+                } else if ((playerOnTheGroundTime >= 200 && jumpCoolDown == 0)) {
                     speedX = 0;
                     playerOnTheGroundTime = 0;
-                    jumpAttack();
+//                    jumpAttack();
+                } else if (playersFireballs >= 5 && phase2) {
+                    speedX = 0;
+                    playersFireballs = 0;
+                    nukeAttack();
+                } else {
+                    setSpeedX(GameEngine.getInstance().randomGenerator.nextBoolean() ? -1.5 : 1.5);
                 }
-                // TODO: NO MOVE RESULTS IN RANDOM MOVE 0.75 bps
                 if (jumping && speedY <= 0) {
                     if (waitOnAir == 0)
                         speedY = 0;
@@ -324,6 +346,13 @@ public class Bowser extends EnemyObject {
     }
 
     public void updateTime() {
+        if (nukeAttackStarted) {
+            nukePressTimer++;
+            if (nukePressTimer >= 120) {
+                nukePressTimer = 0;
+                nukeAttackStarted = false;
+            }
+        }
         if (jumpAttacking) {
             jumpAttackTimer++;
             if (jumpAttackTimer >= 250) {
@@ -428,7 +457,8 @@ public class Bowser extends EnemyObject {
     }
 
     public void nukeAttack() {
-
+        nukeAttackStarted = true;
+        bomb = new Bomb(UIManager.getInstance().getTileSize() * (GameEngine.getInstance().randomGenerator.nextInt(24) + 1), -48);
     }
 
     private void throwPlayer() {
@@ -453,30 +483,3 @@ public class Bowser extends EnemyObject {
 
     }
 }
-
-//class attackThread extends Thread {
-//    Bowser boss;
-//
-//    public attackThread(Bowser boss) {
-//        super();
-//        this.boss = boss;
-//    }
-//
-//    @Override
-//    public void run() {
-//        while (!boss.isDead()) {
-//            System.out.println("checking "  + boss.fireballAttacking.get());
-//            if (boss.grabAttacking.get())
-//                grabAttacking();
-//            else if (boss.fireballAttacking.get()) {
-//                System.out.println("thread understands attack");
-//                fireballAttacking();
-//            } else if (boss.jumpAttacking.get())
-//                jumpAttacking();
-//            else if (boss.nukeAttacking.get())
-//                nukeAttacking();
-//        }
-//    }
-//
-//
-//}

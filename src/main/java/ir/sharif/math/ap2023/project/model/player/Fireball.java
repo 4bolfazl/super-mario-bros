@@ -8,11 +8,11 @@ import java.awt.image.BufferedImage;
 
 public class Fireball {
     protected double x, y;
-    double startPosition;
-    protected int speedX;
-    int distanceTraveled = 0;
+    protected double startPosition;
+    public int speedX;
+    protected int distanceTraveled = 0;
     protected boolean toRight;
-    boolean determined = false;
+    protected boolean determined = false;
     protected boolean destroyed = false;
 
     public Fireball(double x, double y, boolean toRight) {
@@ -21,6 +21,10 @@ public class Fireball {
         this.startPosition = x;
         this.toRight = toRight;
         this.speedX = (toRight) ? 4 : -4;
+    }
+
+    public Fireball() {
+
     }
 
     public void updateLocation() {
