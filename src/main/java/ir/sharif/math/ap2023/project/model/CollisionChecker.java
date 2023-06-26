@@ -148,7 +148,7 @@ public final class CollisionChecker {
         double distance = Math.abs(bomb.getX() - player.getX()) / UIManager.getInstance().getTileSize();
         if (bomb.getY() >= 9 * UIManager.getInstance().getTileSize()) {
             if (distance <= 2) {
-                System.out.println("Mario damage");
+                player.decreaseHeartHit();
             }
             GameEngine.getInstance().boss.bomb = null;
             GameEngine.getInstance().boss.nukeAttacking = false;

@@ -10,5 +10,6 @@ public enum BlockType {
     QUESTION2,
     SLIME,
     FIREBAR,
+    FIRE_GROUND,
     GROUND
 }

@@ -26,6 +26,8 @@ public class Player {
     @JsonIgnore
     public boolean hasSword = false;
     public Sword sword = new Sword(this);
+    public int swordCoolDownTimer = 0;
+    public boolean swordCoolDownStart = false;
     private String username;
     private String password;
     private double x = 2 * UIManager.getInstance().getTileSize();
@@ -684,21 +686,18 @@ public class Player {
         setJumping(true);
     }
 
-    public int swordCoolDownTimer = 0;
-    public boolean swordCoolDownStart = false;
-
     public void shootSword() {
         boolean isToRight = getDirection() == PlayerDirection.CROUCH_RIGHT || getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE || getDirection() == PlayerDirection.RIGHT || getDirection() == PlayerDirection.IDLE_RIGHT || getDirection() == PlayerDirection.JUMP_IDLE_RIGHT || getDirection() == PlayerDirection.JUMP_RIGHT;
         sword.startPosition = (int) ((isToRight) ? getX() + 48 : getX() - 96);
         sword.x = sword.startPosition;
-        sword.speedX = isToRight ? 4:-4;
+        sword.speedX = isToRight ? 4 : -4;
         sword.released = true;
     }
 
     public void activateSword() {
         if (!hasSword && swordCoolDownTimer == 0) {
-            if (coins >= 0) {
-                coins -= 0;
+            if (coins >= 3) {
+                coins -= 3;
                 hasSword = true;
             }
         }

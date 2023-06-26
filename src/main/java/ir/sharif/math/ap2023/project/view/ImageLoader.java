@@ -108,7 +108,8 @@ public final class ImageLoader {
         blocks.put(BlockType.QUESTION, loadImage("/blocks/question0.png"));
         blocks.put(BlockType.QUESTION1, loadImage("/blocks/question1.png"));
         blocks.put(BlockType.QUESTION2, loadImage("/blocks/question2.png"));
-        blocks.put(BlockType.GROUND, loadImage("/blocks/ground.png"));
+        blocks.put(BlockType.GROUND, loadImage("/blocks/ground0.png"));
+        blocks.put(BlockType.FIRE_GROUND, loadImage("/blocks/ground1.png"));
     }
 
     private void loadSprites() {

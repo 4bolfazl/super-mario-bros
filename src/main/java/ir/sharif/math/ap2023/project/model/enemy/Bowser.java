@@ -3,6 +3,7 @@ package ir.sharif.math.ap2023.project.model.enemy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
+import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
@@ -144,6 +145,8 @@ public class Bowser extends EnemyObject {
         if (frame >= 30) {
             frame = 0;
         }
+        if (GameEngine.getInstance().scene)
+            return images[toRight ? 15 : 6];
         if (falling && jumpAttackStarted) {
             return images[toRight ? 19 : 18];
         }
@@ -350,6 +353,7 @@ public class Bowser extends EnemyObject {
             freezeTimer++;
             if (freezeTimer >= 50) {
                 freeze = false;
+                freezeTimer = 0;
             }
         }
         if (nukeAttackStarted) {
@@ -489,14 +493,16 @@ public class Bowser extends EnemyObject {
     }
 
     public void kill(int damage) {
-        if (getHP() > 0) {
-            if (getHP() > 50) {
-                decreaseHP(damage);
-                freeze = true;
-            } else {
-                phase2 = true;
-                // TODO: CUTSCENE
-            }
+        decreaseHP(damage);
+        if (getHP() <= 10 && !phase2) {
+            System.out.println("xxxxxxxxxx");
+            GameEngine.getInstance().setGameState(GameState.SCENE);
+            GameEngine.getInstance().scene = true;
+            // TODO: CUTSCENE
+        }
+        freeze = true;
+        if (getHP() <= 0) {
+            setDead(true);
         }
     }
 }

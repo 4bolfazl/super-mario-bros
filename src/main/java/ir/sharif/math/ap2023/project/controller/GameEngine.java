@@ -110,6 +110,19 @@ public final class GameEngine implements Runnable {
         updateFireballs();
         updateKeyDelay();
         updateSword();
+        if (scene)
+            updateCutScene();
+    }
+
+    private void updateCutScene() {
+        sceneTimer1++;
+        if (sceneTimer1 >= 120){
+            sceneTimer1 = 0;
+            player.setCharacterState(2);
+            boss.phase2 = true;
+            scene = false;
+            setGameState(GameState.PLAYING);
+        }
     }
 
     private void updateSword() {
@@ -265,4 +278,7 @@ public final class GameEngine implements Runnable {
     public void addItem(Item item) {
         this.items.add(item);
     }
+
+    public int sceneTimer1 =0;
+    public boolean scene=false;
 }
