@@ -1,8 +1,8 @@
 package ir.sharif.math.ap2023.project.model.pipe;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.view.UIManager;
 
 public class TelePiranhaPipe extends PiranhaTrapPipe {
     Piranha piranha = new Piranha();
@@ -34,5 +34,21 @@ public class TelePiranhaPipe extends PiranhaTrapPipe {
     @Override
     public void setPiranha(Piranha piranha) {
         this.piranha = piranha;
+    }
+
+    @Override
+    public void setX(int x) {
+        super.setX(x);
+        piranha.setX((x * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize() / 2));
+    }
+
+    @Override
+    public void setY(int y) {
+        super.setY(y);
+        piranha.setY((8 - y) * UIManager.getInstance().getTileSize());
+    }
+
+    public void killPiranha() {
+        piranha = null;
     }
 }
