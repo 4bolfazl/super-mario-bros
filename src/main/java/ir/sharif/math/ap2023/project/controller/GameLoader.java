@@ -33,4 +33,8 @@ public final class GameLoader {
     public void setGame(Game game) {
         this.game = game;
     }
+
+    public void reset() {
+        instance = new GameLoader("config.json");
+    }
 }

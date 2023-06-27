@@ -362,6 +362,15 @@ public final class GameEngine implements Runnable {
         );
     }
 
+    public void reset() {
+        player.reset();
+        swordPressTimer = 0;
+        sceneTimer1 = 0;
+        scene = false;
+        items = new ArrayList<>();
+        boss = null;
+    }
+
     public void loadGameEngine(GameEngineCopy gameEngineCopy) {
         this.swordPressTimer = gameEngineCopy.swordPressTimer;
         this.sceneTimer1 = gameEngineCopy.getSceneTimer1();

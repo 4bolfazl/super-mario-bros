@@ -75,14 +75,14 @@ public final class Database {
         this.users = users;
     }
 
-    public Player findUserByUsername(String username) {
-        for (Player user : users) {
+    public Player findUserByUsername(String username, Database instance) {
+        for (Player user : instance.users) {
             if (user.getUsername().equals(username)) {
-                currentUser = user;
+                instance.currentUser = user;
                 return user;
             }
         }
-        currentUser = null;
+        instance.currentUser = null;
         return null;
     }
 
@@ -90,6 +90,16 @@ public final class Database {
         users.add(user);
 
         write();
+    }
+
+    public void reload() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            instance = mapper.readValue(getJsonFile(), Database.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        findUserByUsername(currentUser.getUsername(), instance);
     }
 
     private void write() {
@@ -111,11 +121,11 @@ public final class Database {
         GameEngineCopy gameEngineCopy = GameEngine.getInstance().copy();
         gameEngineCopy.setGameState(GameState.PLAYING);
 
-        player.getSavedPlayer()[UIManager.getInstance().saveOption-1] = tempPlayer;
-        player.getSavedGameEngineCopy()[UIManager.getInstance().saveOption-1] = gameEngineCopy;
-        player.getSavedGame()[UIManager.getInstance().saveOption-1] = GameLoader.getInstance("config.json").getGame().clone();
+        player.getSavedPlayer()[UIManager.getInstance().saveOption - 1] = tempPlayer;
+        player.getSavedGameEngineCopy()[UIManager.getInstance().saveOption - 1] = gameEngineCopy;
+        player.getSavedGame()[UIManager.getInstance().saveOption - 1] = GameLoader.getInstance("config.json").getGame().clone();
 
-        users.set(users.indexOf(findUserByUsername(player.getUsername())), player);
+        users.set(users.indexOf(findUserByUsername(player.getUsername(), instance)), player);
         write();
     }
 }

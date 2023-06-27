@@ -289,7 +289,7 @@ public final class KeyboardHandler implements KeyListener {
             }
         } else if (code == KeyEvent.VK_ENTER) {
             gameEngine.getPlayer().setDifficulty(uiManager.difficultyOption);
-            gameEngine.setGameState(GameState.PLAYING);
+            resetGame();
         }
     }
 
@@ -348,11 +348,19 @@ public final class KeyboardHandler implements KeyListener {
     }
 
     private void loadGame() {
+        Database.getInstance().reload();
         Player currentUser = Database.getInstance().getCurrentUser();
         int slot = UIManager.getInstance().saveOption - 1;
         GameLoader.getInstance("config.json").setGame(currentUser.getSavedGame()[slot]);
         GameEngine.getInstance().getPlayer().loadPlayer(currentUser.getSavedPlayer()[slot]);
         GameEngine.getInstance().loadGameEngine(currentUser.getSavedGameEngineCopy()[slot]);
+
+        GameEngine.getInstance().setGameState(GameState.PLAYING);
+    }
+
+    private void resetGame() {
+        GameEngine.getInstance().reset();
+        GameLoader.getInstance("config.json").reset();
 
         GameEngine.getInstance().setGameState(GameState.PLAYING);
     }

@@ -87,7 +87,7 @@ public final class UIManager extends JPanel {
         signInButton.setFont(font);
         signInButton.addActionListener(e -> {
             String username = usernameField.getText();
-            Player player = database.findUserByUsername(username);
+            Player player = database.findUserByUsername(username, Database.getInstance());
             if (player == null) {
                 JOptionPane.showMessageDialog(null, "Username doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -118,7 +118,7 @@ public final class UIManager extends JPanel {
             } else if (password.equals("")) {
                 JOptionPane.showMessageDialog(null, "Password field is empty!", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                if (database.findUserByUsername(username) != null) {
+                if (database.findUserByUsername(username, Database.getInstance()) != null) {
                     JOptionPane.showMessageDialog(null, "Username already exists!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     Player user = new Player(username, password);

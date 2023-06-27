@@ -106,7 +106,7 @@ public class Player implements Cloneable {
         init();
     }
 
-    public  void loadPlayer(PlayerToSave player) {
+    public void loadPlayer(PlayerToSave player) {
         this.hasSword = player.hasSword;
         this.sword = player.sword;
         this.swordCoolDownTimer = player.swordCoolDownTimer;
@@ -839,6 +839,40 @@ public class Player implements Cloneable {
 
     public void setContinuing(boolean continuing) {
         this.continuing = continuing;
+    }
+
+    public void reset() {
+        hasSword = false;
+        sword = new Sword(this);
+        swordCoolDownTimer = 0;
+        swordCoolDownStart = false;
+        x = 2 * UIManager.getInstance().getTileSize();
+        y = UIManager.getInstance().getScreenHeight() - UIManager.getInstance().getTileSize() * 7;
+        time = 0;
+        level = 1;
+        section = 1;
+        coins = 0;
+        hearts = 3;
+        characterState = 0;
+        score = 0;
+        direction = PlayerDirection.IDLE_RIGHT;
+        speedX = 0;
+        speedY = 0;
+        gravity = 0.38;
+        jumping = false;
+        falling = false;
+        frame = 0;
+        crouching = false;
+        invincible = false;
+        enemyInvincible = false;
+        invincibleTime = 0;
+        enemyInvincibleTime = 0;
+        enemyInvincibleFrame = 0;
+        fireballs = new ArrayList<>();
+        solidArea = new Rectangle((int) x, (int) y, UIManager.getInstance().getTileSize(), UIManager.getInstance().getTileSize());
+        pipeUnder = null;
+        tempSection = null;
+        tempPipe = null;
     }
 
     @Override
