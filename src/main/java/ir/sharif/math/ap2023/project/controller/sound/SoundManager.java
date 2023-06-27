@@ -7,8 +7,10 @@ import java.util.HashMap;
 
 public final class SoundManager {
     private static SoundManager instance;
+    boolean on = true;
     private Clip clip;
     private Clip SEClip;
+    private BackgroundMusicType lastMusic;
     private HashMap<SoundEffectType, URL> soundEffects = new HashMap<>();
     private HashMap<BackgroundMusicType, URL> backgroundMusics = new HashMap<>();
 
@@ -49,29 +51,44 @@ public final class SoundManager {
     }
 
     public void playBackgroundMusic(BackgroundMusicType music) {
-        try {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(backgroundMusics.get(music));
-            clip.open(ais);
-        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException | IllegalStateException e) {
-            e.printStackTrace();
+        if (on) {
+            try {
+                AudioInputStream ais = AudioSystem.getAudioInputStream(backgroundMusics.get(music));
+                clip.open(ais);
+            } catch (LineUnavailableException | UnsupportedAudioFileException | IOException | IllegalStateException e) {
+                e.printStackTrace();
+            }
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            lastMusic = music;
         }
-        clip.start();
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     public void playSoundEffect(SoundEffectType sound) {
-        try {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(soundEffects.get(sound));
-            SEClip = AudioSystem.getClip();
-            SEClip.open(ais);
-        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
+        if (on) {
+            try {
+                AudioInputStream ais = AudioSystem.getAudioInputStream(soundEffects.get(sound));
+                SEClip = AudioSystem.getClip();
+                SEClip.open(ais);
+            } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+                e.printStackTrace();
+            }
+            SEClip.start();
         }
-        SEClip.start();
     }
 
     public void pauseMusic() {
         clip.stop();
         clip.close();
+    }
+
+    public void changeStatus() {
+        if (on) {
+            pauseMusic();
+            on = false;
+        } else {
+            on = true;
+            playBackgroundMusic(lastMusic);
+        }
     }
 }

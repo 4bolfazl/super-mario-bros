@@ -11,5 +11,6 @@ public enum GameState {
     PROFILE,
     SCENE,
     BOSS_DEAD,
-    CHECKPOINT
+    CHECKPOINT,
+    PAUSE
 }

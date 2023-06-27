@@ -159,7 +159,7 @@ public final class UIManager extends JPanel {
             case MAIN_MENU -> drawMainMenu(g2D);
             case SELECT_SAVE_SLOT -> drawSelectSaveSlot(g2D);
             case SELECT_DIFFICULTY -> drawSelectDifficulty(g2D);
-            case PLAYING, SCENE, CHECKPOINT -> {
+            case PLAYING, SCENE, CHECKPOINT, PAUSE -> {
                 g2D.drawImage(imageLoader.gameBackground, 0, 0, 26 * tileSize, 10 * tileSize, null);
                 drawItems(g2D);
                 drawPipes(g2D);
@@ -168,11 +168,44 @@ public final class UIManager extends JPanel {
                 drawPlayer(g2D);
                 drawInfo(g2D);
                 drawCheckpointPanel(g2D);
+                drawPause(g2D);
             }
             case BOSS_DEAD -> drawCongrats(g2D);
         }
 
         g2D.dispose();
+    }
+
+    private void drawPause(Graphics2D g2D) {
+        if (GameEngine.getInstance().getGameState() == GameState.PAUSE) {
+            g2D.setColor(transparentBlack);
+            g2D.fillRect(0, 0, screenWidth, screenHeight);
+
+            g2D.setFont(font.deriveFont(Font.BOLD, 26F));
+            g2D.setColor(Color.WHITE);
+
+            String text = "Press [Esc] to continue the game";
+            int x = getXOfCenteredText(text, g2D);
+            g2D.drawString(
+                    text,
+                    x,
+                    264
+            );
+            text = "Press [Del] to exit the game";
+            x = getXOfCenteredText(text, g2D);
+            g2D.drawString(
+                    text,
+                    x,
+                    360
+            );
+            text = "Press [M] to change sound status";
+            x = getXOfCenteredText(text, g2D);
+            g2D.drawString(
+                    text,
+                    x,
+                    456
+            );
+        }
     }
 
     private void drawCheckpointPanel(Graphics2D g2D) {

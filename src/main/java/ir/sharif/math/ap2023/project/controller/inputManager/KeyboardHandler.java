@@ -3,6 +3,7 @@ package ir.sharif.math.ap2023.project.controller.inputManager;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
@@ -126,6 +127,15 @@ public final class KeyboardHandler implements KeyListener {
             case SELECT_DIFFICULTY -> selectDifficultyHandler(code);
             case PLAYING -> playingHandler(code);
             case CHECKPOINT -> checkpointHandler(code);
+            case PAUSE -> pauseHandler(code);
+        }
+    }
+
+    private void pauseHandler(int code) {
+        switch (code) {
+            case KeyEvent.VK_M -> SoundManager.getInstance().changeStatus();
+            case KeyEvent.VK_ESCAPE -> GameEngine.getInstance().setGameState(GameState.PLAYING);
+            case KeyEvent.VK_DELETE -> GameEngine.getInstance().setGameState(GameState.MAIN_MENU);
         }
     }
 
@@ -140,114 +150,118 @@ public final class KeyboardHandler implements KeyListener {
 
     private void playingHandler(int code) {
         Player player = GameEngine.getInstance().getPlayer();
-        if (GameEngine.getInstance().boss == null || (!GameEngine.getInstance().boss.grabAttacking && !GameEngine.getInstance().boss.jumpAttacking)) {
-            switch (code) {
-                case KeyEvent.VK_RIGHT -> {
-                    if (player.isCrouching())
-                        player.setDirection(PlayerDirection.CROUCH_RIGHT);
-                    else
-                        player.setDirection(PlayerDirection.RIGHT);
-                    player.setSpeedX(4);
-                }
-                case KeyEvent.VK_LEFT -> {
-                    if (player.isCrouching())
-                        player.setDirection(PlayerDirection.CROUCH_LEFT);
-                    else
-                        player.setDirection(PlayerDirection.LEFT);
-                    player.setSpeedX(-4);
-                }
-                case KeyEvent.VK_DOWN -> {
-                    downPressed = true;
-                }
-                case KeyEvent.VK_UP -> {
-                    upPressed = true;
-                }
-                case KeyEvent.VK_CONTROL -> {
-                    if (player.getCharacterState() == 2) {
-                        if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
-                            if (player.getSpeedY() == 0) {
-                                player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
-                                if (GameEngine.getInstance().boss != null) {
-                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
-                                        GameEngine.getInstance().boss.playersFireballs++;
+        if (code == KeyEvent.VK_ESCAPE) {
+            GameEngine.getInstance().setGameState(GameState.PAUSE);
+        } else {
+            if (GameEngine.getInstance().boss == null || (!GameEngine.getInstance().boss.grabAttacking && !GameEngine.getInstance().boss.jumpAttacking)) {
+                switch (code) {
+                    case KeyEvent.VK_RIGHT -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_RIGHT);
+                        else
+                            player.setDirection(PlayerDirection.RIGHT);
+                        player.setSpeedX(4);
+                    }
+                    case KeyEvent.VK_LEFT -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_LEFT);
+                        else
+                            player.setDirection(PlayerDirection.LEFT);
+                        player.setSpeedX(-4);
+                    }
+                    case KeyEvent.VK_DOWN -> {
+                        downPressed = true;
+                    }
+                    case KeyEvent.VK_UP -> {
+                        upPressed = true;
+                    }
+                    case KeyEvent.VK_CONTROL -> {
+                        if (player.getCharacterState() == 2) {
+                            if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
+                                if (player.getSpeedY() == 0) {
+                                    player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
+                                    if (GameEngine.getInstance().boss != null) {
+                                        if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                            GameEngine.getInstance().boss.playersFireballs++;
+                                    }
                                 }
-                            }
-                        } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
-                            if (player.getSpeedY() == 0) {
-                                player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
-                                if (GameEngine.getInstance().boss != null) {
-                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
-                                        GameEngine.getInstance().boss.playersFireballs++;
+                            } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
+                                if (player.getSpeedY() == 0) {
+                                    player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
+                                    if (GameEngine.getInstance().boss != null) {
+                                        if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                            GameEngine.getInstance().boss.playersFireballs++;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                case KeyEvent.VK_SPACE -> {
-                    if (player.hasSword) {
-                        if (!player.sword.released)
-                            player.shootSword();
+                    case KeyEvent.VK_SPACE -> {
+                        if (player.hasSword) {
+                            if (!player.sword.released)
+                                player.shootSword();
+                        }
                     }
                 }
-            }
-        } else if (GameEngine.getInstance().boss != null && GameEngine.getInstance().boss.grabAttacking) {
-            Bowser boss = GameEngine.getInstance().boss;
-            switch (code) {
-                case KeyEvent.VK_RIGHT -> {
-                    if (boss.lastKey == 0)
-                        boss.lastKey = KeyEvent.VK_RIGHT;
-                    else if (boss.lastKey == KeyEvent.VK_LEFT) {
-                        boss.pressedTimes++;
-                        boss.lastKey = KeyEvent.VK_RIGHT;
+            } else if (GameEngine.getInstance().boss != null && GameEngine.getInstance().boss.grabAttacking) {
+                Bowser boss = GameEngine.getInstance().boss;
+                switch (code) {
+                    case KeyEvent.VK_RIGHT -> {
+                        if (boss.lastKey == 0)
+                            boss.lastKey = KeyEvent.VK_RIGHT;
+                        else if (boss.lastKey == KeyEvent.VK_LEFT) {
+                            boss.pressedTimes++;
+                            boss.lastKey = KeyEvent.VK_RIGHT;
+                        }
+                    }
+                    case KeyEvent.VK_LEFT -> {
+                        if (boss.lastKey == 0)
+                            boss.lastKey = KeyEvent.VK_LEFT;
+                        else if (boss.lastKey == KeyEvent.VK_RIGHT) {
+                            boss.pressedTimes++;
+                            boss.lastKey = KeyEvent.VK_LEFT;
+                        }
                     }
                 }
-                case KeyEvent.VK_LEFT -> {
-                    if (boss.lastKey == 0)
-                        boss.lastKey = KeyEvent.VK_LEFT;
-                    else if (boss.lastKey == KeyEvent.VK_RIGHT) {
-                        boss.pressedTimes++;
-                        boss.lastKey = KeyEvent.VK_LEFT;
+            } else if (GameEngine.getInstance().boss != null && GameEngine.getInstance().boss.jumpAttacking) {
+                switch (code) {
+                    case KeyEvent.VK_DOWN -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_RIGHT);
+                        else
+                            player.setDirection(PlayerDirection.RIGHT);
+                        player.setSpeedX(4);
                     }
-                }
-            }
-        } else if (GameEngine.getInstance().boss != null && GameEngine.getInstance().boss.jumpAttacking) {
-            switch (code) {
-                case KeyEvent.VK_DOWN -> {
-                    if (player.isCrouching())
-                        player.setDirection(PlayerDirection.CROUCH_RIGHT);
-                    else
-                        player.setDirection(PlayerDirection.RIGHT);
-                    player.setSpeedX(4);
-                }
-                case KeyEvent.VK_UP -> {
-                    if (player.isCrouching())
-                        player.setDirection(PlayerDirection.CROUCH_LEFT);
-                    else
-                        player.setDirection(PlayerDirection.LEFT);
-                    player.setSpeedX(-4);
-                }
-                case KeyEvent.VK_RIGHT -> {
-                    downPressed = true;
-                }
-                case KeyEvent.VK_CONTROL -> {
-                    upPressed = true;
-                }
-                case KeyEvent.VK_LEFT -> {
-                    if (player.getCharacterState() == 2) {
-                        if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
-                            if (player.getSpeedY() == 0) {
-                                player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
-                                if (GameEngine.getInstance().boss != null) {
-                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
-                                        GameEngine.getInstance().boss.playersFireballs++;
+                    case KeyEvent.VK_UP -> {
+                        if (player.isCrouching())
+                            player.setDirection(PlayerDirection.CROUCH_LEFT);
+                        else
+                            player.setDirection(PlayerDirection.LEFT);
+                        player.setSpeedX(-4);
+                    }
+                    case KeyEvent.VK_RIGHT -> {
+                        downPressed = true;
+                    }
+                    case KeyEvent.VK_CONTROL -> {
+                        upPressed = true;
+                    }
+                    case KeyEvent.VK_LEFT -> {
+                        if (player.getCharacterState() == 2) {
+                            if (player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE) {
+                                if (player.getSpeedY() == 0) {
+                                    player.getFireballs().add(new Fireball((int) player.getX() + UIManager.getInstance().getTileSize(), (int) player.getY(), true));
+                                    if (GameEngine.getInstance().boss != null) {
+                                        if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                            GameEngine.getInstance().boss.playersFireballs++;
+                                    }
                                 }
-                            }
-                        } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
-                            if (player.getSpeedY() == 0) {
-                                player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
-                                if (GameEngine.getInstance().boss != null) {
-                                    if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
-                                        GameEngine.getInstance().boss.playersFireballs++;
+                            } else if (player.getDirection() == PlayerDirection.IDLE_LEFT || player.getDirection() == PlayerDirection.LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT || player.getDirection() == PlayerDirection.CROUCH_LEFT_IDLE) {
+                                if (player.getSpeedY() == 0) {
+                                    player.getFireballs().add(new Fireball((int) player.getX() - 2 * UIManager.getInstance().getTileSize() + UIManager.getInstance().getTileSize(), (int) player.getY(), false));
+                                    if (GameEngine.getInstance().boss != null) {
+                                        if (GameEngine.getInstance().boss.phase2 && !GameEngine.getInstance().boss.nukeAttackStarted && GameEngine.getInstance().boss.nukeCoolDown == 0)
+                                            GameEngine.getInstance().boss.playersFireballs++;
+                                    }
                                 }
                             }
                         }
@@ -335,7 +349,7 @@ public final class KeyboardHandler implements KeyListener {
 
     private void loadGame() {
         Player currentUser = Database.getInstance().getCurrentUser();
-        int slot = UIManager.getInstance().saveOption-1;
+        int slot = UIManager.getInstance().saveOption - 1;
         GameLoader.getInstance("config.json").setGame(currentUser.getSavedGame()[slot]);
         GameEngine.getInstance().getPlayer().loadPlayer(currentUser.getSavedPlayer()[slot]);
         GameEngine.getInstance().loadGameEngine(currentUser.getSavedGameEngineCopy()[slot]);
