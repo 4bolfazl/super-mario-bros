@@ -11,6 +11,7 @@ import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
+import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
@@ -51,6 +52,7 @@ public final class UIManager extends JPanel {
     private JPasswordField passwordField;
     private JButton signInButton, signUpButton;
     private int timer = 0;
+    private final Color transparentBlack = new Color(0, 0, 0, 175);
 
     private UIManager() {
         imageLoader = ImageLoader.getInstance();
@@ -99,6 +101,7 @@ public final class UIManager extends JPanel {
                     signUpButton.setVisible(false);
                     signInButton.setVisible(false);
                     GameEngine.getInstance().setGameState(GameState.MAIN_MENU);
+                    GameEngine.getInstance().setPlayer(player);
                     GameEngine.getInstance().startGame();
                 }
             }
@@ -126,6 +129,7 @@ public final class UIManager extends JPanel {
                     signUpButton.setVisible(false);
                     signInButton.setVisible(false);
                     GameEngine.getInstance().setGameState(GameState.MAIN_MENU);
+                    GameEngine.getInstance().setPlayer(user);
                     GameEngine.getInstance().startGame();
                 }
             }
@@ -154,7 +158,7 @@ public final class UIManager extends JPanel {
             case MAIN_MENU -> drawMainMenu(g2D);
             case SELECT_SAVE_SLOT -> drawSelectSaveSlot(g2D);
             case SELECT_DIFFICULTY -> drawSelectDifficulty(g2D);
-            case PLAYING, SCENE -> {
+            case PLAYING, SCENE, CHECKPOINT -> {
                 g2D.drawImage(imageLoader.gameBackground, 0, 0, 26 * tileSize, 10 * tileSize, null);
                 drawItems(g2D);
                 drawPipes(g2D);
@@ -162,11 +166,51 @@ public final class UIManager extends JPanel {
                 drawEnemies(g2D);
                 drawPlayer(g2D);
                 drawInfo(g2D);
+                drawCheckpointPanel(g2D);
             }
             case BOSS_DEAD -> drawCongrats(g2D);
         }
 
         g2D.dispose();
+    }
+
+    private void drawCheckpointPanel(Graphics2D g2D) {
+        if (GameEngine.getInstance().getGameState() == GameState.CHECKPOINT) {
+            g2D.setColor(transparentBlack);
+            g2D.fillRect(0, 0, screenWidth, screenHeight);
+            Player player = GameEngine.getInstance().getPlayer();
+            List<SectionObject> sections = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections();
+            double fullLength = 0;
+            double progressedLength = 0;
+            for (int i = 0; i < sections.size(); i++) {
+                fullLength += sections.get(i).getLength();
+                if (player.getSection() - 1 > i)
+                    progressedLength += sections.get(i).getLength();
+                else if (player.getSection() - 1 == i)
+                    progressedLength += player.getX() / tileSize;
+            }
+            int progressRisk = ((int) ((progressedLength / fullLength) * player.getCoins()));
+            Checkpoint checkpoint = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel()-1).getSections().get(player.getSection()-1).getCheckpoint();
+            checkpoint.setProgressRisk(progressRisk);
+
+            g2D.setFont(font.deriveFont(Font.BOLD, 26F));
+            g2D.setColor(Color.WHITE);
+
+            String text = "Press [Enter] to save for " + progressRisk + " coins!";
+            int x = getXOfCenteredText(text, g2D);
+            g2D.drawString(
+                    text,
+                    x,
+                    264
+            );
+            text = "Press [Esc] to skip and  receive " + progressRisk / 4 + " coins";
+            x = getXOfCenteredText(text, g2D);
+            g2D.drawString(
+                    text,
+                    x,
+                    408
+            );
+        }
     }
 
     private void drawEnemies(Graphics2D g2D) {
@@ -429,6 +473,17 @@ public final class UIManager extends JPanel {
                     blockObject.getY() * tileSize,
                     tileSize,
                     (blockObject instanceof GroundBlockObject) ? 4 * tileSize : tileSize,
+                    null
+            );
+        }
+        if (sectionObject.getCheckpoint() != null) {
+            Checkpoint checkpoint = sectionObject.getCheckpoint();
+            g2D.drawImage(
+                    ImageLoader.getInstance().checkpointFlag,
+                    checkpoint.getX(),
+                    checkpoint.getY(),
+                    2 * tileSize,
+                    2 * tileSize,
                     null
             );
         }

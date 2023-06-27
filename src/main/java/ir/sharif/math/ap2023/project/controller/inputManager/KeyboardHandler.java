@@ -1,7 +1,9 @@
 package ir.sharif.math.ap2023.project.controller.inputManager;
 
 import ir.sharif.math.ap2023.project.controller.GameEngine;
+import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
@@ -31,19 +33,6 @@ public final class KeyboardHandler implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        GameEngine gameEngine = GameEngine.getInstance();
-        int code = e.getKeyCode();
-
-        switch (gameEngine.getGameState()) {
-            case MAIN_MENU -> mainMenuHandler(code);
-            case SELECT_SAVE_SLOT -> selectSaveSlotHandler(code);
-            case SELECT_DIFFICULTY -> selectDifficultyHandler(code);
-            case PLAYING -> playingHandler(code);
-        }
     }
 
     @Override
@@ -122,6 +111,29 @@ public final class KeyboardHandler implements KeyListener {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        GameEngine gameEngine = GameEngine.getInstance();
+        int code = e.getKeyCode();
+
+        switch (gameEngine.getGameState()) {
+            case MAIN_MENU -> mainMenuHandler(code);
+            case SELECT_SAVE_SLOT -> selectSaveSlotHandler(code);
+            case SELECT_DIFFICULTY -> selectDifficultyHandler(code);
+            case PLAYING -> playingHandler(code);
+            case CHECKPOINT -> checkpointHandler(code);
+        }
+    }
+
+    private void checkpointHandler(int code) {
+        Player player = GameEngine.getInstance().getPlayer();
+        Checkpoint checkpoint = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getCheckpoint();
+        switch (code) {
+            case KeyEvent.VK_ENTER -> checkpoint.save();
+            case KeyEvent.VK_ESCAPE -> checkpoint.pay();
         }
     }
 

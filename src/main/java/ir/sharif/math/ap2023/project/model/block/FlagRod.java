@@ -1,5 +1,6 @@
 package ir.sharif.math.ap2023.project.model.block;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 
 import java.awt.*;
@@ -27,6 +28,7 @@ public class FlagRod {
         this.y = y;
     }
 
+    @JsonIgnore
     public Rectangle getBounds() {
         return new Rectangle(
                 x + 21,
@@ -36,6 +38,7 @@ public class FlagRod {
         );
     }
 
+    @JsonIgnore
     public BufferedImage getImage() {
         return ImageLoader.getInstance().flagRod;
     }

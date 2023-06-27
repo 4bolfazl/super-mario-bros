@@ -1,5 +1,6 @@
 package ir.sharif.math.ap2023.project.model.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -7,9 +8,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Fireball {
+    public int speedX;
     protected double x, y;
     protected double startPosition;
-    public int speedX;
     protected int distanceTraveled = 0;
     protected boolean toRight;
     protected boolean determined = false;
@@ -35,12 +36,14 @@ public class Fireball {
         }
     }
 
+    @JsonIgnore
     public BufferedImage getImage() {
         if (toRight)
             return ImageLoader.getInstance().fireballImages[1];
         return ImageLoader.getInstance().fireballImages[0];
     }
 
+    @JsonIgnore
     public Rectangle getRightBounds() {
         return new Rectangle(
                 (int) x,
@@ -50,6 +53,7 @@ public class Fireball {
         );
     }
 
+    @JsonIgnore
     public Rectangle getLeftBounds() {
         return new Rectangle(
                 (int) x,
@@ -63,8 +67,16 @@ public class Fireball {
         return x;
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+
     public double getY() {
         return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     public boolean isDestroyed() {
@@ -79,8 +91,16 @@ public class Fireball {
         return toRight;
     }
 
+    public void setToRight(boolean toRight) {
+        this.toRight = toRight;
+    }
+
     public double getStartPosition() {
         return startPosition;
+    }
+
+    public void setStartPosition(double startPosition) {
+        this.startPosition = startPosition;
     }
 
     public boolean isDetermined() {
@@ -89,5 +109,21 @@ public class Fireball {
 
     public void setDetermined(boolean determined) {
         this.determined = determined;
+    }
+
+    public int getSpeedX() {
+        return speedX;
+    }
+
+    public void setSpeedX(int speedX) {
+        this.speedX = speedX;
+    }
+
+    public int getDistanceTraveled() {
+        return distanceTraveled;
+    }
+
+    public void setDistanceTraveled(int distanceTraveled) {
+        this.distanceTraveled = distanceTraveled;
     }
 }

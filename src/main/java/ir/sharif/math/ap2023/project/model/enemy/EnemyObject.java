@@ -17,26 +17,18 @@ import java.awt.image.BufferedImage;
         @JsonSubTypes.Type(value = Spiny.class, name = "spinyEnemy"),
 })
 public abstract class EnemyObject {
+    public double defaultSpeed = 1;
     int x, y;
     EnemyType type;
-    @JsonIgnore
     int frame = 0;
-    @JsonIgnore
     boolean dead = false;
     @JsonIgnore
     Rectangle solidArea = new Rectangle();
-    @JsonIgnore
     double gravity = 0.9;
-    @JsonIgnore
     boolean falling = false;
-    @JsonIgnore
     boolean jumping = false;
-    @JsonIgnore
     boolean toRight = true;
-    @JsonIgnore
     double speedX = 1, speedY = 10;
-    @JsonIgnore
-    public double defaultSpeed = 1;
 
     public EnemyObject(int x, int y, EnemyType type) {
         this.x = x;
@@ -78,52 +70,48 @@ public abstract class EnemyObject {
         frame++;
     }
 
-    @JsonIgnore
     public int getFrame() {
         return frame;
     }
 
-    @JsonIgnore
     public void setFrame(int frame) {
         this.frame = frame;
     }
 
     @JsonIgnore
+
     public Rectangle getSolidArea() {
         return solidArea;
     }
 
-    @JsonIgnore
+    public void setSolidArea(Rectangle solidArea) {
+        this.solidArea = solidArea;
+    }
+
     public boolean isFalling() {
         return falling;
     }
 
-    @JsonIgnore
     public void setFalling(boolean falling) {
         this.falling = falling;
     }
 
-    @JsonIgnore
     public boolean isJumping() {
         return jumping;
     }
 
-    @JsonIgnore
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
 
-    @JsonIgnore
     public boolean isToRight() {
         return toRight;
     }
 
-    @JsonIgnore
     public void setToRight(boolean toRight) {
         this.toRight = toRight;
     }
 
-    @JsonIgnore
     public double getSpeedX() {
         return speedX;
     }
@@ -132,12 +120,10 @@ public abstract class EnemyObject {
         this.speedX = speedX;
     }
 
-    @JsonIgnore
     public double getSpeedY() {
         return speedY;
     }
 
-    @JsonIgnore
     public void setSpeedY(double speedY) {
         this.speedY = speedY;
     }
@@ -211,16 +197,31 @@ public abstract class EnemyObject {
         );
     }
 
-    @JsonIgnore
     public boolean isDead() {
         return dead;
     }
 
-    @JsonIgnore
     public void setDead(boolean dead) {
         this.dead = dead;
     }
 
+    public double getDefaultSpeed() {
+        return defaultSpeed;
+    }
+
+    public void setDefaultSpeed(double defaultSpeed) {
+        this.defaultSpeed = defaultSpeed;
+    }
+
+    public double getGravity() {
+        return gravity;
+    }
+
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
+    }
+
+    @JsonIgnore
     public abstract BufferedImage getImage();
 
     public abstract void kill();

@@ -7,11 +7,8 @@ import ir.sharif.math.ap2023.project.view.ImageLoader;
 import java.awt.image.BufferedImage;
 
 public class Coin extends Item {
-    @JsonIgnore
     public int frame = 0;
-    @JsonIgnore
     public int timer = 0;
-    @JsonIgnore
     public boolean temp = false;
 
     @JsonIgnore
@@ -38,5 +35,29 @@ public class Coin extends Item {
     public void acquired(Player player) {
         player.addPoints(10);
         player.addCoins(1);
+    }
+
+    public int getFrame() {
+        return frame;
+    }
+
+    public void setFrame(int frame) {
+        this.frame = frame;
+    }
+
+    public int getTimer() {
+        return timer;
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
+    }
+
+    public boolean isTemp() {
+        return temp;
+    }
+
+    public void setTemp(boolean temp) {
+        this.temp = temp;
     }
 }

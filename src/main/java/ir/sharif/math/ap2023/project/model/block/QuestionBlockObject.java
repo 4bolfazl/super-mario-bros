@@ -15,8 +15,6 @@ public class QuestionBlockObject extends BlockObject {
             ImageLoader.getInstance().getBlockImage(BlockType.QUESTION1),
             ImageLoader.getInstance().getBlockImage(BlockType.QUESTION2)
     };
-
-    @JsonIgnore
     public int frame = 0;
 
 
@@ -41,13 +39,23 @@ public class QuestionBlockObject extends BlockObject {
 
     public void revealItem() {
         Item prize = switch (item) {
-            case MUSHROOM -> new Mushroom(x * UIManager.getInstance().getTileSize(), y * UIManager.getInstance().getTileSize());
+            case MUSHROOM ->
+                    new Mushroom(x * UIManager.getInstance().getTileSize(), y * UIManager.getInstance().getTileSize());
             case STAR -> new Star(x * UIManager.getInstance().getTileSize(), y * UIManager.getInstance().getTileSize());
-            case FLOWER -> new Flower(x * UIManager.getInstance().getTileSize(), y * UIManager.getInstance().getTileSize());
+            case FLOWER ->
+                    new Flower(x * UIManager.getInstance().getTileSize(), y * UIManager.getInstance().getTileSize());
             case COIN -> new Coin(x * UIManager.getInstance().getTileSize(), y * UIManager.getInstance().getTileSize());
             default -> null;
         };
         GameEngine gameEngine = GameEngine.getInstance();
         gameEngine.addItem(prize);
+    }
+
+    public int getFrame() {
+        return frame;
+    }
+
+    public void setFrame(int frame) {
+        this.frame = frame;
     }
 }

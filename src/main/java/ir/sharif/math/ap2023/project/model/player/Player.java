@@ -22,8 +22,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
-    @JsonIgnore
+public class Player implements Cloneable {
     public boolean hasSword = false;
     public Sword sword = new Sword(this);
     public int swordCoolDownTimer = 0;
@@ -46,7 +45,7 @@ public class Player {
     private boolean falling = false;
     private Difficulty difficulty;
     private int saveSlot;
-    private Player[] savedGames = new Player[3];
+    private Object[][] savedGames = new Object[3][3];
     private int frame = 0;
     private boolean isCrouching = false;
     private boolean invincible = false;
@@ -67,42 +66,14 @@ public class Player {
         init();
     }
 
-    public Player(String username, String password, double x, double y, int time, int level, int section, int coins, int hearts, Character character, int characterState, int score, PlayerDirection direction, double speedX, double speedY, double gravity, boolean jumping, boolean falling, Difficulty difficulty, Player[] savedGames, int saveSlot, int sprites, Rectangle solidArea) {
-        this.username = username;
-        this.password = password;
-        this.x = x;
-        this.y = y;
-        this.time = time;
-        this.level = level;
-        this.section = section;
-        this.coins = coins;
-        this.hearts = hearts;
-        this.character = character;
-        this.characterState = characterState;
-        this.score = score;
-        this.direction = direction;
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.gravity = gravity;
-        this.jumping = jumping;
-        this.falling = falling;
-        this.difficulty = difficulty;
-        this.savedGames = savedGames;
-        this.saveSlot = saveSlot;
-        this.frame = sprites;
-        this.solidArea = solidArea;
-    }
-
     public Player() {
         init();
     }
 
-    @JsonIgnore
     public boolean isEnemyInvincible() {
         return enemyInvincible;
     }
 
-    @JsonIgnore
     public void setEnemyInvincible(boolean enemyInvincible) {
         this.enemyInvincible = enemyInvincible;
     }
@@ -115,6 +86,7 @@ public class Player {
         setTime(game.getLevels().get(level - 1).getSections().get(section - 1).getTime());
     }
 
+    @JsonIgnore
     public boolean isOnTheGround() {
         int height = (characterState > 0 && !isCrouching) ? 96 : 48;
         return y + height >= 480;
@@ -327,6 +299,16 @@ public class Player {
         );
     }
 
+    @JsonIgnore
+    public Rectangle getFullBounds() {
+        return new Rectangle(
+                (int) x,
+                (int) y,
+                solidArea.width,
+                solidArea.height
+        );
+    }
+
     public void updateSolidArea() {
         if (characterState == 0) {
             solidArea.setBounds(
@@ -399,12 +381,10 @@ public class Player {
         this.frame = frame;
     }
 
-    @JsonIgnore
     public Rectangle getSolidArea() {
         return solidArea;
     }
 
-    @JsonIgnore
     public void setSolidArea(Rectangle solidArea) {
         this.solidArea = solidArea;
     }
@@ -558,11 +538,11 @@ public class Player {
         this.pipeUnder = pipeUnder;
     }
 
-    public Player[] getSavedGames() {
+    public Object[][] getSavedGames() {
         return savedGames;
     }
 
-    public void setSavedGames(Player[] savedGames) {
+    public void setSavedGames(Object[][] savedGames) {
         this.savedGames = savedGames;
     }
 
@@ -624,12 +604,10 @@ public class Player {
         }
     }
 
-    @JsonIgnore
     public int getEnemyInvincibleTime() {
         return enemyInvincibleTime;
     }
 
-    @JsonIgnore
     public void setEnemyInvincibleTime(int enemyInvincibleTime) {
         this.enemyInvincibleTime = enemyInvincibleTime;
     }
@@ -716,5 +694,65 @@ public class Player {
     public void resetLocation() {
         x = 2 * UIManager.getInstance().getTileSize();
         y = UIManager.getInstance().getScreenHeight() - UIManager.getInstance().getTileSize() * 7;
+    }
+
+    public boolean isHasSword() {
+        return hasSword;
+    }
+
+    public void setHasSword(boolean hasSword) {
+        this.hasSword = hasSword;
+    }
+
+    public Sword getSword() {
+        return sword;
+    }
+
+    public void setSword(Sword sword) {
+        this.sword = sword;
+    }
+
+    public int getSwordCoolDownTimer() {
+        return swordCoolDownTimer;
+    }
+
+    public void setSwordCoolDownTimer(int swordCoolDownTimer) {
+        this.swordCoolDownTimer = swordCoolDownTimer;
+    }
+
+    public boolean isSwordCoolDownStart() {
+        return swordCoolDownStart;
+    }
+
+    public void setSwordCoolDownStart(boolean swordCoolDownStart) {
+        this.swordCoolDownStart = swordCoolDownStart;
+    }
+
+    public SectionObject getTempSection() {
+        return tempSection;
+    }
+
+    public void setTempSection(SectionObject tempSection) {
+        this.tempSection = tempSection;
+    }
+
+    public PipeObject getTempPipe() {
+        return tempPipe;
+    }
+
+    public void setTempPipe(PipeObject tempPipe) {
+        this.tempPipe = tempPipe;
+    }
+
+    @Override
+    public Player clone() {
+        try {
+            Player clone = (Player) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            clone.setSavedGames(null);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

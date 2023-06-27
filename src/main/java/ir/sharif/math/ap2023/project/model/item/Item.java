@@ -17,21 +17,13 @@ import java.awt.image.BufferedImage;
         @JsonSubTypes.Type(value = Star.class, name = "starItem")
 })
 public abstract class Item {
-    @JsonIgnore
     double gravity = 0.45;
-    @JsonIgnore
     double speedX = 0, speedY = 10;
-    @JsonIgnore
     double x, y;
-    @JsonIgnore
     boolean falling = false;
-    @JsonIgnore
     boolean jumping = true;
-    @JsonIgnore
     boolean toRight = true;
-    @JsonIgnore
     boolean shouldBeCollisionChecked = false;
-    @JsonIgnore
     int waitTime = 0;
 
     public Item() {
@@ -42,6 +34,7 @@ public abstract class Item {
         this.y = y;
     }
 
+    @JsonIgnore
     public abstract BufferedImage getImage();
 
     public void updateLocation() {
@@ -63,92 +56,78 @@ public abstract class Item {
             x += speedX;
     }
 
-    @JsonIgnore
     public boolean isToRight() {
         return toRight;
     }
 
-    @JsonIgnore
     public void setToRight(boolean toRight) {
         this.toRight = toRight;
     }
 
-    @JsonIgnore
     public double getSpeedX() {
         return speedX;
     }
 
-    @JsonIgnore
     public void setSpeedX(double speedX) {
         this.speedX = speedX;
     }
 
-    @JsonIgnore
     public double getSpeedY() {
         return speedY;
     }
 
-    @JsonIgnore
     public void setSpeedY(double speedY) {
         this.speedY = speedY;
     }
 
-    @JsonIgnore
     public int getWaitTime() {
         return waitTime;
     }
 
-    @JsonIgnore
+    public void setWaitTime(int waitTime) {
+        this.waitTime = waitTime;
+    }
+
     public void addWaitTime() {
         this.waitTime++;
     }
 
-    @JsonIgnore
     public double getX() {
         return x;
     }
 
-    @JsonIgnore
     public void setX(double x) {
         this.x = x;
     }
 
-    @JsonIgnore
     public double getY() {
         return y;
     }
 
-    @JsonIgnore
     public void setY(double y) {
         this.y = y;
     }
 
-    @JsonIgnore
     public boolean isFalling() {
         return falling;
     }
 
-    @JsonIgnore
     public void setFalling(boolean falling) {
         this.falling = falling;
     }
 
-    @JsonIgnore
     public boolean isShouldBeCollisionChecked() {
         return shouldBeCollisionChecked;
     }
 
-    @JsonIgnore
     public void setShouldBeCollisionChecked(boolean shouldBeCollisionChecked) {
         this.shouldBeCollisionChecked = shouldBeCollisionChecked;
     }
 
-    @JsonIgnore
     public boolean isJumping() {
         return jumping;
     }
 
-    @JsonIgnore
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
@@ -191,6 +170,14 @@ public abstract class Item {
                 UIManager.getInstance().getTileSize() / 4,
                 4 * UIManager.getInstance().getTileSize() / 5
         );
+    }
+
+    public double getGravity() {
+        return gravity;
+    }
+
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
     }
 
     public abstract void acquired(Player player);

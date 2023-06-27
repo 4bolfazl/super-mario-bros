@@ -9,7 +9,6 @@ import ir.sharif.math.ap2023.project.view.UIManager;
 import java.awt.image.BufferedImage;
 
 public class Spiny extends EnemyObject {
-    @JsonIgnore
     float acceleration = 0.05f;
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.SPINY);
@@ -72,20 +71,6 @@ public class Spiny extends EnemyObject {
             }
         }
         super.updateLocation();
-//        if (jumping && speedY <= 0) {
-//            jumping = false;
-//            falling = true;
-//        } else if (jumping) {
-//            speedY -= gravity;
-//            getSolidArea().y -= speedY;
-//        }
-//
-//        if (falling) {
-//            getSolidArea().y += speedY;
-//            speedY += gravity;
-//        }
-//
-//        getSolidArea().x += speedX;
     }
 
     @Override
@@ -94,5 +79,13 @@ public class Spiny extends EnemyObject {
         setSpeedX(0);
         setSpeedY(0);
         setDead(true);
+    }
+
+    public float getAcceleration() {
+        return acceleration;
+    }
+
+    public void setAcceleration(float acceleration) {
+        this.acceleration = acceleration;
     }
 }

@@ -10,5 +10,6 @@ public enum GameState {
     SHOP,
     PROFILE,
     SCENE,
-    BOSS_DEAD
+    BOSS_DEAD,
+    CHECKPOINT
 }

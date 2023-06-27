@@ -9,9 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Koopa extends EnemyObject {
-    @JsonIgnore
     boolean freeze = false;
-    @JsonIgnore
     int freezeFrame = 0;
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.KOOPA);
@@ -95,12 +93,10 @@ public class Koopa extends EnemyObject {
         );
     }
 
-    @JsonIgnore
     public boolean isFreeze() {
         return freeze;
     }
 
-    @JsonIgnore
     public void setFreeze(boolean freeze) {
         this.freeze = freeze;
     }

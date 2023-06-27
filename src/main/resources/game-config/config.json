@@ -5,6 +5,10 @@
         {
           "length": 26,
           "time": 60,
+          "checkpoint": {
+            "x": 6,
+            "y": 0
+          },
           "blocks": [
             {
               "subclass": "groundBlock",
@@ -183,7 +187,6 @@
               "item": "COIN"
             }
           ],
-          "pipes": [],
           "enemies": [
             {
               "subclass": "goompaEnemy",

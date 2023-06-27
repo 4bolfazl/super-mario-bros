@@ -25,9 +25,7 @@ public abstract class BlockObject {
     int x, y;
     BlockType type;
     ItemType item;
-    @JsonIgnore
     EnemyObject enemyOnIt = null;
-    @JsonIgnore
     int toDestroyTimer = 0;
 
     public BlockObject(int x, int y, BlockType type, ItemType item) {
@@ -139,6 +137,7 @@ public abstract class BlockObject {
         toDestroyTimer++;
     }
 
+    @JsonIgnore
     public abstract BufferedImage getImage();
 
     public void gotHit() {

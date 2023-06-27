@@ -38,4 +38,6 @@ public class CoinBlockObject extends BlockObject {
         GameEngine gameEngine = GameEngine.getInstance();
         gameEngine.addItem(prize);
     }
+
+
 }

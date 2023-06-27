@@ -1,9 +1,9 @@
 package ir.sharif.math.ap2023.project.model.game;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
+import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SectionObject {
-    @JsonIgnore
     public List<NothingBlockObject> nothingBlockObjects = new ArrayList<>();
-    @JsonIgnore
     public List<TrunkPipe> trunkPipes = new ArrayList<>();
     int length;
     int time;
@@ -24,9 +22,9 @@ public class SectionObject {
     List<EnemyObject> enemies = new ArrayList<>();
     List<PipeObject> pipes = new ArrayList<>();
     PipeObject spawnPipe;
-    @JsonIgnore
     boolean bossSection = false;
     Flag flag;
+    Checkpoint checkpoint;
 
     public SectionObject(int length, int time, List<BlockObject> blocks, List<EnemyObject> enemies, List<PipeObject> pipes, PipeObject spawnPipe) {
         this.length = length;
@@ -48,12 +46,10 @@ public class SectionObject {
     public SectionObject() {
     }
 
-    @JsonIgnore
     public boolean isBossSection() {
         return bossSection;
     }
 
-    @JsonIgnore
     public void setBossSection(boolean bossSection) {
         this.bossSection = bossSection;
     }
@@ -149,5 +145,29 @@ public class SectionObject {
 
     public void setFlag(Flag flag) {
         this.flag = flag;
+    }
+
+    public List<NothingBlockObject> getNothingBlockObjects() {
+        return nothingBlockObjects;
+    }
+
+    public void setNothingBlockObjects(List<NothingBlockObject> nothingBlockObjects) {
+        this.nothingBlockObjects = nothingBlockObjects;
+    }
+
+    public List<TrunkPipe> getTrunkPipes() {
+        return trunkPipes;
+    }
+
+    public void setTrunkPipes(List<TrunkPipe> trunkPipes) {
+        this.trunkPipes = trunkPipes;
+    }
+
+    public Checkpoint getCheckpoint() {
+        return checkpoint;
+    }
+
+    public void setCheckpoint(Checkpoint checkpoint) {
+        this.checkpoint = checkpoint;
     }
 }

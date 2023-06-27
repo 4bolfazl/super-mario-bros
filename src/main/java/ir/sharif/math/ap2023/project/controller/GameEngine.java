@@ -1,10 +1,12 @@
 package ir.sharif.math.ap2023.project.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.inputManager.KeyboardHandler;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.CollisionChecker;
+import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
@@ -27,15 +29,21 @@ public final class GameEngine implements Runnable {
     private static GameEngine instance;
     private final double FPS = 60;
     private final double nextFrameInterval = 1000000000 / FPS;
+    @JsonIgnore
     public JFrame window;
+    @JsonIgnore
     public Random randomGenerator = new Random();
+    @JsonIgnore
     public Bowser boss;
     public int swordPressTimer = 0;
     public int sceneTimer1 = 0;
     public boolean scene = false;
+    @JsonIgnore
     private Thread gameThread;
     private GameState gameState = GameState.LOGIN_MENU;
+    @JsonIgnore
     private Player player;
+    @JsonIgnore
     private CollisionChecker collisionChecker;
     private List<Item> items = new ArrayList<>();
 
@@ -59,7 +67,8 @@ public final class GameEngine implements Runnable {
         soundManager.playBackgroundMusic(BackgroundMusicType.OVERWORLD);
 
         gameState = GameState.LOGIN_MENU;
-        setPlayer(new Player());
+//        setPlayer(new Player());
+//        setPlayer(Database.getInstance().getCurrentUser());
 
         JFrame frame = new JFrame("Super Mario Bros.");
         window = frame;
@@ -72,8 +81,6 @@ public final class GameEngine implements Runnable {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-//        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 
     public synchronized void startGame() {
@@ -115,12 +122,12 @@ public final class GameEngine implements Runnable {
         removeTempCoins();
         if (scene)
             updateCutScene();
-        if (GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel()-1).getSections().get(player.getSection()-1).getFlag() != null)
+        if (GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getFlag() != null)
             updateFlag();
     }
 
     private void updateFlag() {
-        Flag flag = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel()-1).getSections().get(player.getSection()-1).getFlag();
+        Flag flag = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getFlag();
         flag.updateLocation();
     }
 
@@ -290,11 +297,12 @@ public final class GameEngine implements Runnable {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
-
+    @JsonIgnore
     public Player getPlayer() {
         return player;
     }
 
+    @JsonIgnore
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -305,5 +313,45 @@ public final class GameEngine implements Runnable {
 
     public void addItem(Item item) {
         this.items.add(item);
+    }
+
+    public static void setInstance(GameEngine instance) {
+        GameEngine.instance = instance;
+    }
+
+    public double getFPS() {
+        return FPS;
+    }
+
+    public double getNextFrameInterval() {
+        return nextFrameInterval;
+    }
+
+    public int getSwordPressTimer() {
+        return swordPressTimer;
+    }
+
+    public void setSwordPressTimer(int swordPressTimer) {
+        this.swordPressTimer = swordPressTimer;
+    }
+
+    public int getSceneTimer1() {
+        return sceneTimer1;
+    }
+
+    public void setSceneTimer1(int sceneTimer1) {
+        this.sceneTimer1 = sceneTimer1;
+    }
+
+    public boolean isScene() {
+        return scene;
+    }
+
+    public void setScene(boolean scene) {
+        this.scene = scene;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

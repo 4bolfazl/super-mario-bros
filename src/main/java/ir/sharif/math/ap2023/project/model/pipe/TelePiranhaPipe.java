@@ -5,7 +5,6 @@ import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 
 public class TelePiranhaPipe extends PiranhaTrapPipe {
-    @JsonIgnore
     Piranha piranha = new Piranha();
 
     public TelePiranhaPipe(int x, int y, PipeType type, SectionObject section, boolean activated) {
@@ -25,5 +24,15 @@ public class TelePiranhaPipe extends PiranhaTrapPipe {
     }
 
     public TelePiranhaPipe() {
+    }
+
+    @Override
+    public Piranha getPiranha() {
+        return piranha;
+    }
+
+    @Override
+    public void setPiranha(Piranha piranha) {
+        this.piranha = piranha;
     }
 }

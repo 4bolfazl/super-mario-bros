@@ -22,58 +22,34 @@ import java.util.Collections;
 import java.util.List;
 
 public class Bowser extends EnemyObject {
-    @JsonIgnore
     public int lastKey = 0;
-    @JsonIgnore
     public int pressedTimes = 0;
-    @JsonIgnore
     public boolean grabAttacking, jumpAttacking, fireballAttacking, nukeAttacking, grabAttackingStarted;
-    @JsonIgnore
     public boolean grabCoolDownStart, jumpCoolDownStart, fireballCoolDownStart, nukeCoolDownStart;
-    @JsonIgnore
     public int fireballCoolDown = 0;
-    @JsonIgnore
     public int grabCoolDown = 0;
-    @JsonIgnore
     public int jumpCoolDown = 0;
-    @JsonIgnore
     public int nukeCoolDown = 0;
     public int jumpAttackTimer = 0;
     public boolean jumpAttackStarted = false;
-    @JsonIgnore
     public int playersFireballs = 0;
-    @JsonIgnore
     public boolean nukeAttackStarted = false;
-    @JsonIgnore
     public int nukePressTimer = 0;
     public Bomb bomb;
-    @JsonIgnore
     public boolean phase2 = false;
-    @JsonIgnore
     int fireDelay = 120;
-    @JsonIgnore
     int fireballsShot = 0;
-    @JsonIgnore
     int HP = 20;
-    @JsonIgnore
     int waitOnAir = 0;
-    @JsonIgnore
     boolean triggered = false;
-    @JsonIgnore
     boolean freeze = false;
-    @JsonIgnore
     int freezeTimer = 0;
-    @JsonIgnore
     int playerOnTheGroundTime = 0;
     @JsonIgnore
     BufferedImage[] images = ImageLoader.getInstance().getEnemyImages(EnemyType.BOWSER);
-    @JsonIgnore
     double gravity = 3;
-    @JsonIgnore
     List<BowserFireball> fireballs = Collections.synchronizedList(new ArrayList<>());
-    @JsonIgnore
     int grabDelay = 0;
-    @JsonIgnore
     int grabTime = 0;
 
     public Bowser(int x, int y, EnemyType type) {
@@ -167,22 +143,12 @@ public class Bowser extends EnemyObject {
         HP -= damage;
     }
 
-    @JsonIgnore
     public int getHP() {
         return HP;
     }
 
-    @JsonIgnore
     public void setHP(int HP) {
         this.HP = HP;
-    }
-
-    public BufferedImage[] getImages() {
-        return images;
-    }
-
-    public void setImages(BufferedImage[] images) {
-        this.images = images;
     }
 
     public boolean isTriggered() {
@@ -497,12 +463,253 @@ public class Bowser extends EnemyObject {
         if (getHP() <= 10 && !phase2) {
             GameEngine.getInstance().setGameState(GameState.SCENE);
             GameEngine.getInstance().scene = true;
-            // TODO: CUTSCENE
         }
         freeze = true;
         if (getHP() <= 0) {
             setDead(true);
             GameEngine.getInstance().setGameState(GameState.BOSS_DEAD);
         }
+    }
+
+    public int getLastKey() {
+        return lastKey;
+    }
+
+    public void setLastKey(int lastKey) {
+        this.lastKey = lastKey;
+    }
+
+    public int getPressedTimes() {
+        return pressedTimes;
+    }
+
+    public void setPressedTimes(int pressedTimes) {
+        this.pressedTimes = pressedTimes;
+    }
+
+    public boolean isGrabAttacking() {
+        return grabAttacking;
+    }
+
+    public void setGrabAttacking(boolean grabAttacking) {
+        this.grabAttacking = grabAttacking;
+    }
+
+    public boolean isJumpAttacking() {
+        return jumpAttacking;
+    }
+
+    public void setJumpAttacking(boolean jumpAttacking) {
+        this.jumpAttacking = jumpAttacking;
+    }
+
+    public boolean isFireballAttacking() {
+        return fireballAttacking;
+    }
+
+    public void setFireballAttacking(boolean fireballAttacking) {
+        this.fireballAttacking = fireballAttacking;
+    }
+
+    public boolean isNukeAttacking() {
+        return nukeAttacking;
+    }
+
+    public void setNukeAttacking(boolean nukeAttacking) {
+        this.nukeAttacking = nukeAttacking;
+    }
+
+    public boolean isGrabAttackingStarted() {
+        return grabAttackingStarted;
+    }
+
+    public void setGrabAttackingStarted(boolean grabAttackingStarted) {
+        this.grabAttackingStarted = grabAttackingStarted;
+    }
+
+    public boolean isGrabCoolDownStart() {
+        return grabCoolDownStart;
+    }
+
+    public void setGrabCoolDownStart(boolean grabCoolDownStart) {
+        this.grabCoolDownStart = grabCoolDownStart;
+    }
+
+    public boolean isJumpCoolDownStart() {
+        return jumpCoolDownStart;
+    }
+
+    public void setJumpCoolDownStart(boolean jumpCoolDownStart) {
+        this.jumpCoolDownStart = jumpCoolDownStart;
+    }
+
+    public boolean isFireballCoolDownStart() {
+        return fireballCoolDownStart;
+    }
+
+    public void setFireballCoolDownStart(boolean fireballCoolDownStart) {
+        this.fireballCoolDownStart = fireballCoolDownStart;
+    }
+
+    public boolean isNukeCoolDownStart() {
+        return nukeCoolDownStart;
+    }
+
+    public void setNukeCoolDownStart(boolean nukeCoolDownStart) {
+        this.nukeCoolDownStart = nukeCoolDownStart;
+    }
+
+    public int getFireballCoolDown() {
+        return fireballCoolDown;
+    }
+
+    public void setFireballCoolDown(int fireballCoolDown) {
+        this.fireballCoolDown = fireballCoolDown;
+    }
+
+    public int getGrabCoolDown() {
+        return grabCoolDown;
+    }
+
+    public void setGrabCoolDown(int grabCoolDown) {
+        this.grabCoolDown = grabCoolDown;
+    }
+
+    public int getJumpCoolDown() {
+        return jumpCoolDown;
+    }
+
+    public void setJumpCoolDown(int jumpCoolDown) {
+        this.jumpCoolDown = jumpCoolDown;
+    }
+
+    public int getNukeCoolDown() {
+        return nukeCoolDown;
+    }
+
+    public void setNukeCoolDown(int nukeCoolDown) {
+        this.nukeCoolDown = nukeCoolDown;
+    }
+
+    public int getJumpAttackTimer() {
+        return jumpAttackTimer;
+    }
+
+    public void setJumpAttackTimer(int jumpAttackTimer) {
+        this.jumpAttackTimer = jumpAttackTimer;
+    }
+
+    public boolean isJumpAttackStarted() {
+        return jumpAttackStarted;
+    }
+
+    public void setJumpAttackStarted(boolean jumpAttackStarted) {
+        this.jumpAttackStarted = jumpAttackStarted;
+    }
+
+    public int getPlayersFireballs() {
+        return playersFireballs;
+    }
+
+    public void setPlayersFireballs(int playersFireballs) {
+        this.playersFireballs = playersFireballs;
+    }
+
+    public boolean isNukeAttackStarted() {
+        return nukeAttackStarted;
+    }
+
+    public void setNukeAttackStarted(boolean nukeAttackStarted) {
+        this.nukeAttackStarted = nukeAttackStarted;
+    }
+
+    public int getNukePressTimer() {
+        return nukePressTimer;
+    }
+
+    public void setNukePressTimer(int nukePressTimer) {
+        this.nukePressTimer = nukePressTimer;
+    }
+
+    public Bomb getBomb() {
+        return bomb;
+    }
+
+    public void setBomb(Bomb bomb) {
+        this.bomb = bomb;
+    }
+
+    public boolean isPhase2() {
+        return phase2;
+    }
+
+    public void setPhase2(boolean phase2) {
+        this.phase2 = phase2;
+    }
+
+    public int getFireDelay() {
+        return fireDelay;
+    }
+
+    public void setFireDelay(int fireDelay) {
+        this.fireDelay = fireDelay;
+    }
+
+    public int getFireballsShot() {
+        return fireballsShot;
+    }
+
+    public void setFireballsShot(int fireballsShot) {
+        this.fireballsShot = fireballsShot;
+    }
+
+    public int getWaitOnAir() {
+        return waitOnAir;
+    }
+
+    public void setWaitOnAir(int waitOnAir) {
+        this.waitOnAir = waitOnAir;
+    }
+
+    public int getFreezeTimer() {
+        return freezeTimer;
+    }
+
+    public void setFreezeTimer(int freezeTimer) {
+        this.freezeTimer = freezeTimer;
+    }
+
+    public int getPlayerOnTheGroundTime() {
+        return playerOnTheGroundTime;
+    }
+
+    public void setPlayerOnTheGroundTime(int playerOnTheGroundTime) {
+        this.playerOnTheGroundTime = playerOnTheGroundTime;
+    }
+
+    @Override
+    public double getGravity() {
+        return gravity;
+    }
+
+    @Override
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
+    }
+
+    public int getGrabDelay() {
+        return grabDelay;
+    }
+
+    public void setGrabDelay(int grabDelay) {
+        this.grabDelay = grabDelay;
+    }
+
+    public int getGrabTime() {
+        return grabTime;
+    }
+
+    public void setGrabTime(int grabTime) {
+        this.grabTime = grabTime;
     }
 }

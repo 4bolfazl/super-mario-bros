@@ -1,5 +1,6 @@
 package ir.sharif.math.ap2023.project.model.enemy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
@@ -30,6 +31,7 @@ public class Piranha {
         speedY *= -1;
     }
 
+    @JsonIgnore
     public Rectangle getSolidArea() {
         return new Rectangle(
                 x,
@@ -97,5 +99,13 @@ public class Piranha {
 
     public void addFrame() {
         this.frame++;
+    }
+
+    public double getSpeedY() {
+        return speedY;
+    }
+
+    public void setSpeedY(double speedY) {
+        this.speedY = speedY;
     }
 }

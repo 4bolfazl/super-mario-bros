@@ -6,6 +6,7 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
+import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.*;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Bomb;
@@ -57,6 +58,26 @@ public final class CollisionChecker {
             }
         }
         checkFlagCollisions();
+        checkCheckpointCollisions();
+    }
+
+    private void checkCheckpointCollisions() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        Checkpoint checkpoint = sectionObject.getCheckpoint();
+        if (checkpoint != null && !checkpoint.isTriggered()) {
+            if (player.getFullBounds().intersects(checkpoint.getBounds())) {
+                GameEngine.getInstance().setGameState(GameState.CHECKPOINT);
+                if (player.getSpeedX() >= 0) {
+                    player.setDirection(PlayerDirection.IDLE_RIGHT);
+                } else {
+                    player.setDirection(PlayerDirection.IDLE_LEFT);
+                }
+                player.setJumping(false);
+                player.setSpeedX(0);
+                player.setSpeedY(0);
+            }
+        }
     }
 
     private void checkFlagCollisions() {

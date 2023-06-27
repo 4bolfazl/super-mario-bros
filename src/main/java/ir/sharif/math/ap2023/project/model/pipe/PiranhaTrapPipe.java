@@ -1,12 +1,10 @@
 package ir.sharif.math.ap2023.project.model.pipe;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 public class PiranhaTrapPipe extends PipeObject {
-    @JsonIgnore
     Piranha piranha = new Piranha();
 
     public PiranhaTrapPipe(int x, int y, PipeType type, SectionObject section, boolean activated) {
@@ -44,7 +42,11 @@ public class PiranhaTrapPipe extends PipeObject {
         return piranha;
     }
 
-    public void killPiranha(){
+    public void setPiranha(Piranha piranha) {
+        this.piranha = piranha;
+    }
+
+    public void killPiranha() {
         piranha = null;
     }
 }

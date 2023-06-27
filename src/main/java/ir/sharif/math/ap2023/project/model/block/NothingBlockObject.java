@@ -1,7 +1,5 @@
 package ir.sharif.math.ap2023.project.model.block;
 
-import ir.sharif.math.ap2023.project.view.ImageLoader;
-
 import java.awt.image.BufferedImage;
 
 public class NothingBlockObject extends BlockObject {
@@ -12,6 +10,6 @@ public class NothingBlockObject extends BlockObject {
 
     @Override
     public BufferedImage getImage() {
-        return ImageLoader.getInstance().gameBackground;
+        return null;
     }
 }

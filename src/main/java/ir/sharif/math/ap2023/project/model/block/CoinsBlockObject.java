@@ -42,4 +42,12 @@ public class CoinsBlockObject extends BlockObject {
         GameEngine gameEngine = GameEngine.getInstance();
         gameEngine.addItem(prize);
     }
+
+    public int getHitTimes() {
+        return hitTimes;
+    }
+
+    public void setHitTimes(int hitTimes) {
+        this.hitTimes = hitTimes;
+    }
 }
