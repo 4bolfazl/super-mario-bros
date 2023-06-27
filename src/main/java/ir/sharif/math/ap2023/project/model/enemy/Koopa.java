@@ -2,6 +2,8 @@ package ir.sharif.math.ap2023.project.model.enemy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
+import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -71,6 +73,7 @@ public class Koopa extends EnemyObject {
 
     @Override
     public void kill() {
+        SoundManager.getInstance().playSoundEffect(SoundEffectType.SQUISH);
         if (!isFreeze()) {
             setSpeedX((GameEngine.getInstance().randomGenerator.nextBoolean() ? -7 : 7));
             setSpeedY(0);

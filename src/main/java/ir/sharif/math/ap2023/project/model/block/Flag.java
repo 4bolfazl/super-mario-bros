@@ -3,6 +3,8 @@ package ir.sharif.math.ap2023.project.model.block;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -32,6 +34,8 @@ public class Flag implements Cloneable {
                 if (y >= 9 * UIManager.getInstance().getTileSize()) {
                     finished = true;
                     GameEngine.getInstance().getPlayer().nextLevel();
+                    SoundManager.getInstance().pauseMusic();
+                    SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.OVERWORLD);
                     GameEngine.getInstance().setGameState(GameState.PLAYING);
                 }
             }

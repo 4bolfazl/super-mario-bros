@@ -37,6 +37,8 @@ public final class SoundManager {
         backgroundMusics.put(BackgroundMusicType.INVINCIBLE, getClass().getResource("/sound/background/invincible.wav"));
         backgroundMusics.put(BackgroundMusicType.OVERWORLD, getClass().getResource("/sound/background/overworld.wav"));
         backgroundMusics.put(BackgroundMusicType.UNDERGROUND, getClass().getResource("/sound/background/underground.wav"));
+        backgroundMusics.put(BackgroundMusicType.END, getClass().getResource("/sound/background/end.wav"));
+        backgroundMusics.put(BackgroundMusicType.FLAG, getClass().getResource("/sound/background/flag.wav"));
     }
 
     public static SoundManager getInstance() {

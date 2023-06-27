@@ -3,6 +3,7 @@ package ir.sharif.math.ap2023.project.model;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.*;
@@ -89,6 +90,8 @@ public final class CollisionChecker {
             if (bounds.intersects(player.getRightBounds())) {
                 player.setSpeedX(0);
                 flag.setTriggered(true);
+                SoundManager.getInstance().pauseMusic();
+                SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.FLAG);
                 GameEngine.getInstance().setGameState(GameState.SCENE);
             }
         }

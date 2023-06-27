@@ -2,6 +2,8 @@ package ir.sharif.math.ap2023.project.model.enemy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
+import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
@@ -45,6 +47,7 @@ public class Goompa extends EnemyObject {
 
     @Override
     public void kill() {
+        SoundManager.getInstance().playSoundEffect(SoundEffectType.SQUISH);
         GameEngine.getInstance().getPlayer().addPoints(1);
         setSpeedX(0);
         setSpeedY(0);

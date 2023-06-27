@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
@@ -528,6 +529,8 @@ public final class UIManager extends JPanel {
         if (congratsTimer >= 250) {
             congratsTimer = 0;
             GameEngine.getInstance().setGameState(GameState.MAIN_MENU);
+            SoundManager.getInstance().pauseMusic();
+            SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.OVERWORLD);
         } else {
             g2D.drawImage(imageLoader.menuScreen, 0, 0, null);
 

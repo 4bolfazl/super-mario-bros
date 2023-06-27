@@ -5,6 +5,7 @@ import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
@@ -455,10 +456,11 @@ public class Bowser extends EnemyObject {
 
     @Override
     public void kill() {
-
+        SoundManager.getInstance().playSoundEffect(SoundEffectType.SQUISH);
     }
 
     public void kill(int damage) {
+        SoundManager.getInstance().playSoundEffect(SoundEffectType.SQUISH);
         decreaseHP(damage);
         if (getHP() <= 10 && !phase2) {
             GameEngine.getInstance().setGameState(GameState.SCENE);
@@ -468,6 +470,8 @@ public class Bowser extends EnemyObject {
         if (getHP() <= 0) {
             setDead(true);
             GameEngine.getInstance().setGameState(GameState.BOSS_DEAD);
+            SoundManager.getInstance().pauseMusic();
+            SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.END);
         }
     }
 

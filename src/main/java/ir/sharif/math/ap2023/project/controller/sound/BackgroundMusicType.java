@@ -5,5 +5,7 @@ public enum BackgroundMusicType {
     BOSS,
     UNDERGROUND,
     CASTLE,
-    INVINCIBLE
+    INVINCIBLE,
+    END,
+    FLAG
 }
