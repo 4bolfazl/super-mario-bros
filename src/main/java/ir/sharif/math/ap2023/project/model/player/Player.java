@@ -420,6 +420,7 @@ public class Player implements Cloneable {
     public void nextSection() {
         GameEngine.getInstance().getItems().clear();
         section++;
+        setTime(GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).getTime());
         if (GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).isBossSection()) {
             SoundManager soundManager = SoundManager.getInstance();
             soundManager.pauseMusic();
@@ -775,6 +776,7 @@ public class Player implements Cloneable {
         GameEngine.getInstance().getItems().clear();
         section = 1;
         level++;
+        setTime(GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().get(section - 1).getTime());
         resetLocation();
     }
 
@@ -843,7 +845,6 @@ public class Player implements Cloneable {
     public Player clone() {
         try {
             Player clone = (Player) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
             clone.setSavedPlayer(null);
             clone.setSavedGameEngineCopy(null);
             clone.setSavedGame(null);
