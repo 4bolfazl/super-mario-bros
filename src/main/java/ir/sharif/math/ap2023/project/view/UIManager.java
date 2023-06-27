@@ -327,12 +327,15 @@ public final class UIManager extends JPanel {
                 Piranha piranha = ((PiranhaTrapPipe) pipe).getPiranha();
                 if (piranha.isAlive()) {
                     for (Fireball fireball : player.getFireballs()) {
-                        if (fireball.getRightBounds().intersects(piranha.getSolidArea()))
+                        if (fireball.getRightBounds().intersects(piranha.getSolidArea())) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
+                            fireball.setDestroyed(true);
+                        }
                     }
                     if (player.hasSword) {
                         if (player.sword.getBounds(player).intersects(piranha.getSolidArea())) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
+                            player.sword.setDestroyed(true);
                         }
                     }
                     if (piranha.getSolidArea().intersects(player.getSolidArea()) && player.getDirection() != PlayerDirection.DEAD) {
