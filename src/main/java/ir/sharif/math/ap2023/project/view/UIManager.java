@@ -597,7 +597,7 @@ public final class UIManager extends JPanel {
         int x, y;
         String text;
 
-        text = (player.getSavedGames()[0] == null) ? "1. EMPTY" : "1. SAVED GAME";
+        text = (player.getSavedPlayer()[0] == null) ? "1. EMPTY" : "1. SAVED GAME";
         x = screenWidth / 5 + getXOfCenteredText(text, g2D);
         y = 5 * tileSize;
         g2D.drawString(text, x, y);
@@ -605,7 +605,7 @@ public final class UIManager extends JPanel {
             g2D.drawString(">", x - tileSize, y);
         }
 
-        text = (player.getSavedGames()[1] == null) ? "2. EMPTY" : "2. SAVED GAME";
+        text = (player.getSavedPlayer()[1] == null) ? "2. EMPTY" : "2. SAVED GAME";
         x = screenWidth / 5 + getXOfCenteredText(text, g2D);
         y += tileSize;
         g2D.drawString(text, x, y);
@@ -613,7 +613,7 @@ public final class UIManager extends JPanel {
             g2D.drawString(">", x - tileSize, y);
         }
 
-        text = (player.getSavedGames()[2] == null) ? "3. EMPTY" : "3. SAVED GAME";
+        text = (player.getSavedPlayer()[2] == null) ? "3. EMPTY" : "3. SAVED GAME";
         x = screenWidth / 5 + getXOfCenteredText(text, g2D);
         y += tileSize;
         g2D.drawString(text, x, y);

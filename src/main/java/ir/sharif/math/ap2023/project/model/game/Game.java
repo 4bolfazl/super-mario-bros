@@ -3,7 +3,7 @@ package ir.sharif.math.ap2023.project.model.game;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game implements Cloneable {
     List<LevelObject> levels = new ArrayList<>();
     int hearts;
     int marioState;
@@ -39,5 +39,19 @@ public class Game {
 
     public void setMarioState(int marioState) {
         this.marioState = marioState;
+    }
+
+    @Override
+    public Game clone() {
+        try {
+            Game clone = (Game) super.clone();
+            clone.levels = new ArrayList<>();
+            for (LevelObject level : levels) {
+                clone.levels.add(level.clone());
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

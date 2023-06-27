@@ -50,7 +50,7 @@ public final class SoundManager {
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(backgroundMusics.get(music));
             clip.open(ais);
-        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         clip.start();

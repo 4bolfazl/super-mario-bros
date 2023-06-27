@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
+import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.sound.GameEngineCopy;
 import ir.sharif.math.ap2023.project.model.player.Player;
+import ir.sharif.math.ap2023.project.model.player.PlayerToSave;
+import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,20 +104,18 @@ public final class Database {
     }
 
     public void saveGame() {
-        System.out.println("saving game...");
         Player player = GameEngine.getInstance().getPlayer();
 
-        Player tempPlayer = player.clone();
+        PlayerToSave tempPlayer = new PlayerToSave(player);
 
-        Object[][] tempSavedGames = tempPlayer.getSavedGames();
+        GameEngineCopy gameEngineCopy = GameEngine.getInstance().copy();
+        gameEngineCopy.setGameState(GameState.PLAYING);
 
-        player.getSavedGames()[player.getSaveSlot()][0] = tempPlayer;
-        player.getSavedGames()[player.getSaveSlot()][1] = GameEngine.getInstance();
-        player.getSavedGames()[player.getSaveSlot()][2] = GameLoader.getInstance("config.json").getGame();
+        player.getSavedPlayer()[UIManager.getInstance().saveOption-1] = tempPlayer;
+        player.getSavedGameEngineCopy()[UIManager.getInstance().saveOption-1] = gameEngineCopy;
+        player.getSavedGame()[UIManager.getInstance().saveOption-1] = GameLoader.getInstance("config.json").getGame().clone();
 
         users.set(users.indexOf(findUserByUsername(player.getUsername())), player);
         write();
-
-        player.setSavedGames(tempSavedGames);
     }
 }

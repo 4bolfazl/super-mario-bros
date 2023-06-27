@@ -10,7 +10,7 @@ import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.*;
 
-public class Checkpoint {
+public class Checkpoint implements Cloneable {
     int x, y;
     private int progressRisk;
     private boolean triggered = false;
@@ -67,5 +67,17 @@ public class Checkpoint {
         player.addCoins(progressRisk / 4);
         GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).setCheckpoint(null);
         GameEngine.getInstance().setGameState(GameState.PLAYING);
+    }
+
+    @Override
+    public Checkpoint clone() {
+        try {
+            Checkpoint clone = (Checkpoint) super.clone();
+            clone.y = 8 - clone.y / UIManager.getInstance().getTileSize();
+            clone.x = clone.x / UIManager.getInstance().getTileSize();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

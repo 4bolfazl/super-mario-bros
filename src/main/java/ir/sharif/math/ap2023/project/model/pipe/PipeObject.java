@@ -16,7 +16,7 @@ import java.awt.*;
         @JsonSubTypes.Type(value = TelePiranhaPipe.class, name = "telePiranhaPipe"),
         @JsonSubTypes.Type(value = TeleSimplePipe.class, name = "teleSimplePipe")
 })
-public abstract class PipeObject {
+public abstract class PipeObject implements Cloneable {
     int x, y;
     PipeType type;
     SectionObject section;
@@ -122,5 +122,17 @@ public abstract class PipeObject {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+
+    @Override
+    public PipeObject clone() {
+        try {
+            PipeObject clone = (PipeObject) super.clone();
+            clone.y = 10 - clone.y;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

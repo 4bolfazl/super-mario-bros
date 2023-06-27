@@ -3,6 +3,7 @@ package ir.sharif.math.ap2023.project.controller.inputManager;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
@@ -295,7 +296,10 @@ public final class KeyboardHandler implements KeyListener {
                 uiManager.saveOption += 1;
             }
         } else if (code == KeyEvent.VK_ENTER) {
-            gameEngine.setGameState(GameState.SELECT_DIFFICULTY);
+            if (!GameEngine.getInstance().getPlayer().isContinuing())
+                gameEngine.setGameState(GameState.SELECT_DIFFICULTY);
+            else
+                loadGame();
         }
     }
 
@@ -317,11 +321,25 @@ public final class KeyboardHandler implements KeyListener {
             }
         } else if (code == KeyEvent.VK_ENTER) {
             switch (uiManager.mainMenuItem) {
-                case NEW_GAME, CONTINUE -> gameEngine.setGameState(GameState.SELECT_SAVE_SLOT);
+                case NEW_GAME -> gameEngine.setGameState(GameState.SELECT_SAVE_SLOT);
+                case CONTINUE -> {
+                    gameEngine.setGameState(GameState.SELECT_SAVE_SLOT);
+                    GameEngine.getInstance().getPlayer().setContinuing(true);
+                }
                 case HIGHEST_SCORES -> gameEngine.setGameState(GameState.RANKING);
                 case SHOP -> gameEngine.setGameState(GameState.SHOP);
                 case PROFILE -> gameEngine.setGameState(GameState.PROFILE);
             }
         }
+    }
+
+    private void loadGame() {
+        Player currentUser = Database.getInstance().getCurrentUser();
+        int slot = UIManager.getInstance().saveOption-1;
+        GameLoader.getInstance("config.json").setGame(currentUser.getSavedGame()[slot]);
+        GameEngine.getInstance().getPlayer().loadPlayer(currentUser.getSavedPlayer()[slot]);
+        GameEngine.getInstance().loadGameEngine(currentUser.getSavedGameEngineCopy()[slot]);
+
+        GameEngine.getInstance().setGameState(GameState.PLAYING);
     }
 }

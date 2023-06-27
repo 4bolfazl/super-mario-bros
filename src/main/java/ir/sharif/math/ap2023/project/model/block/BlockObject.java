@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
         @JsonSubTypes.Type(value = SimpleBlockObject.class, name = "simpleBlock"),
         @JsonSubTypes.Type(value = SlimeBlockObject.class, name = "slimeBlock"),
 })
-public abstract class BlockObject {
+public abstract class BlockObject implements Cloneable {
     int x, y;
     BlockType type;
     ItemType item;
@@ -146,6 +146,17 @@ public abstract class BlockObject {
                 ((Koopa) enemyOnIt).setFreeze(true);
             enemyOnIt.kill();
             enemyOnIt = null;
+        }
+    }
+
+    @Override
+    public BlockObject clone() {
+        try {
+            BlockObject clone = (BlockObject) super.clone();
+            clone.y = 10 - clone.y;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
         }
     }
 }

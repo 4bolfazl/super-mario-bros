@@ -6,7 +6,7 @@ import ir.sharif.math.ap2023.project.view.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class FlagRod {
+public class FlagRod implements Cloneable {
     int x, y;
 
     public FlagRod() {
@@ -41,5 +41,16 @@ public class FlagRod {
     @JsonIgnore
     public BufferedImage getImage() {
         return ImageLoader.getInstance().flagRod;
+    }
+
+    @Override
+    public FlagRod clone() {
+        try {
+            FlagRod clone = (FlagRod) super.clone();
+            clone.x = clone.x - 24;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

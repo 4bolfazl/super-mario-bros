@@ -8,6 +8,9 @@ public class NothingBlockObject extends BlockObject {
         this.y = y;
     }
 
+    public NothingBlockObject() {
+    }
+
     @Override
     public BufferedImage getImage() {
         return null;

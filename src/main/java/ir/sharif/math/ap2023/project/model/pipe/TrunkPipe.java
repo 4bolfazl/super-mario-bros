@@ -6,4 +6,7 @@ public class TrunkPipe extends PipeObject{
         this.y = y;
         this.type = type;
     }
+
+    public TrunkPipe() {
+    }
 }

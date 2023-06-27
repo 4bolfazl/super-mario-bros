@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
         @JsonSubTypes.Type(value = NukeBird.class, name = "nukebirdEnemy"),
         @JsonSubTypes.Type(value = Spiny.class, name = "spinyEnemy"),
 })
-public abstract class EnemyObject {
+public abstract class EnemyObject implements Cloneable {
     public double defaultSpeed = 1;
     int x, y;
     EnemyType type;
@@ -225,4 +225,18 @@ public abstract class EnemyObject {
     public abstract BufferedImage getImage();
 
     public abstract void kill();
+
+    @Override
+    public EnemyObject clone() {
+        try {
+            EnemyObject clone = (EnemyObject) super.clone();
+            if (clone.y == 9)
+                clone.y = 0;
+            else
+                clone.y = 10 - clone.y;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

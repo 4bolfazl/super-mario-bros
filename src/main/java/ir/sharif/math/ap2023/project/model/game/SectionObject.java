@@ -13,7 +13,7 @@ import ir.sharif.math.ap2023.project.model.pipe.TrunkPipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SectionObject {
+public class SectionObject implements Cloneable {
     public List<NothingBlockObject> nothingBlockObjects = new ArrayList<>();
     public List<TrunkPipe> trunkPipes = new ArrayList<>();
     int length;
@@ -169,5 +169,50 @@ public class SectionObject {
 
     public void setCheckpoint(Checkpoint checkpoint) {
         this.checkpoint = checkpoint;
+    }
+
+    @Override
+    public SectionObject clone() {
+        try {
+            SectionObject clone = (SectionObject) super.clone();
+
+            clone.blocks = new ArrayList<>();
+            for (BlockObject block : blocks) {
+                clone.blocks.add(block.clone());
+            }
+
+            clone.nothingBlockObjects = new ArrayList<>();
+            for (NothingBlockObject nothingBlockObject : nothingBlockObjects) {
+                clone.nothingBlockObjects.add((NothingBlockObject) nothingBlockObject.clone());
+            }
+
+            clone.pipes = new ArrayList<>();
+            for (PipeObject pipe : pipes) {
+                clone.pipes.add(pipe.clone());
+            }
+
+            clone.trunkPipes = new ArrayList<>();
+            for (TrunkPipe trunkPipe : trunkPipes) {
+                clone.trunkPipes.add((TrunkPipe) trunkPipe.clone());
+            }
+
+            clone.enemies = new ArrayList<>();
+            for (EnemyObject enemy : enemies) {
+                clone.enemies.add(enemy.clone());
+            }
+
+            if (spawnPipe != null)
+                clone.spawnPipe = spawnPipe.clone();
+
+            if (flag != null)
+                clone.flag = flag.clone();
+
+            if (checkpoint != null)
+                clone.checkpoint = checkpoint.clone();
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

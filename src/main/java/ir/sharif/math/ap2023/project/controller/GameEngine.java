@@ -3,10 +3,10 @@ package ir.sharif.math.ap2023.project.controller;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.inputManager.KeyboardHandler;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.GameEngineCopy;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.CollisionChecker;
-import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
@@ -27,7 +27,9 @@ import java.util.Random;
 
 public final class GameEngine implements Runnable {
     private static GameEngine instance;
+    @JsonIgnore
     private final double FPS = 60;
+    @JsonIgnore
     private final double nextFrameInterval = 1000000000 / FPS;
     @JsonIgnore
     public JFrame window;
@@ -51,11 +53,17 @@ public final class GameEngine implements Runnable {
         init();
     }
 
+    @JsonIgnore
     public static GameEngine getInstance() {
         if (instance == null) {
             instance = new GameEngine();
         }
         return instance;
+    }
+
+    @JsonIgnore
+    public static void setInstance(GameEngine instance) {
+        GameEngine.instance = instance;
     }
 
     private void init() {
@@ -297,6 +305,7 @@ public final class GameEngine implements Runnable {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
+
     @JsonIgnore
     public Player getPlayer() {
         return player;
@@ -311,20 +320,12 @@ public final class GameEngine implements Runnable {
         return items;
     }
 
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
     public void addItem(Item item) {
         this.items.add(item);
-    }
-
-    public static void setInstance(GameEngine instance) {
-        GameEngine.instance = instance;
-    }
-
-    public double getFPS() {
-        return FPS;
-    }
-
-    public double getNextFrameInterval() {
-        return nextFrameInterval;
     }
 
     public int getSwordPressTimer() {
@@ -351,7 +352,21 @@ public final class GameEngine implements Runnable {
         this.scene = scene;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public GameEngineCopy copy() {
+        return new GameEngineCopy(
+                this.swordPressTimer,
+                this.sceneTimer1,
+                this.scene,
+                this.gameState,
+                this.items
+        );
+    }
+
+    public void loadGameEngine(GameEngineCopy gameEngineCopy) {
+        this.swordPressTimer = gameEngineCopy.swordPressTimer;
+        this.sceneTimer1 = gameEngineCopy.getSceneTimer1();
+        this.scene = gameEngineCopy.isScene();
+        this.gameState = gameEngineCopy.getGameState();
+        this.items = gameEngineCopy.getItems();
     }
 }

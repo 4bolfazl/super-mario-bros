@@ -5,6 +5,7 @@ import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
+import ir.sharif.math.ap2023.project.controller.sound.GameEngineCopy;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
@@ -23,41 +24,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player implements Cloneable {
+    @JsonIgnore
     public boolean hasSword = false;
+    @JsonIgnore
     public Sword sword = new Sword(this);
+    @JsonIgnore
     public int swordCoolDownTimer = 0;
+    @JsonIgnore
     public boolean swordCoolDownStart = false;
     private String username;
     private String password;
+    @JsonIgnore
     private double x = 2 * UIManager.getInstance().getTileSize();
+    @JsonIgnore
     private double y = UIManager.getInstance().getScreenHeight() - UIManager.getInstance().getTileSize() * 7;
+    @JsonIgnore
     private int time;
+    @JsonIgnore
     private int level = 1, section = 1;
+    @JsonIgnore
     private int coins = 0;
+    @JsonIgnore
     private int hearts = 3;
+    @JsonIgnore
     private Character character = Character.MARIO;
+    @JsonIgnore
     private int characterState = 0;
+    @JsonIgnore
     private int score = 0;
+    @JsonIgnore
     private PlayerDirection direction = PlayerDirection.IDLE_RIGHT;
+    @JsonIgnore
     private double speedX, speedY;
+    @JsonIgnore
     private double gravity = 0.38;
+    @JsonIgnore
     private boolean jumping = false;
+    @JsonIgnore
     private boolean falling = false;
+    @JsonIgnore
     private Difficulty difficulty;
+    @JsonIgnore
     private int saveSlot;
-    private Object[][] savedGames = new Object[3][3];
+    @JsonIgnore
+    private boolean continuing = false;
+    private PlayerToSave[] savedPlayer = new PlayerToSave[3];
+    private GameEngineCopy[] savedGameEngineCopy = new GameEngineCopy[3];
+    private Game[] savedGame = new Game[3];
+    @JsonIgnore
     private int frame = 0;
-    private boolean isCrouching = false;
+    @JsonIgnore
+    private boolean crouching = false;
+    @JsonIgnore
     private boolean invincible = false;
+    @JsonIgnore
     private boolean enemyInvincible = false;
+    @JsonIgnore
     private int invincibleTime = 0;
+    @JsonIgnore
     private int enemyInvincibleTime = 0;
+    @JsonIgnore
     private int enemyInvincibleFrame = 0;
+    @JsonIgnore
     private List<Fireball> fireballs = new ArrayList<>();
     @JsonIgnore
     private Rectangle solidArea = new Rectangle((int) x, (int) y, UIManager.getInstance().getTileSize(), UIManager.getInstance().getTileSize());
+    @JsonIgnore
     private PipeObject pipeUnder;
+    @JsonIgnore
     private SectionObject tempSection;
+    @JsonIgnore
     private PipeObject tempPipe;
 
     public Player(String username, String password) {
@@ -68,6 +104,41 @@ public class Player implements Cloneable {
 
     public Player() {
         init();
+    }
+
+    public  void loadPlayer(PlayerToSave player) {
+        this.hasSword = player.hasSword;
+        this.sword = player.sword;
+        this.swordCoolDownTimer = player.swordCoolDownTimer;
+        this.swordCoolDownStart = player.swordCoolDownStart;
+        this.x = player.getX();
+        this.y = player.getY();
+        this.time = player.getTime();
+        this.level = player.getLevel();
+        this.section = player.getSection();
+        this.hearts = player.getHearts();
+        this.coins = player.getCoins();
+        this.character = player.getCharacter();
+        this.characterState = player.getCharacterState();
+        this.score = player.getScore();
+        this.speedX = player.getSpeedX();
+        this.speedY = player.getSpeedY();
+        this.gravity = player.getGravity();
+        this.direction = player.getDirection();
+        this.jumping = player.isJumping();
+        this.falling = player.isFalling();
+        this.difficulty = player.getDifficulty();
+        this.frame = player.getFrame();
+        this.crouching = player.isCrouching();
+        this.invincible = player.isInvincible();
+        this.enemyInvincible = player.isEnemyInvincible();
+        this.invincibleTime = player.getInvincibleTime();
+        this.enemyInvincibleFrame = player.getEnemyInvincibleFrame();
+        this.enemyInvincibleTime = player.getEnemyInvincibleTime();
+        this.fireballs = player.getFireballs();
+        this.pipeUnder = player.getPipeUnder();
+        this.tempSection = player.getTempSection();
+        this.tempPipe = player.getTempPipe();
     }
 
     public boolean isEnemyInvincible() {
@@ -88,7 +159,7 @@ public class Player implements Cloneable {
 
     @JsonIgnore
     public boolean isOnTheGround() {
-        int height = (characterState > 0 && !isCrouching) ? 96 : 48;
+        int height = (characterState > 0 && !crouching) ? 96 : 48;
         return y + height >= 480;
     }
 
@@ -97,11 +168,11 @@ public class Player implements Cloneable {
     }
 
     public boolean isCrouching() {
-        return isCrouching;
+        return crouching;
     }
 
     public void setCrouching(boolean crouching) {
-        isCrouching = crouching;
+        this.crouching = crouching;
     }
 
     public void addPoints(int points) {
@@ -320,9 +391,9 @@ public class Player implements Cloneable {
         } else {
             solidArea.setBounds(
                     (int) x,
-                    (int) y + (isCrouching ? UIManager.getInstance().getTileSize() : 0),
+                    (int) y + (crouching ? UIManager.getInstance().getTileSize() : 0),
                     UIManager.getInstance().getTileSize(),
-                    UIManager.getInstance().getTileSize() * (isCrouching ? 1 : 2)
+                    UIManager.getInstance().getTileSize() * (crouching ? 1 : 2)
             );
         }
     }
@@ -538,12 +609,28 @@ public class Player implements Cloneable {
         this.pipeUnder = pipeUnder;
     }
 
-    public Object[][] getSavedGames() {
-        return savedGames;
+    public PlayerToSave[] getSavedPlayer() {
+        return savedPlayer;
     }
 
-    public void setSavedGames(Object[][] savedGames) {
-        this.savedGames = savedGames;
+    public void setSavedPlayer(PlayerToSave[] savedPlayer) {
+        this.savedPlayer = savedPlayer;
+    }
+
+    public GameEngineCopy[] getSavedGameEngineCopy() {
+        return savedGameEngineCopy;
+    }
+
+    public void setSavedGameEngineCopy(GameEngineCopy[] savedGameEngineCopy) {
+        this.savedGameEngineCopy = savedGameEngineCopy;
+    }
+
+    public Game[] getSavedGame() {
+        return savedGame;
+    }
+
+    public void setSavedGame(Game[] savedGame) {
+        this.savedGame = savedGame;
     }
 
     public int getSaveSlot() {
@@ -744,12 +831,22 @@ public class Player implements Cloneable {
         this.tempPipe = tempPipe;
     }
 
+    public boolean isContinuing() {
+        return continuing;
+    }
+
+    public void setContinuing(boolean continuing) {
+        this.continuing = continuing;
+    }
+
     @Override
     public Player clone() {
         try {
             Player clone = (Player) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
-            clone.setSavedGames(null);
+            clone.setSavedPlayer(null);
+            clone.setSavedGameEngineCopy(null);
+            clone.setSavedGame(null);
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

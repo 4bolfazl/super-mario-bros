@@ -8,7 +8,7 @@ import ir.sharif.math.ap2023.project.view.UIManager;
 
 import java.awt.image.BufferedImage;
 
-public class Flag {
+public class Flag implements Cloneable {
     public int frame = 0;
     int x, y;
     int speedY = 2;
@@ -42,6 +42,10 @@ public class Flag {
         return finished;
     }
 
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
     public boolean isTriggered() {
         return triggered;
     }
@@ -73,6 +77,10 @@ public class Flag {
         return flagRod;
     }
 
+    public void setFlagRod(FlagRod flagRod) {
+        this.flagRod = flagRod;
+    }
+
     public int getFrame() {
         return frame;
     }
@@ -89,11 +97,16 @@ public class Flag {
         this.speedY = speedY;
     }
 
-    public void setFinished(boolean finished) {
-        this.finished = finished;
-    }
-
-    public void setFlagRod(FlagRod flagRod) {
-        this.flagRod = flagRod;
+    @Override
+    public Flag clone() {
+        try {
+            Flag clone = (Flag) super.clone();
+            clone.x = clone.x / UIManager.getInstance().getTileSize();
+            clone.y = 9 - (clone.y - 48) / UIManager.getInstance().getTileSize();
+            clone.flagRod = flagRod.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
