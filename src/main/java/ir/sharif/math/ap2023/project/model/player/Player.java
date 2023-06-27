@@ -141,6 +141,10 @@ public class Player {
     }
 
     public void updateLocation() {
+        if (y + getSolidArea().height >= 530 && GameEngine.getInstance().getGameState() != GameState.SCENE) {
+            setCharacterState(0);
+            decreaseHeartHit();
+        }
         if (jumping && speedY <= 0) {
             jumping = false;
             falling = true;
@@ -677,7 +681,6 @@ public class Player {
 
     public void exitSecretPipe() {
         GameLoader.getInstance("config.json").getGame().getLevels().get(level - 1).getSections().set(section - 1, tempSection);
-        tempSection = null;
         setX(tempPipe.getX() * UIManager.getInstance().getTileSize());
         setY((tempPipe.getY() - 2) * UIManager.getInstance().getTileSize());
         setSpeedX(0);
@@ -701,5 +704,17 @@ public class Player {
                 hasSword = true;
             }
         }
+    }
+
+    public void nextLevel() {
+        GameEngine.getInstance().getItems().clear();
+        section = 1;
+        level++;
+        resetLocation();
+    }
+
+    public void resetLocation() {
+        x = 2 * UIManager.getInstance().getTileSize();
+        y = UIManager.getInstance().getScreenHeight() - UIManager.getInstance().getTileSize() * 7;
     }
 }

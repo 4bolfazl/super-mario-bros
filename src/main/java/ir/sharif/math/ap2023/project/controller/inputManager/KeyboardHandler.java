@@ -215,48 +215,9 @@ public final class KeyboardHandler implements KeyListener {
                 }
                 case KeyEvent.VK_RIGHT -> {
                     downPressed = true;
-//                    if (player.getPipeUnder() != null)
-//                        player.enterSecretPipe();
-//                    if (player.getCharacterState() > 0) {
-//                        player.setCrouching(true);
-//                        switch (player.getDirection()) {
-//                            case IDLE_RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT_IDLE);
-//                            case RIGHT -> player.setDirection(PlayerDirection.CROUCH_RIGHT);
-//                            case IDLE_LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT_IDLE);
-//                            case LEFT -> player.setDirection(PlayerDirection.CROUCH_LEFT);
-//                        }
-//                    }
                 }
                 case KeyEvent.VK_CONTROL -> {
                     upPressed = true;
-//                    if (!player.isJumping() && !player.isFalling()) {
-//                        SoundManager soundManager = SoundManager.getInstance();
-//                        soundManager.playSoundEffect(SoundEffectType.JUMP);
-//                        switch (player.getDirection()) {
-//                            case IDLE_RIGHT -> {
-//                                player.setDirection(PlayerDirection.JUMP_IDLE_RIGHT);
-//                                player.setSpeedY(12.5);
-//                                player.setJumping(true);
-//                            }
-//                            case IDLE_LEFT -> {
-//                                player.setDirection(PlayerDirection.JUMP_IDLE_LEFT);
-//                                player.setSpeedY(12.5);
-//                                player.setJumping(true);
-//                            }
-//                            case RIGHT -> {
-//                                player.setDirection(PlayerDirection.JUMP_RIGHT);
-//                                player.setSpeedY(12.5);
-//                                player.setSpeedX(4);
-//                                player.setJumping(true);
-//                            }
-//                            case LEFT -> {
-//                                player.setDirection(PlayerDirection.JUMP_LEFT);
-//                                player.setSpeedY(12.5);
-//                                player.setSpeedX(-4);
-//                                player.setJumping(true);
-//                            }
-//                        }
-//                    }
                 }
                 case KeyEvent.VK_LEFT -> {
                     if (player.getCharacterState() == 2) {

@@ -5,16 +5,17 @@ import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.CollisionChecker;
+import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.model.item.Coin;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerDirection;
 import ir.sharif.math.ap2023.project.model.player.Sword;
-import ir.sharif.math.ap2023.project.view.ImageLoader;
 import ir.sharif.math.ap2023.project.view.UIManager;
 
 import javax.swing.*;
@@ -30,6 +31,8 @@ public final class GameEngine implements Runnable {
     public Random randomGenerator = new Random();
     public Bowser boss;
     public int swordPressTimer = 0;
+    public int sceneTimer1 = 0;
+    public boolean scene = false;
     private Thread gameThread;
     private GameState gameState = GameState.LOGIN_MENU;
     private Player player;
@@ -109,13 +112,38 @@ public final class GameEngine implements Runnable {
         updateFireballs();
         updateKeyDelay();
         updateSword();
+        removeTempCoins();
         if (scene)
             updateCutScene();
+        if (GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel()-1).getSections().get(player.getSection()-1).getFlag() != null)
+            updateFlag();
+    }
+
+    private void updateFlag() {
+        Flag flag = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel()-1).getSections().get(player.getSection()-1).getFlag();
+        flag.updateLocation();
+    }
+
+    private void removeTempCoins() {
+        List<Item> TBR = new ArrayList<>();
+        for (Item item : items) {
+            if (item instanceof Coin) {
+                if (((Coin) item).temp) {
+                    ((Coin) item).timer++;
+                    if (((Coin) item).timer >= 40) {
+                        TBR.add(item);
+                    }
+                }
+            }
+        }
+        for (Item item : TBR) {
+            items.remove(item);
+        }
     }
 
     private void updateCutScene() {
         sceneTimer1++;
-        if (sceneTimer1 >= 120){
+        if (sceneTimer1 >= 120) {
             sceneTimer1 = 0;
             player.setCharacterState(2);
             boss.phase2 = true;
@@ -188,8 +216,9 @@ public final class GameEngine implements Runnable {
             keyboardHandler.downDelay = 0;
             if (!keyboardHandler.upPressed) {
                 swordPressTimer = 0;
-                if (player.getPipeUnder() != null)
+                if (player.getPipeUnder() != null) {
                     player.enterSecretPipe();
+                }
                 if (player.getCharacterState() > 0) {
                     player.setCrouching(true);
                     switch (player.getDirection()) {
@@ -277,7 +306,4 @@ public final class GameEngine implements Runnable {
     public void addItem(Item item) {
         this.items.add(item);
     }
-
-    public int sceneTimer1 =0;
-    public boolean scene=false;
 }

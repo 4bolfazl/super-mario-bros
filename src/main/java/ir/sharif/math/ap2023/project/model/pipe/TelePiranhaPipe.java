@@ -1,8 +1,13 @@
 package ir.sharif.math.ap2023.project.model.pipe;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 
-public class TelePiranhaPipe extends PipeObject {
+public class TelePiranhaPipe extends PiranhaTrapPipe {
+    @JsonIgnore
+    Piranha piranha = new Piranha();
+
     public TelePiranhaPipe(int x, int y, PipeType type, SectionObject section, boolean activated) {
         super(x, y, type, section, activated);
     }

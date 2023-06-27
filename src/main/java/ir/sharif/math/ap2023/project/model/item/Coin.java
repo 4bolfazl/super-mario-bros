@@ -9,6 +9,10 @@ import java.awt.image.BufferedImage;
 public class Coin extends Item {
     @JsonIgnore
     public int frame = 0;
+    @JsonIgnore
+    public int timer = 0;
+    @JsonIgnore
+    public boolean temp = false;
 
     @JsonIgnore
     BufferedImage[] images = {

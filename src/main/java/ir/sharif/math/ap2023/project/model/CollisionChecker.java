@@ -56,6 +56,21 @@ public final class CollisionChecker {
                 checkBombCollision();
             }
         }
+        checkFlagCollisions();
+    }
+
+    private void checkFlagCollisions() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        Flag flag = sectionObject.getFlag();
+        if (flag != null) {
+            Rectangle bounds = flag.getFlagRod().getBounds();
+            if (bounds.intersects(player.getRightBounds())) {
+                player.setSpeedX(0);
+                flag.setTriggered(true);
+                GameEngine.getInstance().setGameState(GameState.SCENE);
+            }
+        }
     }
 
     private void checkBossAttackCollisions() {
@@ -445,6 +460,13 @@ public final class CollisionChecker {
                             item.setX((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5);
                         }
                     }
+                    for (TrunkPipe pipe : sectionObject.trunkPipes) {
+                        if (bounds.intersects(pipe.getLeftBounds())) {
+                            item.setToRight(false);
+                            item.setSpeedX(-2);
+                            item.setX((pipe.getX() - 1) * UIManager.getInstance().getTileSize() - 5);
+                        }
+                    }
                 } else {
                     Rectangle bounds = item.getLeftBounds();
                     for (BlockObject blockObject : sectionObject.getBlocks()) {
@@ -455,6 +477,13 @@ public final class CollisionChecker {
                         }
                     }
                     for (PipeObject pipe : sectionObject.getPipes()) {
+                        if (bounds.intersects(pipe.getRightBounds())) {
+                            item.setToRight(true);
+                            item.setSpeedX(2);
+                            item.setX((pipe.getX() + 2) * UIManager.getInstance().getTileSize() + 5);
+                        }
+                    }
+                    for (TrunkPipe pipe : sectionObject.trunkPipes) {
                         if (bounds.intersects(pipe.getRightBounds())) {
                             item.setToRight(true);
                             item.setSpeedX(2);
@@ -477,7 +506,7 @@ public final class CollisionChecker {
         for (BlockObject blockObject : sectionObject.getBlocks()) {
             if (topBounds.intersects(blockObject.getBottomBounds())) {
                 blockObject.gotHit();
-                if (player.getCharacterState() > 0 && blockObject instanceof SimpleBlockObject) {
+                if (player.getCharacterState() > 0 && (blockObject instanceof SimpleBlockObject || blockObject.getType() == BlockType.SIMPLE)) {
                     toBeRemoved.add(blockObject);
                 }
                 player.setSpeedY(0);
@@ -485,6 +514,17 @@ public final class CollisionChecker {
                 if (blockObject instanceof QuestionBlockObject && blockObject.getType() == BlockType.QUESTION) {
                     blockObject.setType(BlockType.EMPTY);
                     ((QuestionBlockObject) blockObject).revealItem();
+                }
+                if (blockObject instanceof CoinBlockObject && blockObject.getType() == BlockType.COIN) {
+                    blockObject.setType(BlockType.SIMPLE);
+                    ((CoinBlockObject) blockObject).revealItem();
+                }
+                if (blockObject instanceof CoinsBlockObject && blockObject.getType() == BlockType.COINS) {
+                    ((CoinsBlockObject) blockObject).hitTimes++;
+                    if (((CoinsBlockObject) blockObject).hitTimes <= 5) {
+                        player.addCoins(1);
+                        ((CoinsBlockObject) blockObject).revealItem();
+                    }
                 }
             }
         }
@@ -557,6 +597,10 @@ public final class CollisionChecker {
                             player.setDirection(PlayerDirection.LEFT);
                     }
                 }
+                if (blockObject instanceof SlimeBlockObject) {
+                    player.setJumping(true);
+                    player.setSpeedY(15);
+                }
 
                 if (sectionObject.isBossSection() && !(blockObject instanceof GroundBlockObject)) {
                     blockObject.addToDestroyTime();
@@ -577,8 +621,9 @@ public final class CollisionChecker {
 
         for (PipeObject pipe : sectionObject.getPipes()) {
             if (bottomBounds.intersects(pipe.getTopBounds())) {
-                if (pipe instanceof TeleSimplePipe || pipe instanceof TelePiranhaPipe)
+                if (pipe instanceof TeleSimplePipe || pipe instanceof TelePiranhaPipe) {
                     player.setPipeUnder(pipe);
+                }
                 player.setY(pipe.getY() * UIManager.getInstance().getTileSize() - player.getSolidArea().height + 1);
                 player.setFalling(false);
                 player.setSpeedY(0);

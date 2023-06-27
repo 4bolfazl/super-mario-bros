@@ -25,6 +25,8 @@ public final class ImageLoader {
     public BufferedImage healthBar;
     public BufferedImage bomb;
     public BufferedImage[] sword = new BufferedImage[2];
+    public BufferedImage flagRod;
+    public BufferedImage[] flag = new BufferedImage[3];
 
     private ImageLoader() {
         menuScreen = loadImage("/screens/menu.png");
@@ -40,6 +42,11 @@ public final class ImageLoader {
 
         sword[0] = loadImage("/sword/0.png");
         sword[1] = loadImage("/sword/1.png");
+
+        flag[0] = loadImage("/flag/flag0.png");
+        flag[1] = loadImage("/flag/flag1.png");
+        flag[2] = loadImage("/flag/flag2.png");
+        flagRod = loadImage("/flag/rod.png");
 
         bomb = loadImage("/enemies/nukebird/bomb0.png");
 

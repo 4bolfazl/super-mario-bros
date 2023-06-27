@@ -2,6 +2,7 @@ package ir.sharif.math.ap2023.project.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
+import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.block.NothingBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
@@ -25,6 +26,7 @@ public class SectionObject {
     PipeObject spawnPipe;
     @JsonIgnore
     boolean bossSection = false;
+    Flag flag;
 
     public SectionObject(int length, int time, List<BlockObject> blocks, List<EnemyObject> enemies, List<PipeObject> pipes, PipeObject spawnPipe) {
         this.length = length;
@@ -139,5 +141,13 @@ public class SectionObject {
 
     public void setSpawnPipe(PipeObject spawnPipe) {
         this.spawnPipe = spawnPipe;
+    }
+
+    public Flag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Flag flag) {
+        this.flag = flag;
     }
 }

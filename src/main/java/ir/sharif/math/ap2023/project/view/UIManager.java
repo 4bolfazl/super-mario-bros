@@ -8,6 +8,7 @@ import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
+import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
 import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
@@ -17,10 +18,7 @@ import ir.sharif.math.ap2023.project.model.enemy.Piranha;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Coin;
 import ir.sharif.math.ap2023.project.model.item.Item;
-import ir.sharif.math.ap2023.project.model.pipe.ExitPipe;
-import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
-import ir.sharif.math.ap2023.project.model.pipe.PiranhaTrapPipe;
-import ir.sharif.math.ap2023.project.model.pipe.TrunkPipe;
+import ir.sharif.math.ap2023.project.model.pipe.*;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;
 import ir.sharif.math.ap2023.project.model.player.Fireball;
 import ir.sharif.math.ap2023.project.model.player.Player;
@@ -281,21 +279,10 @@ public final class UIManager extends JPanel {
         SectionObject sectionObject = gameLoader.getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
 
         for (PipeObject pipe : sectionObject.getPipes()) {
-            if (pipe instanceof PiranhaTrapPipe && ((PiranhaTrapPipe) pipe).getPiranha() != null) {
+            if ((pipe instanceof PiranhaTrapPipe || pipe instanceof TelePiranhaPipe) && ((PiranhaTrapPipe) pipe).getPiranha() != null) {
                 Piranha piranha = ((PiranhaTrapPipe) pipe).getPiranha();
                 if (piranha.isAlive()) {
                     if (piranha.getSolidArea().intersects(player.getSolidArea()) && player.getDirection() != PlayerDirection.DEAD) {
-//                        GameEngine.getInstance().setGameState(GameState.SCENE);
-//                        player.setDirection(PlayerDirection.DEAD);
-//                        player.setCharacterState(0);
-//                        player.decreaseHearts();
-//                        SoundManager soundManager = SoundManager.getInstance();
-//                        soundManager.pauseMusic();
-//                        soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
-//                        player.setSpeedX(0);
-//                        player.setSpeedY(5);
-//                        player.setFalling(false);
-//                        player.setJumping(true);
                         if (player.isInvincible()) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
                         } else if (!player.isEnemyInvincible()) {
@@ -442,6 +429,28 @@ public final class UIManager extends JPanel {
                     blockObject.getY() * tileSize,
                     tileSize,
                     (blockObject instanceof GroundBlockObject) ? 4 * tileSize : tileSize,
+                    null
+            );
+        }
+        if (sectionObject.getFlag() != null) {
+            Flag flag = sectionObject.getFlag();
+            flag.frame++;
+            if (flag.frame >= 45)
+                flag.frame = 0;
+            g2D.drawImage(
+                    flag.getFlagRod().getImage(),
+                    flag.getFlagRod().getX(),
+                    flag.getFlagRod().getY(),
+                    tileSize,
+                    8 * tileSize,
+                    null
+            );
+            g2D.drawImage(
+                    flag.getImage(),
+                    flag.getX(),
+                    flag.getY(),
+                    tileSize,
+                    tileSize,
                     null
             );
         }

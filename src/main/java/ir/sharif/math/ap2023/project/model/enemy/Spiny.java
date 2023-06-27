@@ -52,7 +52,7 @@ public class Spiny extends EnemyObject {
         double distance = Math.sqrt(Math.pow(player.getX() - solidArea.x, 2) + Math.pow(player.getY() - solidArea.y, 2));
         if (distance > 5 * UIManager.getInstance().getTileSize()) {
             speedX = isToRight() ? defaultSpeed : -defaultSpeed;
-        } else if (Math.abs(solidArea.y - (player.getY() + (player.getCharacterState() > 0 ? UIManager.getInstance().getTileSize() : 0))) <= 5) {
+        } else if (Math.abs(solidArea.y + 48 - (player.getY() + player.getSolidArea().height)) <= 5) {
             if (player.getX() > getSolidArea().x) {
                 setToRight(true);
                 if (speedX > 0) {
