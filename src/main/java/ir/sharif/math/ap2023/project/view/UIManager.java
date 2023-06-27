@@ -41,6 +41,7 @@ public final class UIManager extends JPanel {
     private final int tileSize = 48;
     private final int screenWidth = screenCol * tileSize;
     private final int screenHeight = screenRow * tileSize;
+    private final Color transparentBlack = new Color(0, 0, 0, 175);
     public MainMenuItem mainMenuItem = MainMenuItem.NEW_GAME;
     public Difficulty difficultyOption = Difficulty.EASY;
     public int saveOption = 1;
@@ -52,7 +53,6 @@ public final class UIManager extends JPanel {
     private JPasswordField passwordField;
     private JButton signInButton, signUpButton;
     private int timer = 0;
-    private final Color transparentBlack = new Color(0, 0, 0, 175);
 
     private UIManager() {
         imageLoader = ImageLoader.getInstance();
@@ -190,7 +190,7 @@ public final class UIManager extends JPanel {
                     progressedLength += player.getX() / tileSize;
             }
             int progressRisk = ((int) ((progressedLength / fullLength) * player.getCoins()));
-            Checkpoint checkpoint = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel()-1).getSections().get(player.getSection()-1).getCheckpoint();
+            Checkpoint checkpoint = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getCheckpoint();
             checkpoint.setProgressRisk(progressRisk);
 
             g2D.setFont(font.deriveFont(Font.BOLD, 26F));
@@ -326,6 +326,15 @@ public final class UIManager extends JPanel {
             if ((pipe instanceof PiranhaTrapPipe || pipe instanceof TelePiranhaPipe) && ((PiranhaTrapPipe) pipe).getPiranha() != null) {
                 Piranha piranha = ((PiranhaTrapPipe) pipe).getPiranha();
                 if (piranha.isAlive()) {
+                    for (Fireball fireball : player.getFireballs()) {
+                        if (fireball.getRightBounds().intersects(piranha.getSolidArea()))
+                            ((PiranhaTrapPipe) pipe).killPiranha();
+                    }
+                    if (player.hasSword) {
+                        if (player.sword.getBounds(player).intersects(piranha.getSolidArea())) {
+                            ((PiranhaTrapPipe) pipe).killPiranha();
+                        }
+                    }
                     if (piranha.getSolidArea().intersects(player.getSolidArea()) && player.getDirection() != PlayerDirection.DEAD) {
                         if (player.isInvincible()) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
