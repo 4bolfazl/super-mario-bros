@@ -359,8 +359,8 @@ public final class KeyboardHandler implements KeyListener {
     }
 
     private void resetGame() {
-        GameEngine.getInstance().reset();
         GameLoader.getInstance("config.json").reset();
+        GameEngine.getInstance().reset();
 
         GameEngine.getInstance().setGameState(GameState.PLAYING);
     }

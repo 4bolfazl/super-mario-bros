@@ -848,7 +848,7 @@ public class Player implements Cloneable {
         swordCoolDownStart = false;
         x = 2 * UIManager.getInstance().getTileSize();
         y = UIManager.getInstance().getScreenHeight() - UIManager.getInstance().getTileSize() * 7;
-        time = 0;
+        time = GameLoader.getInstance("config.json").getGame().getLevels().get(0).getSections().get(0).getTime();
         level = 1;
         section = 1;
         coins = 0;
