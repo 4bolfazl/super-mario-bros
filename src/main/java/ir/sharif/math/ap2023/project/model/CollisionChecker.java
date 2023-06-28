@@ -228,22 +228,7 @@ public final class CollisionChecker {
                         ((Koopa) enemy).setFreeze(true);
                     enemy.kill();
                 } else if (!player.isEnemyInvincible()) {
-                    if (player.getCharacterState() > 0) {
-                        player.setCharacterState(0);
-                        player.setEnemyInvincible(true);
-                    } else {
-                        player.decreaseHearts();
-                        GameEngine.getInstance().setGameState(GameState.SCENE);
-                        player.setDirection(PlayerDirection.DEAD);
-                        player.setCharacterState(0);
-                        SoundManager soundManager = SoundManager.getInstance();
-                        soundManager.pauseMusic();
-                        soundManager.playSoundEffect(SoundEffectType.GAME_OVER);
-                        player.setSpeedX(0);
-                        player.setSpeedY(5);
-                        player.setFalling(false);
-                        player.setJumping(true);
-                    }
+                    player.decreaseHeartHit();
                 }
             }
         }
