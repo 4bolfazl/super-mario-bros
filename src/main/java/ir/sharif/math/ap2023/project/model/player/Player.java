@@ -432,6 +432,7 @@ public class Player implements Cloneable {
             setJumping(true);
             if (hearts <= 0) {
                 KeyboardHandler.getInstance().resetGame(3, 0, 0);
+                SoundManager.getInstance().playBackgroundMusic();
             }
         }
     }

@@ -120,22 +120,24 @@ public final class GameEngine implements Runnable {
     }
 
     private void updateGame() {
-        player.updateSolidArea();
-        player.checkInvincibility();
-        player.updateLocation();
-        collisionChecker.checkCollisions();
-        updateItems();
-        updateEnemies();
-        updateFireballs();
-        updateKeyDelay();
-        updateSword();
-        removeTempCoins();
-        if (scene)
-            updateCutScene();
-        if (GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getFlag() != null)
-            updateFlag();
-        if (player.getDirection() == PlayerDirection.DEAD)
-            updateDeathDelay();
+        if (getGameState() != GameState.PAUSE) {
+            player.updateSolidArea();
+            player.checkInvincibility();
+            player.updateLocation();
+            collisionChecker.checkCollisions();
+            updateItems();
+            updateEnemies();
+            updateFireballs();
+            updateKeyDelay();
+            updateSword();
+            removeTempCoins();
+            if (scene)
+                updateCutScene();
+            if (GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getFlag() != null)
+                updateFlag();
+            if (player.getDirection() == PlayerDirection.DEAD)
+                updateDeathDelay();
+        }
     }
 
     private void updateDeathDelay() {

@@ -78,6 +78,10 @@ public final class SoundManager {
         }
     }
 
+    public void playBackgroundMusic() {
+        playBackgroundMusic(lastMusic);
+    }
+
     public void pauseMusic() {
         clip.stop();
         clip.close();
