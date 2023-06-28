@@ -89,6 +89,7 @@ public final class CollisionChecker {
             Rectangle bounds = flag.getFlagRod().getBounds();
             if (bounds.intersects(player.getRightBounds())) {
                 player.setSpeedX(0);
+                player.setX(player.getX() - 5);
                 flag.setTriggered(true);
                 SoundManager.getInstance().pauseMusic();
                 SoundManager.getInstance().playBackgroundMusic(BackgroundMusicType.FLAG);
