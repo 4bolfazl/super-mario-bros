@@ -11,6 +11,7 @@ import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
 import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
+import ir.sharif.math.ap2023.project.model.enemy.NukeBird;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.item.Coin;
 import ir.sharif.math.ap2023.project.model.item.Item;
@@ -295,6 +296,11 @@ public final class GameEngine implements Runnable {
         for (EnemyObject enemy : sectionObject.getEnemies()) {
             if (gameState == GameState.PLAYING)
                 enemy.updateLocation();
+            if (enemy instanceof NukeBird) {
+                if (((NukeBird) enemy).getBomb() != null) {
+                    ((NukeBird) enemy).getBomb().updateLocation();
+                }
+            }
         }
     }
 

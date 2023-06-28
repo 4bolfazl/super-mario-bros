@@ -189,6 +189,12 @@
               "x": 24,
               "y": 1,
               "type": "GOOMPA"
+            },
+            {
+              "subclass": "nukebirdEnemy",
+              "x": 3,
+              "y": 9,
+              "type": "NUKEBIRD"
             }
           ]
         },

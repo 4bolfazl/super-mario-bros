@@ -100,6 +100,8 @@ public class SectionObject implements Cloneable {
                 nothingBlockObjects.add(nothing);
             }
         }
+        nothingBlockObjects.add(new NothingBlockObject(1,1));
+        nothingBlockObjects.add(new NothingBlockObject(23,1));
     }
 
     public List<EnemyObject> getEnemies() {

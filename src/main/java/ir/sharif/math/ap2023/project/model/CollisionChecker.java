@@ -58,8 +58,80 @@ public final class CollisionChecker {
                 checkBombCollision();
             }
         }
+        checkNukeBirdBombCollision();
+        checkNukeBirdCollision();
         checkFlagCollisions();
         checkCheckpointCollisions();
+    }
+
+    private void checkNukeBirdCollision() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (enemy instanceof NukeBird) {
+                if (player.getSolidArea().intersects(enemy.getSolidArea())) {
+                    player.decreaseHeartHit(false);
+                }
+            }
+        }
+    }
+
+    private void checkNukeBirdBombCollision() {
+        Player player = GameEngine.getInstance().getPlayer();
+        SectionObject sectionObject = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
+        for (EnemyObject enemy : sectionObject.getEnemies()) {
+            if (enemy instanceof NukeBird) {
+                Bomb bomb = ((NukeBird) enemy).getBomb();
+                if (bomb != null) {
+                    double explosionX = 0;
+                    double explosionY = 0;
+                    for (BlockObject block : sectionObject.getBlocks()) {
+                        if (bomb.getTopBounds().intersects(block.getTopBounds())) {
+                            explosionX = bomb.getX() + UIManager.getInstance().getTileSize() / 2d;
+                            explosionY = bomb.getY() + UIManager.getInstance().getTileSize();
+                            ((NukeBird) enemy).setBomb(null);
+                        }
+                    }
+                    if (((NukeBird) enemy).getBomb() != null) {
+                        for (EnemyObject sectionObjectEnemy : sectionObject.getEnemies()) {
+                            if (!(sectionObjectEnemy instanceof NukeBird)) {
+                                if (bomb.getTopBounds().intersects(sectionObjectEnemy.getTopBounds())) {
+                                    sectionObjectEnemy.kill();
+                                    explosionX = bomb.getX() + UIManager.getInstance().getTileSize() / 2d;
+                                    explosionY = bomb.getY() + UIManager.getInstance().getTileSize();
+                                    ((NukeBird) enemy).setBomb(null);
+                                }
+                            }
+                        }
+                    }
+                    if (((NukeBird) enemy).getBomb() == null) {
+                        List<BlockObject> toBeRemoved = new ArrayList<>();
+                        for (BlockObject block : sectionObject.getBlocks()) {
+                            if (Math.abs(block.getY() * 48 - explosionY) <= 10 && Math.abs(block.getX() * 48 - explosionX) <= UIManager.getInstance().getTileSize()) {
+                                if (!(block instanceof GroundBlockObject))
+                                    toBeRemoved.add(block);
+                            }
+                        }
+                        for (BlockObject blockObject : toBeRemoved) {
+                            sectionObject.getBlocks().remove(blockObject);
+                        }
+                        for (EnemyObject sectionObjectEnemy : sectionObject.getEnemies()) {
+                            if (sectionObjectEnemy instanceof Goompa) {
+                                System.out.println(sectionObjectEnemy.getSolidArea().x + ", " + sectionObjectEnemy.getSolidArea().y);
+                                System.out.println(explosionX + ", " + explosionY);
+                            }
+                            if (Math.sqrt(Math.pow(explosionX - (sectionObjectEnemy.getSolidArea().x + 24), 2) + Math.pow(explosionY - (sectionObjectEnemy.getSolidArea().y + 24), 2)) <= UIManager.getInstance().getTileSize()) {
+                                System.out.println("kill");
+                                sectionObjectEnemy.kill();
+                            }
+                        }
+                        if (Math.sqrt(Math.pow(explosionX - (player.getX() + 24), 2) + Math.pow(explosionY - (player.getY() + player.getSolidArea().height / 2d), 2)) <= UIManager.getInstance().getTileSize()) {
+                            player.decreaseHeartHit(false);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void checkCheckpointCollisions() {
@@ -675,13 +747,15 @@ public final class CollisionChecker {
                     if (enemy.isDead())
                         continue;
                     if (!player.isInvincible()) {
-                        if (enemy instanceof Spiny) {
-                            player.decreaseHeartHit(false);
-                        } else {
-                            player.setJumping(true);
-                            player.setFalling(false);
-                            player.setSpeedX(0);
-                            player.setSpeedY(7);
+                        if (!(enemy instanceof NukeBird)) {
+                            if (enemy instanceof Spiny) {
+                                player.decreaseHeartHit(false);
+                            } else {
+                                player.setJumping(true);
+                                player.setFalling(false);
+                                player.setSpeedX(0);
+                                player.setSpeedY(7);
+                            }
                         }
                     } else {
                         SoundManager.getInstance().playSoundEffect(SoundEffectType.EXPLOSION);

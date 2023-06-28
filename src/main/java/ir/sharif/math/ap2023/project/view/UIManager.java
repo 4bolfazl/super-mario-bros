@@ -7,16 +7,11 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
-import ir.sharif.math.ap2023.project.model.block.BlockObject;
-import ir.sharif.math.ap2023.project.model.block.Flag;
-import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
-import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
+import ir.sharif.math.ap2023.project.model.block.*;
 import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
-import ir.sharif.math.ap2023.project.model.enemy.Bowser;
-import ir.sharif.math.ap2023.project.model.enemy.BowserFireball;
-import ir.sharif.math.ap2023.project.model.enemy.EnemyObject;
-import ir.sharif.math.ap2023.project.model.enemy.Piranha;
+import ir.sharif.math.ap2023.project.model.enemy.*;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
+import ir.sharif.math.ap2023.project.model.item.Bomb;
 import ir.sharif.math.ap2023.project.model.item.Coin;
 import ir.sharif.math.ap2023.project.model.item.Item;
 import ir.sharif.math.ap2023.project.model.pipe.*;
@@ -268,6 +263,20 @@ public final class UIManager extends JPanel {
                     (int) enemy.getSolidArea().getHeight(),
                     null
             );
+            if (enemy instanceof NukeBird) {
+                if (((NukeBird) enemy).getBomb() != null) {
+                    Bomb bomb = ((NukeBird) enemy).getBomb();
+                    g2D.drawImage(
+                            imageLoader.bomb,
+                            (int) bomb.getX(),
+                            (int) bomb.getY(),
+                            tileSize,
+                            tileSize,
+                            null
+
+                    );
+                }
+            }
             if (enemy instanceof Bowser) {
                 g2D.setFont(g2D.getFont().deriveFont(42f));
                 g2D.drawString(
@@ -460,8 +469,8 @@ public final class UIManager extends JPanel {
             g2D.fillOval(
                     (int) (player.getX() - tileSize),
                     (int) (player.getY() - tileSize / 2),
-                    3* tileSize,
-                    3* tileSize
+                    3 * tileSize,
+                    3 * tileSize
             );
         }
 

@@ -69,6 +69,12 @@ public final class ImageLoader {
         piranhaImages[0] = loadImage("/enemies/piranha/piranha0.png");
         piranhaImages[1] = loadImage("/enemies/piranha/piranha1.png");
 
+        BufferedImage[] nukebird = new BufferedImage[4];
+        for (int i = 0; i < 4; i++) {
+            nukebird[i] = loadImage("/enemies/nukebird/nukebird" + i + ".png");
+        }
+        enemies.put(EnemyType.NUKEBIRD, nukebird);
+
         BufferedImage[] goompa = new BufferedImage[3];
         for (int i = 0; i < 3; i++) {
             goompa[i] = loadImage("/enemies/goompa/goompa" + i + ".png");

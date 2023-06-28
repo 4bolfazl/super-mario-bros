@@ -134,13 +134,17 @@ public abstract class EnemyObject implements Cloneable {
                 jumping = false;
                 falling = true;
             } else if (jumping) {
-                speedY -= gravity;
-                getSolidArea().y -= speedY;
+                if (!(this instanceof NukeBird)) {
+                    speedY -= gravity;
+                    getSolidArea().y -= speedY;
+                }
             }
 
             if (falling) {
-                getSolidArea().y += speedY;
-                speedY += gravity;
+                if (!(this instanceof NukeBird)) {
+                    getSolidArea().y += speedY;
+                    speedY += gravity;
+                }
             }
 
             if (this instanceof Koopa && ((Koopa) this).isFreeze()) {

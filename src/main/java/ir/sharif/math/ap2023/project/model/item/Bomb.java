@@ -12,6 +12,9 @@ public class Bomb extends Item {
     public Bomb(double x, double y) {
         super(x, y);
         gravity = 0.08;
+        falling = true;
+        jumping = false;
+        speedY = 6;
     }
 
     @Override
@@ -32,5 +35,21 @@ public class Bomb extends Item {
     @Override
     public void acquired(Player player) {
 
+    }
+
+    @Override
+    public void updateLocation() {
+        if (jumping && speedY <= 0) {
+            jumping = false;
+            falling = true;
+        } else if (jumping) {
+            speedY -= gravity;
+            y -= speedY;
+        }
+
+        if (falling) {
+            y += speedY;
+            speedY += gravity;
+        }
     }
 }
