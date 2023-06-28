@@ -7,7 +7,10 @@ import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
-import ir.sharif.math.ap2023.project.model.block.*;
+import ir.sharif.math.ap2023.project.model.block.BlockObject;
+import ir.sharif.math.ap2023.project.model.block.Flag;
+import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;
+import ir.sharif.math.ap2023.project.model.block.QuestionBlockObject;
 import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.*;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
@@ -339,10 +342,12 @@ public final class UIManager extends JPanel {
 
         Player player = GameEngine.getInstance().getPlayer();
 
-        timer++;
-        if (timer >= 60) {
-            player.decreaseTime();
-            timer = 0;
+        if (GameEngine.getInstance().getGameState() != GameState.PAUSE) {
+            timer++;
+            if (timer >= 60) {
+                player.decreaseTime();
+                timer = 0;
+            }
         }
 
         int x = tileSize / 2;
