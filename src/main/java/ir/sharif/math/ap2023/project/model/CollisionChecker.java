@@ -116,12 +116,7 @@ public final class CollisionChecker {
                             sectionObject.getBlocks().remove(blockObject);
                         }
                         for (EnemyObject sectionObjectEnemy : sectionObject.getEnemies()) {
-                            if (sectionObjectEnemy instanceof Goompa) {
-                                System.out.println(sectionObjectEnemy.getSolidArea().x + ", " + sectionObjectEnemy.getSolidArea().y);
-                                System.out.println(explosionX + ", " + explosionY);
-                            }
                             if (Math.sqrt(Math.pow(explosionX - (sectionObjectEnemy.getSolidArea().x + 24), 2) + Math.pow(explosionY - (sectionObjectEnemy.getSolidArea().y + 24), 2)) <= UIManager.getInstance().getTileSize()) {
-                                System.out.println("kill");
                                 sectionObjectEnemy.kill();
                             }
                         }
