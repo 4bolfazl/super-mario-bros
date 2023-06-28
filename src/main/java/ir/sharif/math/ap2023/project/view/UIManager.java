@@ -42,6 +42,7 @@ public final class UIManager extends JPanel {
     private final int screenWidth = screenCol * tileSize;
     private final int screenHeight = screenRow * tileSize;
     private final Color transparentBlack = new Color(0, 0, 0, 175);
+    private final Color transparentBlue = new Color(1, 6, 90, 125);
     public MainMenuItem mainMenuItem = MainMenuItem.NEW_GAME;
     public Difficulty difficultyOption = Difficulty.EASY;
     public int saveOption = 1;
@@ -454,6 +455,15 @@ public final class UIManager extends JPanel {
                 player.getSolidArea().height,
                 null
         );
+        if (player.isInvincible()) {
+            g2D.setColor(transparentBlue);
+            g2D.fillOval(
+                    (int) (player.getX() - tileSize),
+                    (int) (player.getY() - tileSize / 2),
+                    3* tileSize,
+                    3* tileSize
+            );
+        }
 
         if (player.hasSword) {
             boolean isToRight = player.getDirection() == PlayerDirection.CROUCH_RIGHT || player.getDirection() == PlayerDirection.CROUCH_RIGHT_IDLE || player.getDirection() == PlayerDirection.RIGHT || player.getDirection() == PlayerDirection.IDLE_RIGHT || player.getDirection() == PlayerDirection.JUMP_IDLE_RIGHT || player.getDirection() == PlayerDirection.JUMP_RIGHT;

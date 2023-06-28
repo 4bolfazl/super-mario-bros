@@ -33,6 +33,7 @@ public final class SoundManager {
         soundEffects.put(SoundEffectType.PAUSE, getClass().getResource("/sound/sound-effect/Pause.wav"));
         soundEffects.put(SoundEffectType.POWERUP, getClass().getResource("/sound/sound-effect/Powerup.wav"));
         soundEffects.put(SoundEffectType.SQUISH, getClass().getResource("/sound/sound-effect/Squish.wav"));
+        soundEffects.put(SoundEffectType.EXPLOSION, getClass().getResource("/sound/sound-effect/Explosion.wav"));
 
         backgroundMusics.put(BackgroundMusicType.BOSS, getClass().getResource("/sound/background/boss.wav"));
         backgroundMusics.put(BackgroundMusicType.CASTLE, getClass().getResource("/sound/background/castle.wav"));

@@ -222,10 +222,18 @@ public final class CollisionChecker {
         for (EnemyObject enemy : sectionObject.getEnemies()) {
             if (enemy.isDead())
                 continue;
-            if (enemy.getRightBounds().intersects(player.getLeftBounds()) || enemy.getLeftBounds().intersects(player.getRightBounds())) {
+            Rectangle rightBounds = player.getRightBounds();
+            Rectangle leftBounds = player.getLeftBounds();
+            if (player.isInvincible()) {
+                rightBounds.width += 3 * UIManager.getInstance().getTileSize() / 4;
+                leftBounds.x -= 3 * UIManager.getInstance().getTileSize() / 4;
+                leftBounds.width += UIManager.getInstance().getTileSize();
+            }
+            if (enemy.getRightBounds().intersects(leftBounds) || enemy.getLeftBounds().intersects(rightBounds)) {
                 if (player.isInvincible()) {
                     if (enemy instanceof Koopa)
                         ((Koopa) enemy).setFreeze(true);
+                    SoundManager.getInstance().playSoundEffect(SoundEffectType.EXPLOSION);
                     enemy.kill();
                 } else if (!player.isEnemyInvincible()) {
                     player.decreaseHeartHit(false);
@@ -516,6 +524,7 @@ public final class CollisionChecker {
             if (topBounds.intersects(blockObject.getBottomBounds())) {
                 blockObject.gotHit();
                 if (player.getCharacterState() > 0 && (blockObject instanceof SimpleBlockObject || blockObject.getType() == BlockType.SIMPLE)) {
+                    player.addPoints(1);
                     toBeRemoved.add(blockObject);
                 }
                 player.setSpeedY(0);
@@ -658,6 +667,9 @@ public final class CollisionChecker {
 
         if (!player.isEnemyInvincible()) {
             for (EnemyObject enemy : sectionObject.getEnemies()) {
+                if (player.isInvincible()) {
+                    bottomBounds.height += UIManager.getInstance().getTileSize() / 2;
+                }
                 if (bottomBounds.intersects(enemy.getTopBounds())) {
                     if (enemy.isDead())
                         continue;
@@ -671,6 +683,7 @@ public final class CollisionChecker {
                             player.setSpeedY(7);
                         }
                     } else {
+                        SoundManager.getInstance().playSoundEffect(SoundEffectType.EXPLOSION);
                         if (enemy instanceof Koopa)
                             ((Koopa) enemy).setFreeze(true);
                         if (enemy instanceof Spiny)

@@ -12,5 +12,6 @@ public enum SoundEffectType {
     KICK,
     PAUSE,
     POWERUP,
-    SQUISH
+    SQUISH,
+    EXPLOSION
 }
