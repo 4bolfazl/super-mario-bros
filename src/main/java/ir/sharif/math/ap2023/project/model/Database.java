@@ -99,10 +99,10 @@ public final class Database {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        findUserByUsername(currentUser.getUsername(), instance);
+        findUserByUsername(GameEngine.getInstance().getPlayer().getUsername(), instance);
     }
 
-    private void write() {
+    public void write() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 

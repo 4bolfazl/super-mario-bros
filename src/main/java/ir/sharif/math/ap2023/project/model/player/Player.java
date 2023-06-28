@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
+import ir.sharif.math.ap2023.project.controller.inputManager.KeyboardHandler;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.GameEngineCopy;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
+import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
@@ -184,24 +186,29 @@ public class Player implements Cloneable {
     }
 
     public void updateLocation() {
-        if (y + getSolidArea().height >= 530 && GameEngine.getInstance().getGameState() != GameState.SCENE) {
+        if (getTime() <= 0) {
             setCharacterState(0);
             decreaseHeartHit();
-        }
-        if (jumping && speedY <= 0) {
-            jumping = false;
-            falling = true;
-        } else if (jumping) {
-            speedY -= gravity;
-            y -= speedY;
-        }
+        } else {
+            if (y + getSolidArea().height >= 530 && GameEngine.getInstance().getGameState() != GameState.SCENE) {
+                setCharacterState(0);
+                decreaseHeartHit();
+            }
+            if (jumping && speedY <= 0) {
+                jumping = false;
+                falling = true;
+            } else if (jumping) {
+                speedY -= gravity;
+                y -= speedY;
+            }
 
-        if (falling) {
-            y += speedY;
-            speedY += gravity;
-        }
+            if (falling) {
+                y += speedY;
+                speedY += gravity;
+            }
 
-        x += speedX;
+            x += speedX;
+        }
     }
 
     @JsonIgnore
@@ -400,7 +407,7 @@ public class Player implements Cloneable {
 
     public void decreaseHeartHit() {
         if (getCharacterState() > 0) {
-            setCharacterState(0);
+            setCharacterState(getCharacterState() - 1);
             setEnemyInvincible(true);
         } else {
             decreaseHearts();
@@ -841,7 +848,7 @@ public class Player implements Cloneable {
         this.continuing = continuing;
     }
 
-    public void reset() {
+    public void reset(int heartsNum) {
         hasSword = false;
         sword = new Sword(this);
         swordCoolDownTimer = 0;
@@ -852,7 +859,7 @@ public class Player implements Cloneable {
         level = 1;
         section = 1;
         coins = 0;
-        hearts = 3;
+        hearts = heartsNum;
         characterState = 0;
         score = 0;
         direction = PlayerDirection.IDLE_RIGHT;
@@ -886,5 +893,22 @@ public class Player implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    public void placeAfterDeath() {
+        Database.getInstance().reload();
+        Player currentUser = Database.getInstance().getCurrentUser();
+        int slot = UIManager.getInstance().saveOption - 1;
+        Game savedGame = currentUser.getSavedGame()[slot];
+        if (savedGame != null) {
+            currentUser.getSavedPlayer()[slot].decreaseHearts();
+            Database.getInstance().write();
+            GameLoader.getInstance("config.json").setGame(currentUser.getSavedGame()[slot]);
+            GameEngine.getInstance().getPlayer().loadPlayer(currentUser.getSavedPlayer()[slot]);
+            GameEngine.getInstance().loadGameEngine(currentUser.getSavedGameEngineCopy()[slot]);
+        } else {
+            KeyboardHandler.getInstance().resetGame(hearts);
+        }
+        GameEngine.getInstance().setGameState(GameState.PLAYING);
     }
 }

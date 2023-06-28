@@ -48,6 +48,7 @@ public final class GameEngine implements Runnable {
     @JsonIgnore
     private CollisionChecker collisionChecker;
     private List<Item> items = new ArrayList<>();
+    private int deathTimer = 0;
 
     private GameEngine() {
         init();
@@ -132,6 +133,16 @@ public final class GameEngine implements Runnable {
             updateCutScene();
         if (GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getFlag() != null)
             updateFlag();
+        if (player.getDirection() == PlayerDirection.DEAD)
+            updateDeathDelay();
+    }
+
+    private void updateDeathDelay() {
+        deathTimer++;
+        if (deathTimer >= 220) {
+            deathTimer = 0;
+            player.placeAfterDeath();
+        }
     }
 
     private void updateFlag() {
@@ -358,17 +369,19 @@ public final class GameEngine implements Runnable {
                 this.sceneTimer1,
                 this.scene,
                 this.gameState,
-                this.items
+                this.items,
+                this.deathTimer
         );
     }
 
-    public void reset() {
-        player.reset();
+    public void reset(int hearts) {
+        player.reset(hearts);
         swordPressTimer = 0;
         sceneTimer1 = 0;
         scene = false;
         items = new ArrayList<>();
         boss = null;
+        deathTimer = 0;
     }
 
     public void loadGameEngine(GameEngineCopy gameEngineCopy) {
@@ -377,5 +390,6 @@ public final class GameEngine implements Runnable {
         this.scene = gameEngineCopy.isScene();
         this.gameState = gameEngineCopy.getGameState();
         this.items = gameEngineCopy.getItems();
+        this.deathTimer = 0;
     }
 }

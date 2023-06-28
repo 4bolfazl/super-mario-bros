@@ -9,15 +9,17 @@ public class GameEngineCopy {
     public int swordPressTimer;
     public int sceneTimer1;
     public boolean scene;
+    private int deathTimer;
     private GameState gameState;
     private List<Item> items;
 
-    public GameEngineCopy(int swordPressTimer, int sceneTimer1, boolean scene, GameState gameState, List<Item> items) {
+    public GameEngineCopy(int swordPressTimer, int sceneTimer1, boolean scene, GameState gameState, List<Item> items, int deathTimer) {
         this.swordPressTimer = swordPressTimer;
         this.sceneTimer1 = sceneTimer1;
         this.scene = scene;
         this.gameState = gameState;
         this.items = items;
+        this.deathTimer = deathTimer;
     }
 
     public GameEngineCopy() {
@@ -61,5 +63,13 @@ public class GameEngineCopy {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public int getDeathTimer() {
+        return deathTimer;
+    }
+
+    public void setDeathTimer(int deathTimer) {
+        this.deathTimer = deathTimer;
     }
 }

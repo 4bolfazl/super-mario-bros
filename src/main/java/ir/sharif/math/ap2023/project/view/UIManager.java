@@ -212,18 +212,8 @@ public final class UIManager extends JPanel {
         if (GameEngine.getInstance().getGameState() == GameState.CHECKPOINT) {
             g2D.setColor(transparentBlack);
             g2D.fillRect(0, 0, screenWidth, screenHeight);
+            int progressRisk = getProgressRisk();
             Player player = GameEngine.getInstance().getPlayer();
-            List<SectionObject> sections = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections();
-            double fullLength = 0;
-            double progressedLength = 0;
-            for (int i = 0; i < sections.size(); i++) {
-                fullLength += sections.get(i).getLength();
-                if (player.getSection() - 1 > i)
-                    progressedLength += sections.get(i).getLength();
-                else if (player.getSection() - 1 == i)
-                    progressedLength += player.getX() / tileSize;
-            }
-            int progressRisk = ((int) ((progressedLength / fullLength) * player.getCoins()));
             Checkpoint checkpoint = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1).getCheckpoint();
             checkpoint.setProgressRisk(progressRisk);
 
@@ -245,6 +235,21 @@ public final class UIManager extends JPanel {
                     408
             );
         }
+    }
+
+    public int getProgressRisk() {
+        Player player = GameEngine.getInstance().getPlayer();
+        List<SectionObject> sections = GameLoader.getInstance("config.json").getGame().getLevels().get(player.getLevel() - 1).getSections();
+        double fullLength = 0;
+        double progressedLength = 0;
+        for (int i = 0; i < sections.size(); i++) {
+            fullLength += sections.get(i).getLength();
+            if (player.getSection() - 1 > i)
+                progressedLength += sections.get(i).getLength();
+            else if (player.getSection() - 1 == i)
+                progressedLength += player.getX() / tileSize;
+        }
+        return ((int) ((progressedLength / fullLength) * player.getCoins()));
     }
 
     private void drawEnemies(Graphics2D g2D) {

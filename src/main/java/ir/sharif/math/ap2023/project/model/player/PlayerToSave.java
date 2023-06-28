@@ -346,4 +346,8 @@ public class PlayerToSave {
     public void setTempPipe(PipeObject tempPipe) {
         this.tempPipe = tempPipe;
     }
+
+    public void decreaseHearts() {
+        hearts--;
+    }
 }

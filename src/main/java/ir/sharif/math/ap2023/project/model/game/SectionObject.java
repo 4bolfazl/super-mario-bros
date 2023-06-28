@@ -188,6 +188,8 @@ public class SectionObject implements Cloneable {
 
             clone.pipes = new ArrayList<>();
             for (PipeObject pipe : pipes) {
+                if (pipe instanceof TrunkPipe)
+                    continue;
                 clone.pipes.add(pipe.clone());
             }
 

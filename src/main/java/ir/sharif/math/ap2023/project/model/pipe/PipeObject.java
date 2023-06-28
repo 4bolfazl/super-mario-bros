@@ -129,7 +129,7 @@ public abstract class PipeObject implements Cloneable {
     public PipeObject clone() {
         try {
             PipeObject clone = (PipeObject) super.clone();
-            clone.y = 10 - clone.y;
+            clone.y = 8 - clone.y;
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

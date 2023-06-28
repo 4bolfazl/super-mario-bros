@@ -51,4 +51,11 @@ public class TelePiranhaPipe extends PiranhaTrapPipe {
     public void killPiranha() {
         piranha = null;
     }
+
+    @Override
+    public PipeObject clone() {
+        PipeObject clone = super.clone();
+        clone.setSection(clone.getSection().clone());
+        return clone;
+    }
 }

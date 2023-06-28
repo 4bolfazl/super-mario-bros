@@ -21,4 +21,11 @@ public class TeleSimplePipe extends PipeObject {
 
     public TeleSimplePipe() {
     }
+
+    @Override
+    public PipeObject clone() {
+        PipeObject clone = super.clone();
+        clone.setSection(clone.getSection().clone());
+        return clone;
+    }
 }
