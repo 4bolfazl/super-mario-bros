@@ -430,6 +430,9 @@ public class Player implements Cloneable {
             setSpeedY(5);
             setFalling(false);
             setJumping(true);
+            if (hearts <= 0) {
+                KeyboardHandler.getInstance().resetGame(3, 0, 0);
+            }
         }
     }
 
@@ -927,7 +930,11 @@ public class Player implements Cloneable {
         Database.getInstance().reload();
         Player currentUser = Database.getInstance().getCurrentUser();
         int slot = UIManager.getInstance().saveOption - 1;
-        LevelObject savedGame = currentUser.getSavedGame()[slot].getLevels().get(currentUser.getLevel() - 1);
-        return savedGame != null;
+        try {
+            LevelObject savedGame = currentUser.getSavedGame()[slot].getLevels().get(currentUser.getLevel() - 1);
+            return savedGame != null;
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 }
