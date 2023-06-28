@@ -521,10 +521,12 @@ public final class CollisionChecker {
                 player.setSpeedY(0);
                 player.setY((blockObject.getY() + 1) * UIManager.getInstance().getTileSize());
                 if (blockObject instanceof QuestionBlockObject && blockObject.getType() == BlockType.QUESTION) {
+                    player.addPoints(1);
                     blockObject.setType(BlockType.EMPTY);
                     ((QuestionBlockObject) blockObject).revealItem();
                 }
                 if (blockObject instanceof CoinBlockObject && blockObject.getType() == BlockType.COIN) {
+                    player.addPoints(1);
                     blockObject.setType(BlockType.SIMPLE);
                     ((CoinBlockObject) blockObject).revealItem();
                 }
@@ -532,6 +534,7 @@ public final class CollisionChecker {
                     ((CoinsBlockObject) blockObject).hitTimes++;
                     if (((CoinsBlockObject) blockObject).hitTimes <= 5) {
                         player.addCoins(1);
+                        player.addPoints(10);
                         ((CoinsBlockObject) blockObject).revealItem();
                     }
                 }
@@ -608,7 +611,7 @@ public final class CollisionChecker {
                 }
                 if (blockObject instanceof SlimeBlockObject) {
                     player.setJumping(true);
-                    player.setSpeedY(15);
+                    player.setSpeedY(16);
                 }
 
                 if (sectionObject.isBossSection() && !(blockObject instanceof GroundBlockObject)) {

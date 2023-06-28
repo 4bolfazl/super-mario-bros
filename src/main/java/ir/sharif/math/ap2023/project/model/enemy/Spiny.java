@@ -78,7 +78,7 @@ public class Spiny extends EnemyObject {
     @Override
     public void kill() {
         SoundManager.getInstance().playSoundEffect(SoundEffectType.SQUISH);
-        GameEngine.getInstance().getPlayer().addPoints(1);
+        GameEngine.getInstance().getPlayer().addPoints(3);
         setSpeedX(0);
         setSpeedY(0);
         setDead(true);

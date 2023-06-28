@@ -5,7 +5,6 @@ import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
-import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
 import ir.sharif.math.ap2023.project.model.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
@@ -368,18 +367,21 @@ public final class UIManager extends JPanel {
                     for (Fireball fireball : player.getFireballs()) {
                         if (fireball.getRightBounds().intersects(piranha.getSolidArea())) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
+                            player.addPoints(1);
                             fireball.setDestroyed(true);
                         }
                     }
                     if (player.hasSword) {
                         if (player.sword.getBounds(player).intersects(piranha.getSolidArea())) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
+                            player.addPoints(1);
                             player.sword.setDestroyed(true);
                         }
                     }
                     if (piranha.getSolidArea().intersects(player.getSolidArea()) && player.getDirection() != PlayerDirection.DEAD) {
                         if (player.isInvincible()) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
+                            player.addPoints(1);
                         } else if (!player.isEnemyInvincible()) {
                             player.decreaseHeartHit(false);
                         }
