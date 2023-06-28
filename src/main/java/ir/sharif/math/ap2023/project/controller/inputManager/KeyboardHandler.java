@@ -289,7 +289,7 @@ public final class KeyboardHandler implements KeyListener {
             }
         } else if (code == KeyEvent.VK_ENTER) {
             gameEngine.getPlayer().setDifficulty(uiManager.difficultyOption);
-            resetGame(3);
+            resetGame(3, 0, 0);
         }
     }
 
@@ -358,9 +358,9 @@ public final class KeyboardHandler implements KeyListener {
         GameEngine.getInstance().setGameState(GameState.PLAYING);
     }
 
-    public void resetGame(int hearts) {
+    public void resetGame(int hearts, int score, int coins) {
         GameLoader.getInstance("config.json").reset();
-        GameEngine.getInstance().reset(hearts);
+        GameEngine.getInstance().reset(hearts, score, coins);
 
         GameEngine.getInstance().setGameState(GameState.PLAYING);
     }

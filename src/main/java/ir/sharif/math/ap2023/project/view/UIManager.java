@@ -381,7 +381,7 @@ public final class UIManager extends JPanel {
                         if (player.isInvincible()) {
                             ((PiranhaTrapPipe) pipe).killPiranha();
                         } else if (!player.isEnemyInvincible()) {
-                            player.decreaseHeartHit();
+                            player.decreaseHeartHit(false);
                         }
                     }
                     piranha.updateLocation();

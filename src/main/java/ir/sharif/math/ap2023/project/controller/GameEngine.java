@@ -374,8 +374,8 @@ public final class GameEngine implements Runnable {
         );
     }
 
-    public void reset(int hearts) {
-        player.reset(hearts);
+    public void reset(int hearts, int score, int coins) {
+        player.reset(hearts, score, coins);
         swordPressTimer = 0;
         sceneTimer1 = 0;
         scene = false;

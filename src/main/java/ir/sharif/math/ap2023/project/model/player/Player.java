@@ -14,6 +14,7 @@ import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.game.Game;
+import ir.sharif.math.ap2023.project.model.game.LevelObject;
 import ir.sharif.math.ap2023.project.model.game.SectionObject;
 import ir.sharif.math.ap2023.project.model.pipe.ExitPipe;
 import ir.sharif.math.ap2023.project.model.pipe.PipeObject;
@@ -186,13 +187,13 @@ public class Player implements Cloneable {
     }
 
     public void updateLocation() {
-        if (getTime() <= 0) {
+        if (getTime() <= 0 && getDirection() != PlayerDirection.DEAD) {
             setCharacterState(0);
-            decreaseHeartHit();
+            decreaseHeartHit(false);
         } else {
             if (y + getSolidArea().height >= 530 && GameEngine.getInstance().getGameState() != GameState.SCENE) {
                 setCharacterState(0);
-                decreaseHeartHit();
+                decreaseHeartHit(true);
             }
             if (jumping && speedY <= 0) {
                 jumping = false;
@@ -405,11 +406,19 @@ public class Player implements Cloneable {
         }
     }
 
-    public void decreaseHeartHit() {
+    public void decreaseHeartHit(boolean isFall) {
+        if (isFall)
+            score -= 30;
+        else
+            score -= 20;
+        if (score < 0)
+            score = 0;
         if (getCharacterState() > 0) {
             setCharacterState(getCharacterState() - 1);
             setEnemyInvincible(true);
         } else {
+            int n = hasSaved() ? 1 : 0;
+            coins -= ((n + 1) * coins + UIManager.getInstance().getProgressRisk()) / (n + 4);
             decreaseHearts();
             GameEngine.getInstance().setGameState(GameState.SCENE);
             setDirection(PlayerDirection.DEAD);
@@ -848,7 +857,7 @@ public class Player implements Cloneable {
         this.continuing = continuing;
     }
 
-    public void reset(int heartsNum) {
+    public void reset(int heartsNum, int scoreValue, int coinsAmount) {
         hasSword = false;
         sword = new Sword(this);
         swordCoolDownTimer = 0;
@@ -858,10 +867,10 @@ public class Player implements Cloneable {
         time = GameLoader.getInstance("config.json").getGame().getLevels().get(0).getSections().get(0).getTime();
         level = 1;
         section = 1;
-        coins = 0;
+        coins = coinsAmount;
         hearts = heartsNum;
         characterState = 0;
-        score = 0;
+        score = scoreValue;
         direction = PlayerDirection.IDLE_RIGHT;
         speedX = 0;
         speedY = 0;
@@ -902,13 +911,23 @@ public class Player implements Cloneable {
         Game savedGame = currentUser.getSavedGame()[slot];
         if (savedGame != null) {
             currentUser.getSavedPlayer()[slot].decreaseHearts();
+            currentUser.getSavedPlayer()[slot].setScore(getScore());
+            currentUser.getSavedPlayer()[slot].setCoins(getCoins());
             Database.getInstance().write();
             GameLoader.getInstance("config.json").setGame(currentUser.getSavedGame()[slot]);
             GameEngine.getInstance().getPlayer().loadPlayer(currentUser.getSavedPlayer()[slot]);
             GameEngine.getInstance().loadGameEngine(currentUser.getSavedGameEngineCopy()[slot]);
         } else {
-            KeyboardHandler.getInstance().resetGame(hearts);
+            KeyboardHandler.getInstance().resetGame(hearts, score, coins);
         }
         GameEngine.getInstance().setGameState(GameState.PLAYING);
+    }
+
+    public boolean hasSaved() {
+        Database.getInstance().reload();
+        Player currentUser = Database.getInstance().getCurrentUser();
+        int slot = UIManager.getInstance().saveOption - 1;
+        LevelObject savedGame = currentUser.getSavedGame()[slot].getLevels().get(currentUser.getLevel() - 1);
+        return savedGame != null;
     }
 }

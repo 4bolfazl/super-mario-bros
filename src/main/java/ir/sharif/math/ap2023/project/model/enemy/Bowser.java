@@ -418,7 +418,7 @@ public class Bowser extends EnemyObject {
             grabTime++;
             if (grabTime >= 250) {
                 throwPlayer();
-                GameEngine.getInstance().getPlayer().decreaseHeartHit();
+                GameEngine.getInstance().getPlayer().decreaseHeartHit(true);
             } else if (pressedTimes >= 10) {
                 throwPlayer();
             }

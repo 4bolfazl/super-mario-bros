@@ -105,7 +105,7 @@ public final class CollisionChecker {
             Rectangle bounds = fireball.getLeftBounds();
             if (fireball.speedX > 0) {
                 if (fireball.getBoundsForPlayer().intersects(player.getLeftBounds())) {
-                    player.decreaseHeartHit();
+                    player.decreaseHeartHit(false);
                     fireball.setDestroyed(true);
                 }
                 for (BlockObject block : sectionObject.getBlocks()) {
@@ -115,7 +115,7 @@ public final class CollisionChecker {
                 }
             } else {
                 if (fireball.getBoundsForPlayer().intersects(player.getRightBounds())) {
-                    player.decreaseHeartHit();
+                    player.decreaseHeartHit(false);
                     fireball.setDestroyed(true);
                 }
                 for (BlockObject block : sectionObject.getBlocks()) {
@@ -187,7 +187,7 @@ public final class CollisionChecker {
         double distance = Math.abs(bomb.getX() - player.getX()) / UIManager.getInstance().getTileSize();
         if (bomb.getY() >= 9 * UIManager.getInstance().getTileSize()) {
             if (distance <= 2) {
-                player.decreaseHeartHit();
+                player.decreaseHeartHit(false);
             }
             GameEngine.getInstance().boss.bomb = null;
             GameEngine.getInstance().boss.nukeAttacking = false;
@@ -228,7 +228,7 @@ public final class CollisionChecker {
                         ((Koopa) enemy).setFreeze(true);
                     enemy.kill();
                 } else if (!player.isEnemyInvincible()) {
-                    player.decreaseHeartHit();
+                    player.decreaseHeartHit(false);
                 }
             }
         }
@@ -660,7 +660,7 @@ public final class CollisionChecker {
                         continue;
                     if (!player.isInvincible()) {
                         if (enemy instanceof Spiny) {
-                            player.decreaseHeartHit();
+                            player.decreaseHeartHit(false);
                         } else {
                             player.setJumping(true);
                             player.setFalling(false);
