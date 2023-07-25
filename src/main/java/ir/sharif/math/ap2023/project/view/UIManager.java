@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("FieldMayBeFinal")
 public final class UIManager extends JPanel {
     private static UIManager instance;
     private final int screenCol = 26;
@@ -376,7 +377,7 @@ public final class UIManager extends JPanel {
         SectionObject sectionObject = gameLoader.getGame().getLevels().get(player.getLevel() - 1).getSections().get(player.getSection() - 1);
 
         for (PipeObject pipe : sectionObject.getPipes()) {
-            if ((pipe instanceof PiranhaTrapPipe || pipe instanceof TelePiranhaPipe) && ((PiranhaTrapPipe) pipe).getPiranha() != null) {
+            if ((pipe instanceof TelePiranhaPipe) && ((PiranhaTrapPipe) pipe).getPiranha() != null) {
                 Piranha piranha = ((PiranhaTrapPipe) pipe).getPiranha();
                 if (piranha.isAlive()) {
                     for (Fireball fireball : player.getFireballs()) {
