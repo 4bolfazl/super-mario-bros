@@ -9,7 +9,7 @@ import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.GameEngineCopy;
 import ir.sharif.math.ap2023.project.controller.sound.SoundEffectType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
-import ir.sharif.math.ap2023.project.model.Database;
+import ir.sharif.math.ap2023.project.model.database.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockType;
 import ir.sharif.math.ap2023.project.model.block.EmptyBlockObject;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;

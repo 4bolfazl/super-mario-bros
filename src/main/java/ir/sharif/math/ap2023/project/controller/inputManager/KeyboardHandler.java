@@ -4,7 +4,7 @@ import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
-import ir.sharif.math.ap2023.project.model.Database;
+import ir.sharif.math.ap2023.project.model.database.Database;
 import ir.sharif.math.ap2023.project.model.checkpoint.Checkpoint;
 import ir.sharif.math.ap2023.project.model.enemy.Bowser;
 import ir.sharif.math.ap2023.project.model.player.Difficulty;

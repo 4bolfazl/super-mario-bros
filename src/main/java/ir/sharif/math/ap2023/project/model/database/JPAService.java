@@ -1,4 +1,4 @@
-package ir.sharif.math.ap2023.project.model;
+package ir.sharif.math.ap2023.project.model.database;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

@@ -1,4 +1,4 @@
-package ir.sharif.math.ap2023.project.model;
+package ir.sharif.math.ap2023.project.model.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,17 +7,34 @@ import ir.sharif.math.ap2023.project.controller.GameEngine;
 import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.GameEngineCopy;
+import ir.sharif.math.ap2023.project.model.database.helper.*;
 import ir.sharif.math.ap2023.project.model.player.Player;
 import ir.sharif.math.ap2023.project.model.player.PlayerToSave;
 import ir.sharif.math.ap2023.project.view.UIManager;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.inspector.TagInspector;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class Database {
     private static Database instance;
+    public Shop Shop = new Shop();
+    public SpeedPotion SpeedPotion = new SpeedPotion();
+    public InvisibilityPotion InvisibilityPotion = new InvisibilityPotion();
+    public HealthPotion HealthPotion = new HealthPotion();
+    public DamageBomb DamageBomb = new DamageBomb();
+    public SpeedBomb SpeedBomb = new SpeedBomb();
+    public Hammer Hammer = new Hammer();
+    public Sword Sword = new Sword();
+    public Marathon Marathon = new Marathon();
+    public Survival Survival = new Survival();
     List<Player> users = new ArrayList<>();
     @JsonIgnore
     private Player currentUser;
@@ -26,15 +43,17 @@ public final class Database {
         this.users = users;
     }
 
-    private Database() {
+    public Database() {
     }
 
     public static Database getInstance() {
         if (instance == null) {
-            instance = new Database();
+            loadYML();
             ObjectMapper mapper = new ObjectMapper();
             try {
-                instance = mapper.readValue(getJsonFile(), Database.class);
+                Database readDatabase = mapper.readValue(getJsonFile(), Database.class);
+                instance.users = readDatabase.users;
+                instance.currentUser = readDatabase.currentUser;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -44,6 +63,18 @@ public final class Database {
 
     public static void setInstance(Database instance) {
         Database.instance = instance;
+    }
+
+    private static void loadYML() {
+        LoaderOptions loaderOptions = new LoaderOptions();
+        TagInspector tagInspector = tag -> tag.getClassName().equals(Database.class.getName());
+        loaderOptions.setTagInspector(tagInspector);
+        Yaml yaml = new Yaml(new Constructor(Database.class, loaderOptions));
+        try (Reader reader = new FileReader("src/main/resources/game-config/variables.yml")) {
+            Database.setInstance(yaml.load(reader));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static File getJsonFile() {

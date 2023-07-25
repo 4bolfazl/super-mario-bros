@@ -6,7 +6,7 @@ import ir.sharif.math.ap2023.project.controller.GameLoader;
 import ir.sharif.math.ap2023.project.controller.GameState;
 import ir.sharif.math.ap2023.project.controller.sound.BackgroundMusicType;
 import ir.sharif.math.ap2023.project.controller.sound.SoundManager;
-import ir.sharif.math.ap2023.project.model.Database;
+import ir.sharif.math.ap2023.project.model.database.Database;
 import ir.sharif.math.ap2023.project.model.block.BlockObject;
 import ir.sharif.math.ap2023.project.model.block.Flag;
 import ir.sharif.math.ap2023.project.model.block.GroundBlockObject;

@@ -1,0 +1,12 @@
+!!ir.sharif.math.ap2023.project.model.database.Database
+DamageBomb: {blockArea: 1.5, percent: 25}
+Hammer: {stunPeriod: 3}
+HealthPotion: {HPPercent: 90}
+InvisibilityPotion: {period: 9}
+Marathon: {distanceMultiplier: 0.5, lifeTimeMultiplier: 5.1, minDistance: 1, minLifeTime: 15,
+           multiplierSlowDown: 1.01, multiplierSpeed: 2.2, periodSlowDown: 41}
+Shop: {diamondConversionRate: 2, levelMultiplier: 4.2}
+SpeedBomb: {blockArea: 0.0, multiplier: 2.0}
+SpeedPotion: {multiplier: 1.2, period: 7}
+Survival: {damageMultiplier: 0.17, equipmentMultiplier: 3.14}
+Sword: {blockRange: 2.0, coolDown: 4, percentDamage: 0, pushBackBlock: 1.3}
